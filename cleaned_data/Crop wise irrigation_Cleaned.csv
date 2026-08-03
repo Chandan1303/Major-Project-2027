@@ -1,0 +1,989 @@
+Dist_Code,Year,State_Code,State_Name,Dist_Name,SUGARCANE_IRRIGATED_AREA_1000_ha
+64,1966,5,Karnataka,Bangalore,3.3
+64,1967,5,Karnataka,Bangalore,2.5
+64,1968,5,Karnataka,Bangalore,3.4
+64,1969,5,Karnataka,Bangalore,3.6
+64,1970,5,Karnataka,Bangalore,3.8
+64,1971,5,Karnataka,Bangalore,3.5
+64,1972,5,Karnataka,Bangalore,3.7
+64,1973,5,Karnataka,Bangalore,4.8
+64,1974,5,Karnataka,Bangalore,4.9
+64,1975,5,Karnataka,Bangalore,4.2
+64,1976,5,Karnataka,Bangalore,4.1
+64,1977,5,Karnataka,Bangalore,4.7
+64,1978,5,Karnataka,Bangalore,4.9
+64,1979,5,Karnataka,Bangalore,3.6
+64,1980,5,Karnataka,Bangalore,3.3
+64,1981,5,Karnataka,Bangalore,3.8
+64,1982,5,Karnataka,Bangalore,3.5
+64,1983,5,Karnataka,Bangalore,3.4
+64,1984,5,Karnataka,Bangalore,3.5
+64,1985,5,Karnataka,Bangalore,1.9
+64,1986,5,Karnataka,Bangalore,1.7
+64,1987,5,Karnataka,Bangalore,1.5
+64,1988,5,Karnataka,Bangalore,1.6
+64,1989,5,Karnataka,Bangalore,1.7
+64,1990,5,Karnataka,Bangalore,1.82
+64,1991,5,Karnataka,Bangalore,2.08
+64,1992,5,Karnataka,Bangalore,1.35
+64,1993,5,Karnataka,Bangalore,1.4
+64,1994,5,Karnataka,Bangalore,1.93
+64,1995,5,Karnataka,Bangalore,0.0
+64,1996,5,Karnataka,Bangalore,0.0
+64,1997,5,Karnataka,Bangalore,0.0
+64,1998,5,Karnataka,Bangalore,1.09
+64,1999,5,Karnataka,Bangalore,1.55
+64,2000,5,Karnataka,Bangalore,1.61
+64,2001,5,Karnataka,Bangalore,1.66
+64,2002,5,Karnataka,Bangalore,2.05
+64,2003,5,Karnataka,Bangalore,2.14
+64,2004,5,Karnataka,Bangalore,2.22
+64,2005,5,Karnataka,Bangalore,1.98
+64,2006,5,Karnataka,Bangalore,2.26
+64,2007,5,Karnataka,Bangalore,1.46
+64,2008,5,Karnataka,Bangalore,1.19
+64,2009,5,Karnataka,Bangalore,1.09
+64,2010,5,Karnataka,Bangalore,1.18
+64,2011,5,Karnataka,Bangalore,1.21
+64,2012,5,Karnataka,Bangalore,1.1
+64,2013,5,Karnataka,Bangalore,0.79
+64,2014,5,Karnataka,Bangalore,1.04
+64,2015,5,Karnataka,Bangalore,0.81
+64,2016,5,Karnataka,Bangalore,0.26
+64,2017,5,Karnataka,Bangalore,0.27
+65,1966,5,Karnataka,Kolar,4.2
+65,1967,5,Karnataka,Kolar,4.6
+65,1968,5,Karnataka,Kolar,5.1
+65,1969,5,Karnataka,Kolar,5.9
+65,1970,5,Karnataka,Kolar,6.1
+65,1971,5,Karnataka,Kolar,5.2
+65,1972,5,Karnataka,Kolar,6.2
+65,1973,5,Karnataka,Kolar,6.2
+65,1974,5,Karnataka,Kolar,6.4
+65,1975,5,Karnataka,Kolar,6.2
+65,1976,5,Karnataka,Kolar,6.1
+65,1977,5,Karnataka,Kolar,6.2
+65,1978,5,Karnataka,Kolar,5.5
+65,1979,5,Karnataka,Kolar,3.2
+65,1980,5,Karnataka,Kolar,3.7
+65,1981,5,Karnataka,Kolar,4.1
+65,1982,5,Karnataka,Kolar,3.2
+65,1983,5,Karnataka,Kolar,3.0
+65,1984,5,Karnataka,Kolar,4.7
+65,1985,5,Karnataka,Kolar,3.1
+65,1986,5,Karnataka,Kolar,3.3
+65,1987,5,Karnataka,Kolar,4.1
+65,1988,5,Karnataka,Kolar,3.0
+65,1989,5,Karnataka,Kolar,4.7
+65,1990,5,Karnataka,Kolar,4.94
+65,1991,5,Karnataka,Kolar,5.07
+65,1992,5,Karnataka,Kolar,5.04
+65,1993,5,Karnataka,Kolar,4.24
+65,1994,5,Karnataka,Kolar,4.61
+65,1995,5,Karnataka,Kolar,0.0
+65,1996,5,Karnataka,Kolar,0.0
+65,1997,5,Karnataka,Kolar,0.0
+65,1998,5,Karnataka,Kolar,3.8
+65,1999,5,Karnataka,Kolar,4.1
+65,2000,5,Karnataka,Kolar,2.55
+65,2001,5,Karnataka,Kolar,1.23
+65,2002,5,Karnataka,Kolar,1.27
+65,2003,5,Karnataka,Kolar,0.69
+65,2004,5,Karnataka,Kolar,0.52
+65,2005,5,Karnataka,Kolar,0.55
+65,2006,5,Karnataka,Kolar,0.45
+65,2007,5,Karnataka,Kolar,0.51
+65,2008,5,Karnataka,Kolar,0.08
+65,2009,5,Karnataka,Kolar,0.34
+65,2010,5,Karnataka,Kolar,0.68
+65,2011,5,Karnataka,Kolar,0.37
+65,2012,5,Karnataka,Kolar,0.39
+65,2013,5,Karnataka,Kolar,0.21
+65,2014,5,Karnataka,Kolar,0.18
+65,2015,5,Karnataka,Kolar,0.21
+65,2016,5,Karnataka,Kolar,0.18
+65,2017,5,Karnataka,Kolar,0.22
+66,1966,5,Karnataka,Tumkur,1.8
+66,1967,5,Karnataka,Tumkur,2.0
+66,1968,5,Karnataka,Tumkur,3.8
+66,1969,5,Karnataka,Tumkur,3.1
+66,1970,5,Karnataka,Tumkur,2.4
+66,1971,5,Karnataka,Tumkur,2.7
+66,1972,5,Karnataka,Tumkur,3.1
+66,1973,5,Karnataka,Tumkur,3.4
+66,1974,5,Karnataka,Tumkur,4.2
+66,1975,5,Karnataka,Tumkur,4.1
+66,1976,5,Karnataka,Tumkur,3.1
+66,1977,5,Karnataka,Tumkur,5.1
+66,1978,5,Karnataka,Tumkur,3.7
+66,1979,5,Karnataka,Tumkur,3.1
+66,1980,5,Karnataka,Tumkur,3.0
+66,1981,5,Karnataka,Tumkur,3.8
+66,1982,5,Karnataka,Tumkur,2.2
+66,1983,5,Karnataka,Tumkur,2.3
+66,1984,5,Karnataka,Tumkur,3.8
+66,1985,5,Karnataka,Tumkur,1.9
+66,1986,5,Karnataka,Tumkur,1.7
+66,1987,5,Karnataka,Tumkur,2.2
+66,1988,5,Karnataka,Tumkur,2.5
+66,1989,5,Karnataka,Tumkur,1.9
+66,1990,5,Karnataka,Tumkur,2.62
+66,1991,5,Karnataka,Tumkur,2.1
+66,1992,5,Karnataka,Tumkur,1.7
+66,1993,5,Karnataka,Tumkur,2.89
+66,1994,5,Karnataka,Tumkur,2.96
+66,1995,5,Karnataka,Tumkur,0.0
+66,1996,5,Karnataka,Tumkur,0.0
+66,1997,5,Karnataka,Tumkur,0.0
+66,1998,5,Karnataka,Tumkur,1.02
+66,1999,5,Karnataka,Tumkur,1.67
+66,2000,5,Karnataka,Tumkur,2.33
+66,2001,5,Karnataka,Tumkur,1.74
+66,2002,5,Karnataka,Tumkur,1.43
+66,2003,5,Karnataka,Tumkur,0.79
+66,2004,5,Karnataka,Tumkur,0.51
+66,2005,5,Karnataka,Tumkur,1.83
+66,2006,5,Karnataka,Tumkur,2.52
+66,2007,5,Karnataka,Tumkur,2.38
+66,2008,5,Karnataka,Tumkur,2.4
+66,2009,5,Karnataka,Tumkur,2.94
+66,2010,5,Karnataka,Tumkur,2.98
+66,2011,5,Karnataka,Tumkur,2.55
+66,2012,5,Karnataka,Tumkur,2.57
+66,2013,5,Karnataka,Tumkur,2.13
+66,2014,5,Karnataka,Tumkur,2.18
+66,2015,5,Karnataka,Tumkur,0.32
+66,2016,5,Karnataka,Tumkur,0.86
+66,2017,5,Karnataka,Tumkur,1.15
+67,1966,5,Karnataka,Mysore,3.1
+67,1967,5,Karnataka,Mysore,2.8
+67,1968,5,Karnataka,Mysore,3.1
+67,1969,5,Karnataka,Mysore,2.9
+67,1970,5,Karnataka,Mysore,2.5
+67,1971,5,Karnataka,Mysore,2.6
+67,1972,5,Karnataka,Mysore,4.1
+67,1973,5,Karnataka,Mysore,4.9
+67,1974,5,Karnataka,Mysore,5.8
+67,1975,5,Karnataka,Mysore,6.0
+67,1976,5,Karnataka,Mysore,6.2
+67,1977,5,Karnataka,Mysore,6.5
+67,1978,5,Karnataka,Mysore,6.9
+67,1979,5,Karnataka,Mysore,5.7
+67,1980,5,Karnataka,Mysore,5.9
+67,1981,5,Karnataka,Mysore,9.3
+67,1982,5,Karnataka,Mysore,6.4
+67,1983,5,Karnataka,Mysore,8.2
+67,1984,5,Karnataka,Mysore,8.8
+67,1985,5,Karnataka,Mysore,6.7
+67,1986,5,Karnataka,Mysore,6.9
+67,1987,5,Karnataka,Mysore,7.7
+67,1988,5,Karnataka,Mysore,12.3
+67,1989,5,Karnataka,Mysore,14.3
+67,1990,5,Karnataka,Mysore,12.13
+67,1991,5,Karnataka,Mysore,16.48
+67,1992,5,Karnataka,Mysore,17.95
+67,1993,5,Karnataka,Mysore,20.02
+67,1994,5,Karnataka,Mysore,22.47
+67,1995,5,Karnataka,Mysore,0.0
+67,1996,5,Karnataka,Mysore,0.0
+67,1997,5,Karnataka,Mysore,0.0
+67,1998,5,Karnataka,Mysore,27.2
+67,1999,5,Karnataka,Mysore,30.2
+67,2000,5,Karnataka,Mysore,24.27
+67,2001,5,Karnataka,Mysore,29.04
+67,2002,5,Karnataka,Mysore,29.91
+67,2003,5,Karnataka,Mysore,24.9
+67,2004,5,Karnataka,Mysore,18.54
+67,2005,5,Karnataka,Mysore,27.3
+67,2006,5,Karnataka,Mysore,30.63
+67,2007,5,Karnataka,Mysore,23.62
+67,2008,5,Karnataka,Mysore,21.14
+67,2009,5,Karnataka,Mysore,25.3
+67,2010,5,Karnataka,Mysore,27.17
+67,2011,5,Karnataka,Mysore,31.66
+67,2012,5,Karnataka,Mysore,26.84
+67,2013,5,Karnataka,Mysore,20.14
+67,2014,5,Karnataka,Mysore,18.14
+67,2015,5,Karnataka,Mysore,15.0
+67,2016,5,Karnataka,Mysore,10.18
+67,2017,5,Karnataka,Mysore,10.93
+68,1966,5,Karnataka,Mandya,14.1
+68,1967,5,Karnataka,Mandya,14.6
+68,1968,5,Karnataka,Mandya,19.4
+68,1969,5,Karnataka,Mandya,17.8
+68,1970,5,Karnataka,Mandya,17.1
+68,1971,5,Karnataka,Mandya,17.7
+68,1972,5,Karnataka,Mandya,19.8
+68,1973,5,Karnataka,Mandya,21.5
+68,1974,5,Karnataka,Mandya,23.5
+68,1975,5,Karnataka,Mandya,21.9
+68,1976,5,Karnataka,Mandya,19.9
+68,1977,5,Karnataka,Mandya,25.2
+68,1978,5,Karnataka,Mandya,23.7
+68,1979,5,Karnataka,Mandya,23.4
+68,1980,5,Karnataka,Mandya,25.2
+68,1981,5,Karnataka,Mandya,27.4
+68,1982,5,Karnataka,Mandya,25.1
+68,1983,5,Karnataka,Mandya,23.9
+68,1984,5,Karnataka,Mandya,26.6
+68,1985,5,Karnataka,Mandya,25.3
+68,1986,5,Karnataka,Mandya,26.5
+68,1987,5,Karnataka,Mandya,23.6
+68,1988,5,Karnataka,Mandya,30.9
+68,1989,5,Karnataka,Mandya,29.8
+68,1990,5,Karnataka,Mandya,29.97
+68,1991,5,Karnataka,Mandya,32.85
+68,1992,5,Karnataka,Mandya,28.6
+68,1993,5,Karnataka,Mandya,32.27
+68,1994,5,Karnataka,Mandya,35.3
+68,1995,5,Karnataka,Mandya,0.0
+68,1996,5,Karnataka,Mandya,0.0
+68,1997,5,Karnataka,Mandya,0.0
+68,1998,5,Karnataka,Mandya,30.75
+68,1999,5,Karnataka,Mandya,31.5
+68,2000,5,Karnataka,Mandya,27.88
+68,2001,5,Karnataka,Mandya,35.27
+68,2002,5,Karnataka,Mandya,29.87
+68,2003,5,Karnataka,Mandya,20.18
+68,2004,5,Karnataka,Mandya,28.23
+68,2005,5,Karnataka,Mandya,34.46
+68,2006,5,Karnataka,Mandya,43.49
+68,2007,5,Karnataka,Mandya,39.85
+68,2008,5,Karnataka,Mandya,37.7
+68,2009,5,Karnataka,Mandya,47.94
+68,2010,5,Karnataka,Mandya,43.88
+68,2011,5,Karnataka,Mandya,43.35
+68,2012,5,Karnataka,Mandya,40.88
+68,2013,5,Karnataka,Mandya,33.07
+68,2014,5,Karnataka,Mandya,33.81
+68,2015,5,Karnataka,Mandya,36.47
+68,2016,5,Karnataka,Mandya,22.87
+68,2017,5,Karnataka,Mandya,20.94
+69,1966,5,Karnataka,Hassan,3.3
+69,1967,5,Karnataka,Hassan,3.7
+69,1968,5,Karnataka,Hassan,3.7
+69,1969,5,Karnataka,Hassan,3.4
+69,1970,5,Karnataka,Hassan,3.2
+69,1971,5,Karnataka,Hassan,3.2
+69,1972,5,Karnataka,Hassan,3.4
+69,1973,5,Karnataka,Hassan,3.5
+69,1974,5,Karnataka,Hassan,3.4
+69,1975,5,Karnataka,Hassan,3.9
+69,1976,5,Karnataka,Hassan,3.4
+69,1977,5,Karnataka,Hassan,3.7
+69,1978,5,Karnataka,Hassan,3.0
+69,1979,5,Karnataka,Hassan,2.7
+69,1980,5,Karnataka,Hassan,3.4
+69,1981,5,Karnataka,Hassan,3.7
+69,1982,5,Karnataka,Hassan,2.7
+69,1983,5,Karnataka,Hassan,3.4
+69,1984,5,Karnataka,Hassan,3.5
+69,1985,5,Karnataka,Hassan,1.7
+69,1986,5,Karnataka,Hassan,1.7
+69,1987,5,Karnataka,Hassan,3.0
+69,1988,5,Karnataka,Hassan,3.1
+69,1989,5,Karnataka,Hassan,3.1
+69,1990,5,Karnataka,Hassan,3.92
+69,1991,5,Karnataka,Hassan,5.14
+69,1992,5,Karnataka,Hassan,4.72
+69,1993,5,Karnataka,Hassan,9.23
+69,1994,5,Karnataka,Hassan,10.69
+69,1995,5,Karnataka,Hassan,0.0
+69,1996,5,Karnataka,Hassan,0.0
+69,1997,5,Karnataka,Hassan,0.0
+69,1998,5,Karnataka,Hassan,5.36
+69,1999,5,Karnataka,Hassan,5.08
+69,2000,5,Karnataka,Hassan,5.59
+69,2001,5,Karnataka,Hassan,7.16
+69,2002,5,Karnataka,Hassan,8.61
+69,2003,5,Karnataka,Hassan,6.89
+69,2004,5,Karnataka,Hassan,6.91
+69,2005,5,Karnataka,Hassan,8.93
+69,2006,5,Karnataka,Hassan,9.8
+69,2007,5,Karnataka,Hassan,7.35
+69,2008,5,Karnataka,Hassan,4.67
+69,2009,5,Karnataka,Hassan,6.78
+69,2010,5,Karnataka,Hassan,9.71
+69,2011,5,Karnataka,Hassan,5.35
+69,2012,5,Karnataka,Hassan,4.14
+69,2013,5,Karnataka,Hassan,4.59
+69,2014,5,Karnataka,Hassan,2.6
+69,2015,5,Karnataka,Hassan,1.53
+69,2016,5,Karnataka,Hassan,2.04
+69,2017,5,Karnataka,Hassan,2.16
+70,1966,5,Karnataka,Shimoge,4.7
+70,1967,5,Karnataka,Shimoge,5.3
+70,1968,5,Karnataka,Shimoge,5.0
+70,1969,5,Karnataka,Shimoge,5.3
+70,1970,5,Karnataka,Shimoge,5.4
+70,1971,5,Karnataka,Shimoge,6.0
+70,1972,5,Karnataka,Shimoge,7.1
+70,1973,5,Karnataka,Shimoge,8.5
+70,1974,5,Karnataka,Shimoge,9.1
+70,1975,5,Karnataka,Shimoge,8.1
+70,1976,5,Karnataka,Shimoge,9.1
+70,1977,5,Karnataka,Shimoge,9.2
+70,1978,5,Karnataka,Shimoge,8.4
+70,1979,5,Karnataka,Shimoge,5.4
+70,1980,5,Karnataka,Shimoge,6.4
+70,1981,5,Karnataka,Shimoge,7.0
+70,1982,5,Karnataka,Shimoge,8.2
+70,1983,5,Karnataka,Shimoge,7.5
+70,1984,5,Karnataka,Shimoge,8.3
+70,1985,5,Karnataka,Shimoge,9.3
+70,1986,5,Karnataka,Shimoge,11.8
+70,1987,5,Karnataka,Shimoge,15.2
+70,1988,5,Karnataka,Shimoge,17.1
+70,1989,5,Karnataka,Shimoge,17.8
+70,1990,5,Karnataka,Shimoge,19.59
+70,1991,5,Karnataka,Shimoge,17.53
+70,1992,5,Karnataka,Shimoge,18.07
+70,1993,5,Karnataka,Shimoge,15.19
+70,1994,5,Karnataka,Shimoge,17.02
+70,1995,5,Karnataka,Shimoge,0.0
+70,1996,5,Karnataka,Shimoge,0.0
+70,1997,5,Karnataka,Shimoge,0.0
+70,1998,5,Karnataka,Shimoge,10.93
+70,1999,5,Karnataka,Shimoge,10.92
+70,2000,5,Karnataka,Shimoge,10.23
+70,2001,5,Karnataka,Shimoge,9.64
+70,2002,5,Karnataka,Shimoge,9.87
+70,2003,5,Karnataka,Shimoge,11.53
+70,2004,5,Karnataka,Shimoge,9.8
+70,2005,5,Karnataka,Shimoge,11.25
+70,2006,5,Karnataka,Shimoge,13.17
+70,2007,5,Karnataka,Shimoge,12.1
+70,2008,5,Karnataka,Shimoge,6.43
+70,2009,5,Karnataka,Shimoge,7.67
+70,2010,5,Karnataka,Shimoge,7.69
+70,2011,5,Karnataka,Shimoge,7.08
+70,2012,5,Karnataka,Shimoge,7.64
+70,2013,5,Karnataka,Shimoge,6.11
+70,2014,5,Karnataka,Shimoge,6.42
+70,2015,5,Karnataka,Shimoge,5.88
+70,2016,5,Karnataka,Shimoge,2.63
+70,2017,5,Karnataka,Shimoge,2.16
+71,1966,5,Karnataka,Chickmagalur,1.0
+71,1967,5,Karnataka,Chickmagalur,1.1
+71,1968,5,Karnataka,Chickmagalur,1.7
+71,1969,5,Karnataka,Chickmagalur,1.5
+71,1970,5,Karnataka,Chickmagalur,1.5
+71,1971,5,Karnataka,Chickmagalur,1.7
+71,1972,5,Karnataka,Chickmagalur,1.1
+71,1973,5,Karnataka,Chickmagalur,1.4
+71,1974,5,Karnataka,Chickmagalur,1.7
+71,1975,5,Karnataka,Chickmagalur,1.5
+71,1976,5,Karnataka,Chickmagalur,1.5
+71,1977,5,Karnataka,Chickmagalur,1.6
+71,1978,5,Karnataka,Chickmagalur,1.5
+71,1979,5,Karnataka,Chickmagalur,1.5
+71,1980,5,Karnataka,Chickmagalur,1.4
+71,1981,5,Karnataka,Chickmagalur,1.4
+71,1982,5,Karnataka,Chickmagalur,0.5
+71,1983,5,Karnataka,Chickmagalur,1.1
+71,1984,5,Karnataka,Chickmagalur,1.1
+71,1985,5,Karnataka,Chickmagalur,0.9
+71,1986,5,Karnataka,Chickmagalur,1.2
+71,1987,5,Karnataka,Chickmagalur,1.8
+71,1988,5,Karnataka,Chickmagalur,2.1
+71,1989,5,Karnataka,Chickmagalur,1.8
+71,1990,5,Karnataka,Chickmagalur,1.77
+71,1991,5,Karnataka,Chickmagalur,1.94
+71,1992,5,Karnataka,Chickmagalur,1.7
+71,1993,5,Karnataka,Chickmagalur,1.98
+71,1994,5,Karnataka,Chickmagalur,2.08
+71,1995,5,Karnataka,Chickmagalur,0.0
+71,1996,5,Karnataka,Chickmagalur,0.0
+71,1997,5,Karnataka,Chickmagalur,0.0
+71,1998,5,Karnataka,Chickmagalur,1.56
+71,1999,5,Karnataka,Chickmagalur,1.24
+71,2000,5,Karnataka,Chickmagalur,2.04
+71,2001,5,Karnataka,Chickmagalur,1.87
+71,2002,5,Karnataka,Chickmagalur,1.79
+71,2003,5,Karnataka,Chickmagalur,1.63
+71,2004,5,Karnataka,Chickmagalur,2.88
+71,2005,5,Karnataka,Chickmagalur,2.94
+71,2006,5,Karnataka,Chickmagalur,3.46
+71,2007,5,Karnataka,Chickmagalur,1.27
+71,2008,5,Karnataka,Chickmagalur,1.31
+71,2009,5,Karnataka,Chickmagalur,1.44
+71,2010,5,Karnataka,Chickmagalur,1.71
+71,2011,5,Karnataka,Chickmagalur,2.43
+71,2012,5,Karnataka,Chickmagalur,3.09
+71,2013,5,Karnataka,Chickmagalur,2.94
+71,2014,5,Karnataka,Chickmagalur,2.5
+71,2015,5,Karnataka,Chickmagalur,2.18
+71,2016,5,Karnataka,Chickmagalur,1.81
+71,2017,5,Karnataka,Chickmagalur,1.66
+72,1966,5,Karnataka,Chitradurga,1.5
+72,1967,5,Karnataka,Chitradurga,2.9
+72,1968,5,Karnataka,Chitradurga,2.0
+72,1969,5,Karnataka,Chitradurga,2.2
+72,1970,5,Karnataka,Chitradurga,1.9
+72,1971,5,Karnataka,Chitradurga,2.0
+72,1972,5,Karnataka,Chitradurga,2.1
+72,1973,5,Karnataka,Chitradurga,3.1
+72,1974,5,Karnataka,Chitradurga,2.1
+72,1975,5,Karnataka,Chitradurga,3.5
+72,1976,5,Karnataka,Chitradurga,5.7
+72,1977,5,Karnataka,Chitradurga,6.9
+72,1978,5,Karnataka,Chitradurga,6.9
+72,1979,5,Karnataka,Chitradurga,5.1
+72,1980,5,Karnataka,Chitradurga,5.8
+72,1981,5,Karnataka,Chitradurga,6.2
+72,1982,5,Karnataka,Chitradurga,3.9
+72,1983,5,Karnataka,Chitradurga,5.9
+72,1984,5,Karnataka,Chitradurga,7.5
+72,1985,5,Karnataka,Chitradurga,3.4
+72,1986,5,Karnataka,Chitradurga,4.2
+72,1987,5,Karnataka,Chitradurga,5.0
+72,1988,5,Karnataka,Chitradurga,7.0
+72,1989,5,Karnataka,Chitradurga,6.2
+72,1990,5,Karnataka,Chitradurga,9.01
+72,1991,5,Karnataka,Chitradurga,6.26
+72,1992,5,Karnataka,Chitradurga,6.55
+72,1993,5,Karnataka,Chitradurga,7.27
+72,1994,5,Karnataka,Chitradurga,9.57
+72,1995,5,Karnataka,Chitradurga,0.0
+72,1996,5,Karnataka,Chitradurga,0.0
+72,1997,5,Karnataka,Chitradurga,0.0
+72,1998,5,Karnataka,Chitradurga,13.4
+72,1999,5,Karnataka,Chitradurga,16.27
+72,2000,5,Karnataka,Chitradurga,19.03
+72,2001,5,Karnataka,Chitradurga,24.53
+72,2002,5,Karnataka,Chitradurga,21.38
+72,2003,5,Karnataka,Chitradurga,10.38
+72,2004,5,Karnataka,Chitradurga,7.11
+72,2005,5,Karnataka,Chitradurga,9.73
+72,2006,5,Karnataka,Chitradurga,12.38
+72,2007,5,Karnataka,Chitradurga,11.29
+72,2008,5,Karnataka,Chitradurga,5.85
+72,2009,5,Karnataka,Chitradurga,8.56
+72,2010,5,Karnataka,Chitradurga,10.02
+72,2011,5,Karnataka,Chitradurga,10.19
+72,2012,5,Karnataka,Chitradurga,10.2
+72,2013,5,Karnataka,Chitradurga,12.41
+72,2014,5,Karnataka,Chitradurga,16.32
+72,2015,5,Karnataka,Chitradurga,5.74
+72,2016,5,Karnataka,Chitradurga,5.68
+72,2017,5,Karnataka,Chitradurga,3.8
+73,1966,5,Karnataka,Bellary,8.3
+73,1967,5,Karnataka,Bellary,9.4
+73,1968,5,Karnataka,Bellary,10.6
+73,1969,5,Karnataka,Bellary,10.1
+73,1970,5,Karnataka,Bellary,10.1
+73,1971,5,Karnataka,Bellary,9.7
+73,1972,5,Karnataka,Bellary,8.8
+73,1973,5,Karnataka,Bellary,8.7
+73,1974,5,Karnataka,Bellary,9.2
+73,1975,5,Karnataka,Bellary,10.3
+73,1976,5,Karnataka,Bellary,9.2
+73,1977,5,Karnataka,Bellary,9.7
+73,1978,5,Karnataka,Bellary,9.9
+73,1979,5,Karnataka,Bellary,7.5
+73,1980,5,Karnataka,Bellary,9.9
+73,1981,5,Karnataka,Bellary,10.7
+73,1982,5,Karnataka,Bellary,7.2
+73,1983,5,Karnataka,Bellary,8.4
+73,1984,5,Karnataka,Bellary,9.8
+73,1985,5,Karnataka,Bellary,7.8
+73,1986,5,Karnataka,Bellary,7.9
+73,1987,5,Karnataka,Bellary,9.2
+73,1988,5,Karnataka,Bellary,9.5
+73,1989,5,Karnataka,Bellary,7.0
+73,1990,5,Karnataka,Bellary,8.51
+73,1991,5,Karnataka,Bellary,7.17
+73,1992,5,Karnataka,Bellary,5.66
+73,1993,5,Karnataka,Bellary,6.88
+73,1994,5,Karnataka,Bellary,7.86
+73,1995,5,Karnataka,Bellary,0.0
+73,1996,5,Karnataka,Bellary,0.0
+73,1997,5,Karnataka,Bellary,0.0
+73,1998,5,Karnataka,Bellary,7.84
+73,1999,5,Karnataka,Bellary,7.34
+73,2000,5,Karnataka,Bellary,7.17
+73,2001,5,Karnataka,Bellary,7.67
+73,2002,5,Karnataka,Bellary,5.33
+73,2003,5,Karnataka,Bellary,3.65
+73,2004,5,Karnataka,Bellary,5.35
+73,2005,5,Karnataka,Bellary,6.82
+73,2006,5,Karnataka,Bellary,6.67
+73,2007,5,Karnataka,Bellary,4.66
+73,2008,5,Karnataka,Bellary,4.4
+73,2009,5,Karnataka,Bellary,3.92
+73,2010,5,Karnataka,Bellary,4.68
+73,2011,5,Karnataka,Bellary,9.47
+73,2012,5,Karnataka,Bellary,11.62
+73,2013,5,Karnataka,Bellary,8.57
+73,2014,5,Karnataka,Bellary,9.42
+73,2015,5,Karnataka,Bellary,9.86
+73,2016,5,Karnataka,Bellary,9.17
+73,2017,5,Karnataka,Bellary,7.27
+74,1966,5,Karnataka,Dharwad,3.0
+74,1967,5,Karnataka,Dharwad,2.8
+74,1968,5,Karnataka,Dharwad,1.6
+74,1969,5,Karnataka,Dharwad,1.9
+74,1970,5,Karnataka,Dharwad,2.0
+74,1971,5,Karnataka,Dharwad,2.1
+74,1972,5,Karnataka,Dharwad,2.1
+74,1973,5,Karnataka,Dharwad,2.4
+74,1974,5,Karnataka,Dharwad,3.3
+74,1975,5,Karnataka,Dharwad,3.0
+74,1976,5,Karnataka,Dharwad,2.8
+74,1977,5,Karnataka,Dharwad,2.5
+74,1978,5,Karnataka,Dharwad,2.0
+74,1979,5,Karnataka,Dharwad,2.2
+74,1980,5,Karnataka,Dharwad,2.4
+74,1981,5,Karnataka,Dharwad,2.4
+74,1982,5,Karnataka,Dharwad,1.6
+74,1983,5,Karnataka,Dharwad,1.3
+74,1984,5,Karnataka,Dharwad,2.1
+74,1985,5,Karnataka,Dharwad,2.2
+74,1986,5,Karnataka,Dharwad,3.6
+74,1987,5,Karnataka,Dharwad,6.3
+74,1988,5,Karnataka,Dharwad,6.4
+74,1989,5,Karnataka,Dharwad,5.1
+74,1990,5,Karnataka,Dharwad,5.78
+74,1991,5,Karnataka,Dharwad,5.52
+74,1992,5,Karnataka,Dharwad,5.57
+74,1993,5,Karnataka,Dharwad,8.88
+74,1994,5,Karnataka,Dharwad,11.99
+74,1995,5,Karnataka,Dharwad,0.0
+74,1996,5,Karnataka,Dharwad,0.0
+74,1997,5,Karnataka,Dharwad,0.0
+74,1998,5,Karnataka,Dharwad,9.79
+74,1999,5,Karnataka,Dharwad,11.21
+74,2000,5,Karnataka,Dharwad,11.39
+74,2001,5,Karnataka,Dharwad,9.17
+74,2002,5,Karnataka,Dharwad,7.5
+74,2003,5,Karnataka,Dharwad,6.99
+74,2004,5,Karnataka,Dharwad,4.01
+74,2005,5,Karnataka,Dharwad,4.95
+74,2006,5,Karnataka,Dharwad,8.55
+74,2007,5,Karnataka,Dharwad,11.31
+74,2008,5,Karnataka,Dharwad,7.68
+74,2009,5,Karnataka,Dharwad,8.74
+74,2010,5,Karnataka,Dharwad,14.02
+74,2011,5,Karnataka,Dharwad,18.89
+74,2012,5,Karnataka,Dharwad,19.62
+74,2013,5,Karnataka,Dharwad,24.76
+74,2014,5,Karnataka,Dharwad,32.6
+74,2015,5,Karnataka,Dharwad,31.13
+74,2016,5,Karnataka,Dharwad,25.28
+74,2017,5,Karnataka,Dharwad,28.94
+75,1966,5,Karnataka,Belgaum,21.7
+75,1967,5,Karnataka,Belgaum,23.8
+75,1968,5,Karnataka,Belgaum,27.7
+75,1969,5,Karnataka,Belgaum,31.9
+75,1970,5,Karnataka,Belgaum,29.6
+75,1971,5,Karnataka,Belgaum,30.0
+75,1972,5,Karnataka,Belgaum,24.6
+75,1973,5,Karnataka,Belgaum,24.9
+75,1974,5,Karnataka,Belgaum,29.0
+75,1975,5,Karnataka,Belgaum,36.6
+75,1976,5,Karnataka,Belgaum,41.4
+75,1977,5,Karnataka,Belgaum,42.4
+75,1978,5,Karnataka,Belgaum,43.0
+75,1979,5,Karnataka,Belgaum,42.5
+75,1980,5,Karnataka,Belgaum,48.0
+75,1981,5,Karnataka,Belgaum,55.3
+75,1982,5,Karnataka,Belgaum,66.9
+75,1983,5,Karnataka,Belgaum,58.6
+75,1984,5,Karnataka,Belgaum,56.2
+75,1985,5,Karnataka,Belgaum,63.1
+75,1986,5,Karnataka,Belgaum,63.5
+75,1987,5,Karnataka,Belgaum,71.4
+75,1988,5,Karnataka,Belgaum,85.0
+75,1989,5,Karnataka,Belgaum,103.0
+75,1990,5,Karnataka,Belgaum,97.86
+75,1991,5,Karnataka,Belgaum,108.09
+75,1992,5,Karnataka,Belgaum,95.3
+75,1993,5,Karnataka,Belgaum,106.24
+75,1994,5,Karnataka,Belgaum,114.44
+75,1995,5,Karnataka,Belgaum,0.0
+75,1996,5,Karnataka,Belgaum,0.0
+75,1997,5,Karnataka,Belgaum,0.0
+75,1998,5,Karnataka,Belgaum,124.02
+75,1999,5,Karnataka,Belgaum,140.51
+75,2000,5,Karnataka,Belgaum,174.71
+75,2001,5,Karnataka,Belgaum,156.04
+75,2002,5,Karnataka,Belgaum,145.13
+75,2003,5,Karnataka,Belgaum,141.4
+75,2004,5,Karnataka,Belgaum,115.85
+75,2005,5,Karnataka,Belgaum,166.17
+75,2006,5,Karnataka,Belgaum,189.81
+75,2007,5,Karnataka,Belgaum,193.75
+75,2008,5,Karnataka,Belgaum,191.4
+75,2009,5,Karnataka,Belgaum,198.92
+75,2010,5,Karnataka,Belgaum,282.34
+75,2011,5,Karnataka,Belgaum,255.25
+75,2012,5,Karnataka,Belgaum,252.34
+75,2013,5,Karnataka,Belgaum,252.92
+75,2014,5,Karnataka,Belgaum,266.25
+75,2015,5,Karnataka,Belgaum,215.43
+75,2016,5,Karnataka,Belgaum,194.48
+75,2017,5,Karnataka,Belgaum,221.09
+76,1966,5,Karnataka,Bijapur / Vijayapura,2.8
+76,1967,5,Karnataka,Bijapur / Vijayapura,2.3
+76,1968,5,Karnataka,Bijapur / Vijayapura,3.3
+76,1969,5,Karnataka,Bijapur / Vijayapura,3.0
+76,1970,5,Karnataka,Bijapur / Vijayapura,3.0
+76,1971,5,Karnataka,Bijapur / Vijayapura,2.9
+76,1972,5,Karnataka,Bijapur / Vijayapura,3.2
+76,1973,5,Karnataka,Bijapur / Vijayapura,3.3
+76,1974,5,Karnataka,Bijapur / Vijayapura,4.1
+76,1975,5,Karnataka,Bijapur / Vijayapura,5.4
+76,1976,5,Karnataka,Bijapur / Vijayapura,5.8
+76,1977,5,Karnataka,Bijapur / Vijayapura,7.7
+76,1978,5,Karnataka,Bijapur / Vijayapura,8.2
+76,1979,5,Karnataka,Bijapur / Vijayapura,7.7
+76,1980,5,Karnataka,Bijapur / Vijayapura,11.6
+76,1981,5,Karnataka,Bijapur / Vijayapura,13.9
+76,1982,5,Karnataka,Bijapur / Vijayapura,16.2
+76,1983,5,Karnataka,Bijapur / Vijayapura,18.6
+76,1984,5,Karnataka,Bijapur / Vijayapura,19.9
+76,1985,5,Karnataka,Bijapur / Vijayapura,17.7
+76,1986,5,Karnataka,Bijapur / Vijayapura,18.3
+76,1987,5,Karnataka,Bijapur / Vijayapura,21.9
+76,1988,5,Karnataka,Bijapur / Vijayapura,28.2
+76,1989,5,Karnataka,Bijapur / Vijayapura,33.1
+76,1990,5,Karnataka,Bijapur / Vijayapura,34.69
+76,1991,5,Karnataka,Bijapur / Vijayapura,36.06
+76,1992,5,Karnataka,Bijapur / Vijayapura,33.8
+76,1993,5,Karnataka,Bijapur / Vijayapura,50.77
+76,1994,5,Karnataka,Bijapur / Vijayapura,64.48
+76,1995,5,Karnataka,Bijapur / Vijayapura,0.0
+76,1996,5,Karnataka,Bijapur / Vijayapura,0.0
+76,1997,5,Karnataka,Bijapur / Vijayapura,0.0
+76,1998,5,Karnataka,Bijapur / Vijayapura,62.91
+76,1999,5,Karnataka,Bijapur / Vijayapura,69.57
+76,2000,5,Karnataka,Bijapur / Vijayapura,82.48
+76,2001,5,Karnataka,Bijapur / Vijayapura,80.91
+76,2002,5,Karnataka,Bijapur / Vijayapura,77.23
+76,2003,5,Karnataka,Bijapur / Vijayapura,66.9
+76,2004,5,Karnataka,Bijapur / Vijayapura,66.73
+76,2005,5,Karnataka,Bijapur / Vijayapura,99.83
+76,2006,5,Karnataka,Bijapur / Vijayapura,131.14
+76,2007,5,Karnataka,Bijapur / Vijayapura,112.77
+76,2008,5,Karnataka,Bijapur / Vijayapura,127.29
+76,2009,5,Karnataka,Bijapur / Vijayapura,132.61
+76,2010,5,Karnataka,Bijapur / Vijayapura,176.14
+76,2011,5,Karnataka,Bijapur / Vijayapura,191.24
+76,2012,5,Karnataka,Bijapur / Vijayapura,182.53
+76,2013,5,Karnataka,Bijapur / Vijayapura,202.34
+76,2014,5,Karnataka,Bijapur / Vijayapura,192.78
+76,2015,5,Karnataka,Bijapur / Vijayapura,183.52
+76,2016,5,Karnataka,Bijapur / Vijayapura,142.68
+76,2017,5,Karnataka,Bijapur / Vijayapura,159.24
+77,1966,5,Karnataka,Bidar,5.7
+77,1967,5,Karnataka,Bidar,5.1
+77,1968,5,Karnataka,Bidar,5.3
+77,1969,5,Karnataka,Bidar,5.4
+77,1970,5,Karnataka,Bidar,5.1
+77,1971,5,Karnataka,Bidar,5.1
+77,1972,5,Karnataka,Bidar,5.2
+77,1973,5,Karnataka,Bidar,6.3
+77,1974,5,Karnataka,Bidar,7.3
+77,1975,5,Karnataka,Bidar,9.4
+77,1976,5,Karnataka,Bidar,11.1
+77,1977,5,Karnataka,Bidar,12.0
+77,1978,5,Karnataka,Bidar,10.9
+77,1979,5,Karnataka,Bidar,11.3
+77,1980,5,Karnataka,Bidar,12.4
+77,1981,5,Karnataka,Bidar,13.8
+77,1982,5,Karnataka,Bidar,15.1
+77,1983,5,Karnataka,Bidar,14.6
+77,1984,5,Karnataka,Bidar,14.8
+77,1985,5,Karnataka,Bidar,15.8
+77,1986,5,Karnataka,Bidar,15.6
+77,1987,5,Karnataka,Bidar,16.4
+77,1988,5,Karnataka,Bidar,18.2
+77,1989,5,Karnataka,Bidar,20.1
+77,1990,5,Karnataka,Bidar,24.35
+77,1991,5,Karnataka,Bidar,24.62
+77,1992,5,Karnataka,Bidar,20.99
+77,1993,5,Karnataka,Bidar,18.43
+77,1994,5,Karnataka,Bidar,20.91
+77,1995,5,Karnataka,Bidar,0.0
+77,1996,5,Karnataka,Bidar,0.0
+77,1997,5,Karnataka,Bidar,0.0
+77,1998,5,Karnataka,Bidar,24.52
+77,1999,5,Karnataka,Bidar,26.83
+77,2000,5,Karnataka,Bidar,30.93
+77,2001,5,Karnataka,Bidar,29.23
+77,2002,5,Karnataka,Bidar,30.94
+77,2003,5,Karnataka,Bidar,29.23
+77,2004,5,Karnataka,Bidar,28.02
+77,2005,5,Karnataka,Bidar,27.96
+77,2006,5,Karnataka,Bidar,33.41
+77,2007,5,Karnataka,Bidar,33.24
+77,2008,5,Karnataka,Bidar,30.39
+77,2009,5,Karnataka,Bidar,29.03
+77,2010,5,Karnataka,Bidar,33.34
+77,2011,5,Karnataka,Bidar,33.7
+77,2012,5,Karnataka,Bidar,36.68
+77,2013,5,Karnataka,Bidar,37.74
+77,2014,5,Karnataka,Bidar,31.41
+77,2015,5,Karnataka,Bidar,25.9
+77,2016,5,Karnataka,Bidar,20.69
+77,2017,5,Karnataka,Bidar,19.18
+78,1966,5,Karnataka,Raichur,7.1
+78,1967,5,Karnataka,Raichur,6.4
+78,1968,5,Karnataka,Raichur,4.9
+78,1969,5,Karnataka,Raichur,6.3
+78,1970,5,Karnataka,Raichur,4.4
+78,1971,5,Karnataka,Raichur,3.7
+78,1972,5,Karnataka,Raichur,4.1
+78,1973,5,Karnataka,Raichur,5.0
+78,1974,5,Karnataka,Raichur,5.4
+78,1975,5,Karnataka,Raichur,5.9
+78,1976,5,Karnataka,Raichur,7.2
+78,1977,5,Karnataka,Raichur,8.1
+78,1978,5,Karnataka,Raichur,7.3
+78,1979,5,Karnataka,Raichur,3.7
+78,1980,5,Karnataka,Raichur,5.2
+78,1981,5,Karnataka,Raichur,6.5
+78,1982,5,Karnataka,Raichur,2.3
+78,1983,5,Karnataka,Raichur,3.5
+78,1984,5,Karnataka,Raichur,5.8
+78,1985,5,Karnataka,Raichur,1.3
+78,1986,5,Karnataka,Raichur,2.1
+78,1987,5,Karnataka,Raichur,3.1
+78,1988,5,Karnataka,Raichur,1.2
+78,1989,5,Karnataka,Raichur,2.4
+78,1990,5,Karnataka,Raichur,2.88
+78,1991,5,Karnataka,Raichur,2.66
+78,1992,5,Karnataka,Raichur,1.97
+78,1993,5,Karnataka,Raichur,3.13
+78,1994,5,Karnataka,Raichur,4.63
+78,1995,5,Karnataka,Raichur,0.0
+78,1996,5,Karnataka,Raichur,0.0
+78,1997,5,Karnataka,Raichur,0.0
+78,1998,5,Karnataka,Raichur,2.09
+78,1999,5,Karnataka,Raichur,2.28
+78,2000,5,Karnataka,Raichur,1.76
+78,2001,5,Karnataka,Raichur,1.46
+78,2002,5,Karnataka,Raichur,0.81
+78,2003,5,Karnataka,Raichur,0.12
+78,2004,5,Karnataka,Raichur,0.07
+78,2005,5,Karnataka,Raichur,0.34
+78,2006,5,Karnataka,Raichur,1.42
+78,2007,5,Karnataka,Raichur,1.31
+78,2008,5,Karnataka,Raichur,0.74
+78,2009,5,Karnataka,Raichur,0.98
+78,2010,5,Karnataka,Raichur,2.38
+78,2011,5,Karnataka,Raichur,3.22
+78,2012,5,Karnataka,Raichur,5.82
+78,2013,5,Karnataka,Raichur,3.57
+78,2014,5,Karnataka,Raichur,3.05
+78,2015,5,Karnataka,Raichur,2.47
+78,2016,5,Karnataka,Raichur,2.07
+78,2017,5,Karnataka,Raichur,1.61
+79,1966,5,Karnataka,Gulbarga / Kalaburagi,1.3
+79,1967,5,Karnataka,Gulbarga / Kalaburagi,1.1
+79,1968,5,Karnataka,Gulbarga / Kalaburagi,1.2
+79,1969,5,Karnataka,Gulbarga / Kalaburagi,1.3
+79,1970,5,Karnataka,Gulbarga / Kalaburagi,1.1
+79,1971,5,Karnataka,Gulbarga / Kalaburagi,1.0
+79,1972,5,Karnataka,Gulbarga / Kalaburagi,0.5
+79,1973,5,Karnataka,Gulbarga / Kalaburagi,0.6
+79,1974,5,Karnataka,Gulbarga / Kalaburagi,1.1
+79,1975,5,Karnataka,Gulbarga / Kalaburagi,1.8
+79,1976,5,Karnataka,Gulbarga / Kalaburagi,2.4
+79,1977,5,Karnataka,Gulbarga / Kalaburagi,2.8
+79,1978,5,Karnataka,Gulbarga / Kalaburagi,2.6
+79,1979,5,Karnataka,Gulbarga / Kalaburagi,2.2
+79,1980,5,Karnataka,Gulbarga / Kalaburagi,2.3
+79,1981,5,Karnataka,Gulbarga / Kalaburagi,3.7
+79,1982,5,Karnataka,Gulbarga / Kalaburagi,3.0
+79,1983,5,Karnataka,Gulbarga / Kalaburagi,3.6
+79,1984,5,Karnataka,Gulbarga / Kalaburagi,4.0
+79,1985,5,Karnataka,Gulbarga / Kalaburagi,3.2
+79,1986,5,Karnataka,Gulbarga / Kalaburagi,4.0
+79,1987,5,Karnataka,Gulbarga / Kalaburagi,2.7
+79,1988,5,Karnataka,Gulbarga / Kalaburagi,3.9
+79,1989,5,Karnataka,Gulbarga / Kalaburagi,6.8
+79,1990,5,Karnataka,Gulbarga / Kalaburagi,5.44
+79,1991,5,Karnataka,Gulbarga / Kalaburagi,5.65
+79,1992,5,Karnataka,Gulbarga / Kalaburagi,4.98
+79,1993,5,Karnataka,Gulbarga / Kalaburagi,4.92
+79,1994,5,Karnataka,Gulbarga / Kalaburagi,6.76
+79,1995,5,Karnataka,Gulbarga / Kalaburagi,0.0
+79,1996,5,Karnataka,Gulbarga / Kalaburagi,0.0
+79,1997,5,Karnataka,Gulbarga / Kalaburagi,0.0
+79,1998,5,Karnataka,Gulbarga / Kalaburagi,8.66
+79,1999,5,Karnataka,Gulbarga / Kalaburagi,8.54
+79,2000,5,Karnataka,Gulbarga / Kalaburagi,9.67
+79,2001,5,Karnataka,Gulbarga / Kalaburagi,7.86
+79,2002,5,Karnataka,Gulbarga / Kalaburagi,8.23
+79,2003,5,Karnataka,Gulbarga / Kalaburagi,6.88
+79,2004,5,Karnataka,Gulbarga / Kalaburagi,6.86
+79,2005,5,Karnataka,Gulbarga / Kalaburagi,9.82
+79,2006,5,Karnataka,Gulbarga / Kalaburagi,18.13
+79,2007,5,Karnataka,Gulbarga / Kalaburagi,20.74
+79,2008,5,Karnataka,Gulbarga / Kalaburagi,15.34
+79,2009,5,Karnataka,Gulbarga / Kalaburagi,18.94
+79,2010,5,Karnataka,Gulbarga / Kalaburagi,24.86
+79,2011,5,Karnataka,Gulbarga / Kalaburagi,27.96
+79,2012,5,Karnataka,Gulbarga / Kalaburagi,38.56
+79,2013,5,Karnataka,Gulbarga / Kalaburagi,51.85
+79,2014,5,Karnataka,Gulbarga / Kalaburagi,61.97
+79,2015,5,Karnataka,Gulbarga / Kalaburagi,57.07
+79,2016,5,Karnataka,Gulbarga / Kalaburagi,39.98
+79,2017,5,Karnataka,Gulbarga / Kalaburagi,45.07
+80,1966,5,Karnataka,Dakshina Kannada,3.2
+80,1967,5,Karnataka,Dakshina Kannada,2.6
+80,1968,5,Karnataka,Dakshina Kannada,1.6
+80,1969,5,Karnataka,Dakshina Kannada,1.5
+80,1970,5,Karnataka,Dakshina Kannada,1.6
+80,1971,5,Karnataka,Dakshina Kannada,1.5
+80,1972,5,Karnataka,Dakshina Kannada,1.6
+80,1973,5,Karnataka,Dakshina Kannada,1.6
+80,1974,5,Karnataka,Dakshina Kannada,1.5
+80,1975,5,Karnataka,Dakshina Kannada,1.8
+80,1976,5,Karnataka,Dakshina Kannada,1.9
+80,1977,5,Karnataka,Dakshina Kannada,1.7
+80,1978,5,Karnataka,Dakshina Kannada,1.9
+80,1979,5,Karnataka,Dakshina Kannada,1.8
+80,1980,5,Karnataka,Dakshina Kannada,1.9
+80,1981,5,Karnataka,Dakshina Kannada,1.9
+80,1982,5,Karnataka,Dakshina Kannada,1.7
+80,1983,5,Karnataka,Dakshina Kannada,1.5
+80,1984,5,Karnataka,Dakshina Kannada,1.6
+80,1985,5,Karnataka,Dakshina Kannada,3.2
+80,1986,5,Karnataka,Dakshina Kannada,3.7
+80,1987,5,Karnataka,Dakshina Kannada,4.1
+80,1988,5,Karnataka,Dakshina Kannada,3.9
+80,1989,5,Karnataka,Dakshina Kannada,3.6
+80,1990,5,Karnataka,Dakshina Kannada,3.53
+80,1991,5,Karnataka,Dakshina Kannada,3.42
+80,1992,5,Karnataka,Dakshina Kannada,3.36
+80,1993,5,Karnataka,Dakshina Kannada,3.47
+80,1994,5,Karnataka,Dakshina Kannada,4.34
+80,1995,5,Karnataka,Dakshina Kannada,0.0
+80,1996,5,Karnataka,Dakshina Kannada,0.0
+80,1997,5,Karnataka,Dakshina Kannada,0.0
+80,1998,5,Karnataka,Dakshina Kannada,2.3
+80,1999,5,Karnataka,Dakshina Kannada,2.26
+80,2000,5,Karnataka,Dakshina Kannada,1.71
+80,2001,5,Karnataka,Dakshina Kannada,1.31
+80,2002,5,Karnataka,Dakshina Kannada,0.55
+80,2003,5,Karnataka,Dakshina Kannada,0.12
+80,2004,5,Karnataka,Dakshina Kannada,0.12
+80,2005,5,Karnataka,Dakshina Kannada,0.04
+80,2006,5,Karnataka,Dakshina Kannada,0.04
+80,2007,5,Karnataka,Dakshina Kannada,0.02
+80,2008,5,Karnataka,Dakshina Kannada,0.04
+80,2009,5,Karnataka,Dakshina Kannada,0.15
+80,2010,5,Karnataka,Dakshina Kannada,0.18
+80,2011,5,Karnataka,Dakshina Kannada,0.17
+80,2012,5,Karnataka,Dakshina Kannada,0.16
+80,2013,5,Karnataka,Dakshina Kannada,0.11
+80,2014,5,Karnataka,Dakshina Kannada,0.07
+80,2015,5,Karnataka,Dakshina Kannada,0.04
+80,2016,5,Karnataka,Dakshina Kannada,0.04
+80,2017,5,Karnataka,Dakshina Kannada,0.02
+81,1966,5,Karnataka,Uttara Kannada,1.4
+81,1967,5,Karnataka,Uttara Kannada,1.4
+81,1968,5,Karnataka,Uttara Kannada,1.5
+81,1969,5,Karnataka,Uttara Kannada,1.5
+81,1970,5,Karnataka,Uttara Kannada,1.5
+81,1971,5,Karnataka,Uttara Kannada,1.3
+81,1972,5,Karnataka,Uttara Kannada,1.3
+81,1973,5,Karnataka,Uttara Kannada,1.5
+81,1974,5,Karnataka,Uttara Kannada,1.9
+81,1975,5,Karnataka,Uttara Kannada,1.8
+81,1976,5,Karnataka,Uttara Kannada,1.9
+81,1977,5,Karnataka,Uttara Kannada,1.8
+81,1978,5,Karnataka,Uttara Kannada,2.0
+81,1979,5,Karnataka,Uttara Kannada,1.9
+81,1980,5,Karnataka,Uttara Kannada,2.1
+81,1981,5,Karnataka,Uttara Kannada,2.0
+81,1982,5,Karnataka,Uttara Kannada,1.8
+81,1983,5,Karnataka,Uttara Kannada,2.0
+81,1984,5,Karnataka,Uttara Kannada,2.0
+81,1985,5,Karnataka,Uttara Kannada,1.7
+81,1986,5,Karnataka,Uttara Kannada,1.7
+81,1987,5,Karnataka,Uttara Kannada,2.1
+81,1988,5,Karnataka,Uttara Kannada,2.1
+81,1989,5,Karnataka,Uttara Kannada,1.9
+81,1990,5,Karnataka,Uttara Kannada,2.04
+81,1991,5,Karnataka,Uttara Kannada,2.04
+81,1992,5,Karnataka,Uttara Kannada,2.08
+81,1993,5,Karnataka,Uttara Kannada,2.0
+81,1994,5,Karnataka,Uttara Kannada,1.85
+81,1995,5,Karnataka,Uttara Kannada,0.0
+81,1996,5,Karnataka,Uttara Kannada,0.0
+81,1997,5,Karnataka,Uttara Kannada,0.0
+81,1998,5,Karnataka,Uttara Kannada,1.76
+81,1999,5,Karnataka,Uttara Kannada,1.6
+81,2000,5,Karnataka,Uttara Kannada,1.36
+81,2001,5,Karnataka,Uttara Kannada,1.28
+81,2002,5,Karnataka,Uttara Kannada,0.97
+81,2003,5,Karnataka,Uttara Kannada,0.8
+81,2004,5,Karnataka,Uttara Kannada,0.78
+81,2005,5,Karnataka,Uttara Kannada,1.0
+81,2006,5,Karnataka,Uttara Kannada,1.22
+81,2007,5,Karnataka,Uttara Kannada,1.46
+81,2008,5,Karnataka,Uttara Kannada,1.22
+81,2009,5,Karnataka,Uttara Kannada,1.23
+81,2010,5,Karnataka,Uttara Kannada,1.29
+81,2011,5,Karnataka,Uttara Kannada,2.73
+81,2012,5,Karnataka,Uttara Kannada,5.15
+81,2013,5,Karnataka,Uttara Kannada,5.14
+81,2014,5,Karnataka,Uttara Kannada,6.18
+81,2015,5,Karnataka,Uttara Kannada,6.52
+81,2016,5,Karnataka,Uttara Kannada,5.93
+81,2017,5,Karnataka,Uttara Kannada,7.06
+82,1966,5,Karnataka,Kodagu / Coorg,0.0
+82,1967,5,Karnataka,Kodagu / Coorg,0.0
+82,1968,5,Karnataka,Kodagu / Coorg,0.0
+82,1969,5,Karnataka,Kodagu / Coorg,0.0
+82,1970,5,Karnataka,Kodagu / Coorg,0.0
+82,1971,5,Karnataka,Kodagu / Coorg,0.0
+82,1972,5,Karnataka,Kodagu / Coorg,0.0
+82,1973,5,Karnataka,Kodagu / Coorg,0.0
+82,1974,5,Karnataka,Kodagu / Coorg,0.0
+82,1975,5,Karnataka,Kodagu / Coorg,0.0
+82,1976,5,Karnataka,Kodagu / Coorg,0.0
+82,1977,5,Karnataka,Kodagu / Coorg,0.0
+82,1978,5,Karnataka,Kodagu / Coorg,0.0
+82,1979,5,Karnataka,Kodagu / Coorg,0.0
+82,1980,5,Karnataka,Kodagu / Coorg,0.0
+82,1981,5,Karnataka,Kodagu / Coorg,0.0
+82,1982,5,Karnataka,Kodagu / Coorg,0.0
+82,1983,5,Karnataka,Kodagu / Coorg,0.0
+82,1984,5,Karnataka,Kodagu / Coorg,0.0
+82,1985,5,Karnataka,Kodagu / Coorg,0.0
+82,1986,5,Karnataka,Kodagu / Coorg,0.0
+82,1987,5,Karnataka,Kodagu / Coorg,0.0
+82,1988,5,Karnataka,Kodagu / Coorg,0.0
+82,1989,5,Karnataka,Kodagu / Coorg,0.0
+82,1990,5,Karnataka,Kodagu / Coorg,0.02
+82,1991,5,Karnataka,Kodagu / Coorg,0.04
+82,1992,5,Karnataka,Kodagu / Coorg,0.04
+82,1993,5,Karnataka,Kodagu / Coorg,0.04
+82,1994,5,Karnataka,Kodagu / Coorg,0.04
+82,1995,5,Karnataka,Kodagu / Coorg,0.0
+82,1996,5,Karnataka,Kodagu / Coorg,0.0
+82,1997,5,Karnataka,Kodagu / Coorg,0.0
+82,1998,5,Karnataka,Kodagu / Coorg,0.01
+82,1999,5,Karnataka,Kodagu / Coorg,0.0
+82,2000,5,Karnataka,Kodagu / Coorg,0.0
+82,2001,5,Karnataka,Kodagu / Coorg,0.0
+82,2002,5,Karnataka,Kodagu / Coorg,0.0
+82,2003,5,Karnataka,Kodagu / Coorg,0.0
+82,2004,5,Karnataka,Kodagu / Coorg,0.0
+82,2005,5,Karnataka,Kodagu / Coorg,0.0
+82,2006,5,Karnataka,Kodagu / Coorg,0.0
+82,2007,5,Karnataka,Kodagu / Coorg,0.0
+82,2008,5,Karnataka,Kodagu / Coorg,0.0
+82,2009,5,Karnataka,Kodagu / Coorg,0.0
+82,2010,5,Karnataka,Kodagu / Coorg,0.0
+82,2011,5,Karnataka,Kodagu / Coorg,0.0
+82,2012,5,Karnataka,Kodagu / Coorg,0.0
+82,2013,5,Karnataka,Kodagu / Coorg,0.0
+82,2014,5,Karnataka,Kodagu / Coorg,0.0
+82,2015,5,Karnataka,Kodagu / Coorg,0.0
+82,2016,5,Karnataka,Kodagu / Coorg,0.0
+82,2017,5,Karnataka,Kodagu / Coorg,0.0
