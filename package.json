@@ -1,0 +1,9 @@
+{
+  "name": "atelier-auth",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install --prefix frontend && npm install --prefix backend",
+    "tunnel:backend": "lt --port 5000 --subdomain majorlogin-backend",
+    "tunnel:frontend": "lt --port 5174 --subdomain majorlogin-frontend"
+  }
+}

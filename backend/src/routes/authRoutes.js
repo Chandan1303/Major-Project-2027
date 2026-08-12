@@ -1,0 +1,8 @@
+import { Router } from 'express';
+import { rateLimit } from 'express-rate-limit';
+import * as auth from '../controllers/authController.js';
+import { requireAuth } from '../middleware/auth.js';
+const router = Router();
+const sensitive = rateLimit({ windowMs: 15 * 60 * 1000, limit: 10, standardHeaders: 'draft-7', legacyHeaders: false, message: { success: false, message: 'Too many attempts. Please try again shortly.' } });
+router.post('/register', sensitive, auth.register); router.post('/login', sensitive, auth.login); router.post('/logout', auth.logout); router.get('/me', requireAuth, auth.me); router.post('/forgot-password', sensitive, auth.forgotPassword); router.post('/reset-password', sensitive, auth.resetPassword);
+export default router;
