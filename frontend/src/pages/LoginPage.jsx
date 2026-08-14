@@ -28,7 +28,21 @@ export default function LoginPage() {
       setUser(result.data.user);
       navigate(location.state?.from?.pathname || '/dashboard');
     } catch (e) {
-      setError('root', { message: e.message });
+      // Handle unverified email specifically
+      if (e.code === 'EMAIL_NOT_VERIFIED') {
+        setError('root', { 
+          message: (
+            <>
+              {e.message}{' '}
+              <Link to="/resend-verification" style={{ color: '#2d7a3e', fontWeight: 600, textDecoration: 'underline' }}>
+                Resend verification email
+              </Link>
+            </>
+          )
+        });
+      } else {
+        setError('root', { message: e.message });
+      }
     }
   };
 

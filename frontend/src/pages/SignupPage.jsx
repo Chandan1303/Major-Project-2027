@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -34,6 +34,8 @@ const schema = z
 export default function SignupPage() {
   const navigate = useNavigate();
   const { setUser } = useAuth();
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [userEmail, setUserEmail] = useState('');
   const { register, handleSubmit, watch, formState: { errors, isSubmitting }, setError } = useForm({
     resolver: zodResolver(schema)
   });
@@ -49,12 +51,51 @@ export default function SignupPage() {
   const onSubmit = async ({ confirmPassword, terms, ...values }) => {
     try {
       const result = await request('post', '/auth/register', values);
-      setUser(result.data.user);
-      navigate('/dashboard');
+      if (result.data.requiresVerification) {
+        setUserEmail(values.email);
+        setRegistrationSuccess(true);
+      } else {
+        // Fallback for if verification is disabled
+        setUser(result.data.user);
+        navigate('/dashboard');
+      }
     } catch (e) {
       setError('root', { message: e.message });
     }
   };
+
+  if (registrationSuccess) {
+    return (
+      <AuthLayout compact>
+        <div className="form-content">
+          <div className="verification-icon success">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke="#2d7a3e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+            </svg>
+          </div>
+          <h2>Check your email</h2>
+          <p className="intro">
+            We've sent a verification link to <strong>{userEmail}</strong>
+          </p>
+          <p className="intro">
+            Click the link in the email to verify your account and start using SugarYield AI. 
+            The verification link will expire in 24 hours.
+          </p>
+          <div style={{ marginTop: '32px', padding: '16px', background: '#e8f5ea', borderRadius: '8px', border: '1px solid #2d7a3e20' }}>
+            <p style={{ margin: 0, fontSize: '14px', color: '#1f5a2d' }}>
+              <strong>Didn't receive the email?</strong> Check your spam folder or{' '}
+              <Link to="/resend-verification" style={{ color: '#2d7a3e', fontWeight: 600 }}>
+                resend verification email
+              </Link>
+            </p>
+          </div>
+          <p className="alternate" style={{ marginTop: '32px' }}>
+            <Link to="/login">Back to Login</Link>
+          </p>
+        </div>
+      </AuthLayout>
+    );
+  }
 
   return (
     <AuthLayout>

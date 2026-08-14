@@ -493,6 +493,47 @@ a:focus-visible {
   }
 }
 
+/* Email Verification */
+.verification-spinner {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.verification-spinner .spinner {
+  height: 48px;
+  width: 48px;
+  border-width: 4px;
+  border-color: var(--border);
+  border-top-color: var(--primary);
+}
+
+.verification-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+  animation: scaleIn 0.4s ease-out;
+}
+
+.verification-icon svg {
+  filter: drop-shadow(0 4px 8px rgba(45, 122, 62, 0.2));
+}
+
+.verification-icon.error svg circle {
+  fill: var(--error);
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media (max-width: 400px) {
   .form-panel {
     padding-inline: 20px;
