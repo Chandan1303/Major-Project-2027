@@ -1,0 +1,69 @@
+{
+  "best_model": "xgboost",
+  "training_date": "2026-09-11 18:33:32",
+  "n_samples_train": 6814,
+  "n_samples_test": 1704,
+  "n_features": 19,
+  "metrics": {
+    "linear_regression": {
+      "MSE": 12147.488958564381,
+      "RMSE": 110.21564752141313,
+      "MAE": 58.86383591301706,
+      "R2": 0.09000222033356442
+    },
+    "random_forest": {
+      "MSE": 2123.1727377755196,
+      "RMSE": 46.07789858246055,
+      "MAE": 13.294462730320731,
+      "R2": 0.84094799478193
+    },
+    "xgboost": {
+      "MSE": 2114.4164465740855,
+      "RMSE": 45.98278424121451,
+      "MAE": 13.611624497569489,
+      "R2": 0.8416039497351386
+    }
+  },
+  "feature_importance_top10": [
+    {
+      "feature": "yield_3yr_avg",
+      "importance": 0.31439077854156494
+    },
+    {
+      "feature": "soil_potassium",
+      "importance": 0.3041561245918274
+    },
+    {
+      "feature": "state_encoded",
+      "importance": 0.07533153146505356
+    },
+    {
+      "feature": "soil_nitrogen",
+      "importance": 0.05642865598201752
+    },
+    {
+      "feature": "soil_phosphorus",
+      "importance": 0.055416885763406754
+    },
+    {
+      "feature": "yield_5yr_avg",
+      "importance": 0.040832795202732086
+    },
+    {
+      "feature": "season_encoded",
+      "importance": 0.030257951468229294
+    },
+    {
+      "feature": "prev_year_yield",
+      "importance": 0.026083994656801224
+    },
+    {
+      "feature": "temperature_c",
+      "importance": 0.022794868797063828
+    },
+    {
+      "feature": "area_hectare",
+      "importance": 0.022549783810973167
+    }
+  ]
+}

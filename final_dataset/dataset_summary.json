@@ -1,0 +1,15 @@
+{
+  "total_records": 18486,
+  "total_features": 20,
+  "states": 32,
+  "districts": 644,
+  "varieties": 6,
+  "avg_yield": 3359.4705044313923,
+  "data_sources": [
+    "combined_sugarcane_dataset.csv",
+    "OpenWeather API (real-time)",
+    "NDVI CSVs (Belagavi, Mandya, Punjab, Tamil Nadu)",
+    "Soil CSVs",
+    "Variety master CSV"
+  ]
+}

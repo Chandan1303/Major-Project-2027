@@ -1,4 +1,41 @@
+# Dependencies
 node_modules/
 dist/
+
+# Environment variables
 .env
+*.env
+!.env.example
+
+# Logs
 *.log
+
+# API folders (don't push to GitHub)
+mdapi/
+backend/src/
+backend/node_modules/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Keep these important files (models, datasets, docs)
+!models/
+!final_dataset/
+!ml_results/
+!cleaned_data/
+!*.md
+!*.py
