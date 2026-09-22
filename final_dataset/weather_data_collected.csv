@@ -1,0 +1,41 @@
+location,latitude,longitude,timestamp,temperature,feels_like,temp_min,temp_max,pressure,humidity,wind_speed,clouds,weather_description,rain_1h,state,district
+"Muzaffarnagar, Uttar Pradesh",29.4727,77.7085,2026-09-17 06:52:22,24.93,25.85,24.93,24.93,1007,91,2.25,89,light rain,0.38,Uttar Pradesh,Muzaffarnagar
+"Meerut, Uttar Pradesh",28.9845,77.7064,2026-09-17 06:44:22,26.9,29.79,26.9,26.9,1007,83,2.37,18,few clouds,0.0,Uttar Pradesh,Meerut
+"Bijnor, Uttar Pradesh",29.3732,78.1369,2026-09-17 06:52:25,24.66,25.58,24.66,24.66,1007,92,1.62,100,light rain,0.4,Uttar Pradesh,Bijnor
+"Saharanpur, Uttar Pradesh",29.968,77.546,2026-09-17 06:52:27,23.87,24.61,23.87,23.87,1007,88,2.13,81,light rain,0.35,Uttar Pradesh,Saharanpur
+"Bareilly, Uttar Pradesh",28.367,79.4304,2026-09-17 06:52:29,25.12,25.96,25.12,25.12,1007,87,1.19,4,clear sky,0.0,Uttar Pradesh,Bareilly
+"Pune, Maharashtra",18.5204,73.8567,2026-09-17 06:46:18,24.67,24.18,24.67,24.67,1012,38,2.29,94,overcast clouds,0.0,Maharashtra,Pune
+"Kolhapur, Maharashtra",16.705,74.2433,2026-09-17 06:45:29,21.53,22.19,21.53,21.53,1012,94,2.19,90,overcast clouds,0.0,Maharashtra,Kolhapur
+"Sangli, Maharashtra",16.8524,74.5653,2026-09-17 06:52:34,21.29,21.96,21.29,21.29,1012,95,2.8,59,broken clouds,0.0,Maharashtra,Sangli
+"Satara, Maharashtra",17.6805,74.0183,2026-09-17 06:52:36,21.16,21.84,21.16,21.16,1012,96,1.51,6,clear sky,0.0,Maharashtra,Satara
+"Ahmednagar, Maharashtra",19.0948,74.748,2026-09-17 06:52:38,23.7,24.27,23.7,23.7,1011,82,1.78,9,clear sky,0.0,Maharashtra,Ahmednagar
+"Solapur, Maharashtra",17.6599,75.9064,2026-09-17 06:52:40,25.84,26.44,25.84,25.84,1011,75,3.83,47,light rain,0.23,Maharashtra,Solapur
+"Mandya, Karnataka",12.5244,76.8958,2026-09-17 06:52:41,22.79,23.37,22.79,22.79,1013,86,2.88,70,broken clouds,0.0,Karnataka,Mandya
+"Belagavi, Karnataka",15.8497,74.4977,2026-09-17 06:52:43,22.97,23.78,22.97,22.97,1013,94,2.06,89,overcast clouds,0.0,Karnataka,Belagavi
+"Mysuru, Karnataka",12.2958,76.6394,2026-09-17 06:45:13,22.11,22.57,22.11,22.11,1013,84,3.56,95,light rain,0.27,Karnataka,Mysuru
+"Bagalkot, Karnataka",16.1691,75.6948,2026-09-17 06:52:47,23.63,24.16,23.63,23.63,1012,81,3.76,5,clear sky,0.0,Karnataka,Bagalkot
+"Shivamogga, Karnataka",13.9299,75.5681,2026-09-17 06:51:38,21.84,22.51,21.84,21.84,1013,93,1.74,79,broken clouds,0.0,Karnataka,Shivamogga
+"Coimbatore, Tamil Nadu",11.0168,76.9558,2026-09-17 06:52:50,24.78,25.77,24.78,24.78,1014,94,1.54,100,overcast clouds,0.0,Tamil Nadu,Coimbatore
+"Erode, Tamil Nadu",11.341,77.7172,2026-09-17 06:52:52,24.6,25.49,24.18,24.6,1013,91,2.06,100,overcast clouds,0.0,Tamil Nadu,Erode
+"Salem, Tamil Nadu",11.6643,78.146,2026-09-17 06:52:54,24.19,25.07,24.19,24.19,1013,92,0.52,94,overcast clouds,0.0,Tamil Nadu,Salem
+"Thanjavur, Tamil Nadu",10.787,79.1378,2026-09-17 06:52:56,27.08,30.22,27.08,27.84,1008,83,2.67,100,overcast clouds,0.0,Tamil Nadu,Thanjavur
+"Tiruchirappalli, Tamil Nadu",10.7905,78.7047,2026-09-17 06:52:58,27.05,30.77,27.05,27.05,1010,89,2.06,100,overcast clouds,0.0,Tamil Nadu,Tiruchirappalli
+"Jalandhar, Punjab",31.326,75.5762,2026-09-17 06:53:00,22.23,22.88,22.23,22.23,1007,91,4.14,92,overcast clouds,0.0,Punjab,Jalandhar
+"Gurdaspur, Punjab",32.0411,75.4056,2026-09-17 06:53:02,21.61,22.23,21.61,21.61,1007,92,3.59,100,light rain,0.19,Punjab,Gurdaspur
+"Amritsar, Punjab",31.634,74.8723,2026-09-17 06:49:48,19.97,20.48,19.97,19.97,1010,94,4.12,100,overcast clouds,0.0,Punjab,Amritsar
+"Ludhiana, Punjab",30.901,75.8573,2026-09-17 06:44:53,22.3,22.94,22.3,22.3,1007,90,3.16,100,overcast clouds,0.0,Punjab,Ludhiana
+"Yamuna Nagar, Haryana",30.129,77.2674,2026-09-17 06:53:07,23.39,24.11,23.39,23.39,1007,89,1.84,81,light rain,0.96,Haryana,Yamuna Nagar
+"Karnal, Haryana",29.6857,76.9905,2026-09-17 06:47:04,24.83,25.74,24.83,24.83,1007,91,2.68,70,light rain,0.67,Haryana,Karnal
+"Kurukshetra, Haryana",29.9729,76.8783,2026-09-17 06:53:11,24.01,24.84,24.01,24.01,1007,91,2.04,17,light rain,0.77,Haryana,Kurukshetra
+"Surat, Gujarat",21.1702,72.8311,2026-09-17 06:53:12,26.94,30.46,26.94,26.94,1008,89,2.06,20,few clouds,0.0,Gujarat,Surat
+"Navsari, Gujarat",20.95,72.9333,2026-09-17 06:53:14,26.92,30.51,26.92,26.92,1009,90,3.59,25,scattered clouds,0.0,Gujarat,Navsari
+"Bharuch, Gujarat",21.7051,72.9959,2026-09-17 06:53:16,25.61,26.63,25.61,25.61,1009,92,2.52,23,few clouds,0.0,Gujarat,Bharuch
+"Valsad, Gujarat",20.5992,72.9342,2026-09-17 06:53:18,25.21,26.19,25.21,25.21,1010,92,3.27,29,scattered clouds,0.0,Gujarat,Valsad
+"East Godavari, Andhra Pradesh",17.284,81.9849,2026-09-17 06:53:20,26.44,26.44,26.44,26.44,1009,84,1.33,98,overcast clouds,0.0,Andhra Pradesh,East Godavari
+"West Godavari, Andhra Pradesh",16.7148,81.1027,2026-09-17 06:53:21,26.91,30.38,26.91,26.91,1009,89,1.61,100,overcast clouds,0.0,Andhra Pradesh,West Godavari
+"Krishna, Andhra Pradesh",16.5193,80.6305,2026-09-17 06:53:22,27.92,33.67,27.92,27.92,1009,91,0.66,14,few clouds,0.0,Andhra Pradesh,Krishna
+"Visakhapatnam, Andhra Pradesh",17.6868,83.2185,2026-09-17 06:53:25,26.78,31.06,26.78,26.78,1008,100,1.03,99,moderate rain,1.02,Andhra Pradesh,Visakhapatnam
+"Champaran, Bihar",27.0534,84.6325,2026-09-17 06:53:27,26.03,26.03,26.03,26.03,1008,89,1.79,7,clear sky,0.0,Bihar,Champaran
+"Siwan, Bihar",26.219,84.356,2026-09-17 06:53:29,26.28,26.28,26.28,26.28,1008,88,1.7,5,clear sky,0.0,Bihar,Siwan
+"Gopalganj, Bihar",26.4697,84.4387,2026-09-17 06:53:31,26.44,26.44,26.44,26.44,1008,87,1.28,5,clear sky,0.0,Bihar,Gopalganj
+"Darbhanga, Bihar",26.1542,85.8918,2026-09-17 06:53:32,27.02,29.88,27.02,27.02,1008,81,1.24,87,overcast clouds,0.0,Bihar,Darbhanga

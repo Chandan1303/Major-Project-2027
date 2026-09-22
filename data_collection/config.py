@@ -55,6 +55,7 @@ class APIKeys:
 try:
     from dotenv import load_dotenv
     load_dotenv(PROJECT_ROOT / '.env')
+    load_dotenv(PROJECT_ROOT / 'data_collection' / '.env', override=True)
     APIKeys.load_from_env()
 except:
     pass
