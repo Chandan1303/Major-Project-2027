@@ -1,0 +1,2402 @@
+[
+  {
+    "id": 0,
+    "actual": 55.5,
+    "rf_predicted": 51.6,
+    "xgb_predicted": 52.4,
+    "rf_residual": -3.9,
+    "xgb_residual": -3.2
+  },
+  {
+    "id": 1,
+    "actual": 57.9,
+    "rf_predicted": 61.0,
+    "xgb_predicted": 59.0,
+    "rf_residual": 3.1,
+    "xgb_residual": 1.1
+  },
+  {
+    "id": 2,
+    "actual": 121.6,
+    "rf_predicted": 104.9,
+    "xgb_predicted": 103.2,
+    "rf_residual": -16.7,
+    "xgb_residual": -18.4
+  },
+  {
+    "id": 3,
+    "actual": 86.3,
+    "rf_predicted": 112.7,
+    "xgb_predicted": 111.5,
+    "rf_residual": 26.5,
+    "xgb_residual": 25.3
+  },
+  {
+    "id": 4,
+    "actual": 51.1,
+    "rf_predicted": 58.1,
+    "xgb_predicted": 59.3,
+    "rf_residual": 7.0,
+    "xgb_residual": 8.1
+  },
+  {
+    "id": 5,
+    "actual": 44.5,
+    "rf_predicted": 44.7,
+    "xgb_predicted": 47.7,
+    "rf_residual": 0.2,
+    "xgb_residual": 3.2
+  },
+  {
+    "id": 6,
+    "actual": 52.9,
+    "rf_predicted": 57.9,
+    "xgb_predicted": 54.0,
+    "rf_residual": 5.0,
+    "xgb_residual": 1.2
+  },
+  {
+    "id": 7,
+    "actual": 84.5,
+    "rf_predicted": 73.9,
+    "xgb_predicted": 81.5,
+    "rf_residual": -10.6,
+    "xgb_residual": -3.1
+  },
+  {
+    "id": 8,
+    "actual": 49.5,
+    "rf_predicted": 51.9,
+    "xgb_predicted": 49.7,
+    "rf_residual": 2.4,
+    "xgb_residual": 0.2
+  },
+  {
+    "id": 9,
+    "actual": 77.3,
+    "rf_predicted": 56.7,
+    "xgb_predicted": 54.2,
+    "rf_residual": -20.6,
+    "xgb_residual": -23.1
+  },
+  {
+    "id": 10,
+    "actual": 66.7,
+    "rf_predicted": 72.2,
+    "xgb_predicted": 70.9,
+    "rf_residual": 5.5,
+    "xgb_residual": 4.2
+  },
+  {
+    "id": 11,
+    "actual": 68.2,
+    "rf_predicted": 61.1,
+    "xgb_predicted": 58.6,
+    "rf_residual": -7.1,
+    "xgb_residual": -9.6
+  },
+  {
+    "id": 12,
+    "actual": 58.1,
+    "rf_predicted": 58.0,
+    "xgb_predicted": 61.8,
+    "rf_residual": -0.1,
+    "xgb_residual": 3.7
+  },
+  {
+    "id": 13,
+    "actual": 126.2,
+    "rf_predicted": 119.1,
+    "xgb_predicted": 120.6,
+    "rf_residual": -7.2,
+    "xgb_residual": -5.7
+  },
+  {
+    "id": 14,
+    "actual": 36.4,
+    "rf_predicted": 37.7,
+    "xgb_predicted": 37.5,
+    "rf_residual": 1.3,
+    "xgb_residual": 1.1
+  },
+  {
+    "id": 15,
+    "actual": 128.8,
+    "rf_predicted": 129.3,
+    "xgb_predicted": 145.2,
+    "rf_residual": 0.5,
+    "xgb_residual": 16.4
+  },
+  {
+    "id": 16,
+    "actual": 121.9,
+    "rf_predicted": 73.8,
+    "xgb_predicted": 71.4,
+    "rf_residual": -48.1,
+    "xgb_residual": -50.5
+  },
+  {
+    "id": 17,
+    "actual": 60.0,
+    "rf_predicted": 38.8,
+    "xgb_predicted": 44.3,
+    "rf_residual": -21.2,
+    "xgb_residual": -15.7
+  },
+  {
+    "id": 18,
+    "actual": 0.7,
+    "rf_predicted": 1.5,
+    "xgb_predicted": 2.0,
+    "rf_residual": 0.8,
+    "xgb_residual": 1.3
+  },
+  {
+    "id": 19,
+    "actual": 53.5,
+    "rf_predicted": 46.5,
+    "xgb_predicted": 44.5,
+    "rf_residual": -7.0,
+    "xgb_residual": -9.0
+  },
+  {
+    "id": 20,
+    "actual": 24.8,
+    "rf_predicted": 27.6,
+    "xgb_predicted": 26.1,
+    "rf_residual": 2.8,
+    "xgb_residual": 1.3
+  },
+  {
+    "id": 21,
+    "actual": 101.5,
+    "rf_predicted": 111.6,
+    "xgb_predicted": 110.8,
+    "rf_residual": 10.1,
+    "xgb_residual": 9.3
+  },
+  {
+    "id": 22,
+    "actual": 65.5,
+    "rf_predicted": 61.0,
+    "xgb_predicted": 61.6,
+    "rf_residual": -4.5,
+    "xgb_residual": -4.0
+  },
+  {
+    "id": 23,
+    "actual": 14.8,
+    "rf_predicted": 14.8,
+    "xgb_predicted": 15.4,
+    "rf_residual": 0.0,
+    "xgb_residual": 0.6
+  },
+  {
+    "id": 24,
+    "actual": 33.5,
+    "rf_predicted": 67.2,
+    "xgb_predicted": 78.1,
+    "rf_residual": 33.7,
+    "xgb_residual": 44.6
+  },
+  {
+    "id": 25,
+    "actual": 22.6,
+    "rf_predicted": 24.8,
+    "xgb_predicted": 24.5,
+    "rf_residual": 2.2,
+    "xgb_residual": 1.9
+  },
+  {
+    "id": 26,
+    "actual": 57.6,
+    "rf_predicted": 59.4,
+    "xgb_predicted": 59.1,
+    "rf_residual": 1.8,
+    "xgb_residual": 1.5
+  },
+  {
+    "id": 27,
+    "actual": 57.1,
+    "rf_predicted": 60.9,
+    "xgb_predicted": 60.4,
+    "rf_residual": 3.9,
+    "xgb_residual": 3.4
+  },
+  {
+    "id": 28,
+    "actual": 3.5,
+    "rf_predicted": 5.0,
+    "xgb_predicted": 7.6,
+    "rf_residual": 1.5,
+    "xgb_residual": 4.1
+  },
+  {
+    "id": 29,
+    "actual": 83.6,
+    "rf_predicted": 86.7,
+    "xgb_predicted": 88.4,
+    "rf_residual": 3.1,
+    "xgb_residual": 4.8
+  },
+  {
+    "id": 30,
+    "actual": 67.3,
+    "rf_predicted": 64.1,
+    "xgb_predicted": 63.7,
+    "rf_residual": -3.2,
+    "xgb_residual": -3.6
+  },
+  {
+    "id": 31,
+    "actual": 43.6,
+    "rf_predicted": 42.4,
+    "xgb_predicted": 42.3,
+    "rf_residual": -1.2,
+    "xgb_residual": -1.3
+  },
+  {
+    "id": 32,
+    "actual": 150.0,
+    "rf_predicted": 171.4,
+    "xgb_predicted": 168.7,
+    "rf_residual": 21.4,
+    "xgb_residual": 18.7
+  },
+  {
+    "id": 33,
+    "actual": 102.6,
+    "rf_predicted": 97.0,
+    "xgb_predicted": 97.7,
+    "rf_residual": -5.6,
+    "xgb_residual": -4.9
+  },
+  {
+    "id": 34,
+    "actual": 46.6,
+    "rf_predicted": 43.3,
+    "xgb_predicted": 42.6,
+    "rf_residual": -3.3,
+    "xgb_residual": -4.0
+  },
+  {
+    "id": 35,
+    "actual": 6.0,
+    "rf_predicted": 6.1,
+    "xgb_predicted": 7.4,
+    "rf_residual": 0.1,
+    "xgb_residual": 1.4
+  },
+  {
+    "id": 36,
+    "actual": 37.5,
+    "rf_predicted": 41.4,
+    "xgb_predicted": 42.6,
+    "rf_residual": 3.9,
+    "xgb_residual": 5.1
+  },
+  {
+    "id": 37,
+    "actual": 103.3,
+    "rf_predicted": 92.3,
+    "xgb_predicted": 94.1,
+    "rf_residual": -11.0,
+    "xgb_residual": -9.2
+  },
+  {
+    "id": 38,
+    "actual": 16.6,
+    "rf_predicted": 25.0,
+    "xgb_predicted": 16.6,
+    "rf_residual": 8.5,
+    "xgb_residual": 0.0
+  },
+  {
+    "id": 39,
+    "actual": 52.2,
+    "rf_predicted": 41.8,
+    "xgb_predicted": 41.8,
+    "rf_residual": -10.4,
+    "xgb_residual": -10.5
+  },
+  {
+    "id": 40,
+    "actual": 52.2,
+    "rf_predicted": 105.0,
+    "xgb_predicted": 104.5,
+    "rf_residual": 52.8,
+    "xgb_residual": 52.2
+  },
+  {
+    "id": 41,
+    "actual": 31.5,
+    "rf_predicted": 41.3,
+    "xgb_predicted": 41.8,
+    "rf_residual": 9.8,
+    "xgb_residual": 10.4
+  },
+  {
+    "id": 42,
+    "actual": 54.3,
+    "rf_predicted": 51.8,
+    "xgb_predicted": 51.9,
+    "rf_residual": -2.5,
+    "xgb_residual": -2.4
+  },
+  {
+    "id": 43,
+    "actual": 55.8,
+    "rf_predicted": 57.2,
+    "xgb_predicted": 57.7,
+    "rf_residual": 1.4,
+    "xgb_residual": 1.9
+  },
+  {
+    "id": 44,
+    "actual": 98.7,
+    "rf_predicted": 71.4,
+    "xgb_predicted": 64.0,
+    "rf_residual": -27.2,
+    "xgb_residual": -34.6
+  },
+  {
+    "id": 45,
+    "actual": 109.5,
+    "rf_predicted": 113.7,
+    "xgb_predicted": 110.0,
+    "rf_residual": 4.2,
+    "xgb_residual": 0.5
+  },
+  {
+    "id": 46,
+    "actual": 67.0,
+    "rf_predicted": 60.1,
+    "xgb_predicted": 58.6,
+    "rf_residual": -6.9,
+    "xgb_residual": -8.4
+  },
+  {
+    "id": 47,
+    "actual": 3.5,
+    "rf_predicted": 4.2,
+    "xgb_predicted": 3.1,
+    "rf_residual": 0.7,
+    "xgb_residual": -0.4
+  },
+  {
+    "id": 48,
+    "actual": 38.7,
+    "rf_predicted": 38.2,
+    "xgb_predicted": 36.7,
+    "rf_residual": -0.5,
+    "xgb_residual": -2.0
+  },
+  {
+    "id": 49,
+    "actual": 97.0,
+    "rf_predicted": 84.4,
+    "xgb_predicted": 82.2,
+    "rf_residual": -12.6,
+    "xgb_residual": -14.8
+  },
+  {
+    "id": 50,
+    "actual": 70.1,
+    "rf_predicted": 76.9,
+    "xgb_predicted": 73.3,
+    "rf_residual": 6.8,
+    "xgb_residual": 3.2
+  },
+  {
+    "id": 51,
+    "actual": 56.8,
+    "rf_predicted": 57.0,
+    "xgb_predicted": 56.6,
+    "rf_residual": 0.2,
+    "xgb_residual": -0.2
+  },
+  {
+    "id": 52,
+    "actual": 43.1,
+    "rf_predicted": 38.4,
+    "xgb_predicted": 39.1,
+    "rf_residual": -4.7,
+    "xgb_residual": -4.0
+  },
+  {
+    "id": 53,
+    "actual": 95.5,
+    "rf_predicted": 94.0,
+    "xgb_predicted": 95.9,
+    "rf_residual": -1.5,
+    "xgb_residual": 0.4
+  },
+  {
+    "id": 54,
+    "actual": 4.1,
+    "rf_predicted": 23.2,
+    "xgb_predicted": 34.1,
+    "rf_residual": 19.0,
+    "xgb_residual": 30.0
+  },
+  {
+    "id": 55,
+    "actual": 77.5,
+    "rf_predicted": 76.9,
+    "xgb_predicted": 80.7,
+    "rf_residual": -0.6,
+    "xgb_residual": 3.2
+  },
+  {
+    "id": 56,
+    "actual": 68.0,
+    "rf_predicted": 64.9,
+    "xgb_predicted": 65.9,
+    "rf_residual": -3.0,
+    "xgb_residual": -2.1
+  },
+  {
+    "id": 57,
+    "actual": 2.5,
+    "rf_predicted": 5.2,
+    "xgb_predicted": 7.2,
+    "rf_residual": 2.7,
+    "xgb_residual": 4.7
+  },
+  {
+    "id": 58,
+    "actual": 32.5,
+    "rf_predicted": 35.2,
+    "xgb_predicted": 34.2,
+    "rf_residual": 2.7,
+    "xgb_residual": 1.7
+  },
+  {
+    "id": 59,
+    "actual": 56.6,
+    "rf_predicted": 58.9,
+    "xgb_predicted": 60.2,
+    "rf_residual": 2.3,
+    "xgb_residual": 3.6
+  },
+  {
+    "id": 60,
+    "actual": 58.3,
+    "rf_predicted": 61.6,
+    "xgb_predicted": 58.2,
+    "rf_residual": 3.3,
+    "xgb_residual": -0.1
+  },
+  {
+    "id": 61,
+    "actual": 69.0,
+    "rf_predicted": 72.5,
+    "xgb_predicted": 75.1,
+    "rf_residual": 3.5,
+    "xgb_residual": 6.1
+  },
+  {
+    "id": 62,
+    "actual": 122.8,
+    "rf_predicted": 106.3,
+    "xgb_predicted": 104.6,
+    "rf_residual": -16.5,
+    "xgb_residual": -18.2
+  },
+  {
+    "id": 63,
+    "actual": 10.7,
+    "rf_predicted": 19.2,
+    "xgb_predicted": 23.3,
+    "rf_residual": 8.4,
+    "xgb_residual": 12.5
+  },
+  {
+    "id": 64,
+    "actual": 102.5,
+    "rf_predicted": 83.9,
+    "xgb_predicted": 80.6,
+    "rf_residual": -18.6,
+    "xgb_residual": -21.9
+  },
+  {
+    "id": 65,
+    "actual": 70.0,
+    "rf_predicted": 77.3,
+    "xgb_predicted": 77.8,
+    "rf_residual": 7.3,
+    "xgb_residual": 7.8
+  },
+  {
+    "id": 66,
+    "actual": 39.7,
+    "rf_predicted": 38.5,
+    "xgb_predicted": 39.3,
+    "rf_residual": -1.1,
+    "xgb_residual": -0.4
+  },
+  {
+    "id": 67,
+    "actual": 32.6,
+    "rf_predicted": 29.8,
+    "xgb_predicted": 31.5,
+    "rf_residual": -2.7,
+    "xgb_residual": -1.1
+  },
+  {
+    "id": 68,
+    "actual": 99.4,
+    "rf_predicted": 95.4,
+    "xgb_predicted": 86.9,
+    "rf_residual": -4.0,
+    "xgb_residual": -12.5
+  },
+  {
+    "id": 69,
+    "actual": 92.5,
+    "rf_predicted": 81.0,
+    "xgb_predicted": 75.7,
+    "rf_residual": -11.5,
+    "xgb_residual": -16.7
+  },
+  {
+    "id": 70,
+    "actual": 56.0,
+    "rf_predicted": 49.3,
+    "xgb_predicted": 51.9,
+    "rf_residual": -6.7,
+    "xgb_residual": -4.0
+  },
+  {
+    "id": 71,
+    "actual": 52.4,
+    "rf_predicted": 60.0,
+    "xgb_predicted": 62.1,
+    "rf_residual": 7.6,
+    "xgb_residual": 9.7
+  },
+  {
+    "id": 72,
+    "actual": 43.4,
+    "rf_predicted": 63.7,
+    "xgb_predicted": 65.4,
+    "rf_residual": 20.3,
+    "xgb_residual": 22.0
+  },
+  {
+    "id": 73,
+    "actual": 41.3,
+    "rf_predicted": 42.1,
+    "xgb_predicted": 40.4,
+    "rf_residual": 0.8,
+    "xgb_residual": -0.9
+  },
+  {
+    "id": 74,
+    "actual": 148.9,
+    "rf_predicted": 160.5,
+    "xgb_predicted": 136.9,
+    "rf_residual": 11.6,
+    "xgb_residual": -12.0
+  },
+  {
+    "id": 75,
+    "actual": 49.5,
+    "rf_predicted": 50.2,
+    "xgb_predicted": 51.3,
+    "rf_residual": 0.8,
+    "xgb_residual": 1.8
+  },
+  {
+    "id": 76,
+    "actual": 74.8,
+    "rf_predicted": 64.5,
+    "xgb_predicted": 61.3,
+    "rf_residual": -10.3,
+    "xgb_residual": -13.5
+  },
+  {
+    "id": 77,
+    "actual": 114.3,
+    "rf_predicted": 103.7,
+    "xgb_predicted": 94.6,
+    "rf_residual": -10.6,
+    "xgb_residual": -19.7
+  },
+  {
+    "id": 78,
+    "actual": 34.8,
+    "rf_predicted": 30.6,
+    "xgb_predicted": 31.2,
+    "rf_residual": -4.2,
+    "xgb_residual": -3.6
+  },
+  {
+    "id": 79,
+    "actual": 0.6,
+    "rf_predicted": 40.6,
+    "xgb_predicted": 40.5,
+    "rf_residual": 40.0,
+    "xgb_residual": 39.8
+  },
+  {
+    "id": 80,
+    "actual": 66.7,
+    "rf_predicted": 79.7,
+    "xgb_predicted": 80.0,
+    "rf_residual": 13.0,
+    "xgb_residual": 13.3
+  },
+  {
+    "id": 81,
+    "actual": 39.7,
+    "rf_predicted": 39.7,
+    "xgb_predicted": 39.3,
+    "rf_residual": 0.1,
+    "xgb_residual": -0.3
+  },
+  {
+    "id": 82,
+    "actual": 54.4,
+    "rf_predicted": 43.2,
+    "xgb_predicted": 42.1,
+    "rf_residual": -11.2,
+    "xgb_residual": -12.3
+  },
+  {
+    "id": 83,
+    "actual": 79.5,
+    "rf_predicted": 81.0,
+    "xgb_predicted": 76.6,
+    "rf_residual": 1.5,
+    "xgb_residual": -2.9
+  },
+  {
+    "id": 84,
+    "actual": 35.6,
+    "rf_predicted": 37.3,
+    "xgb_predicted": 37.1,
+    "rf_residual": 1.7,
+    "xgb_residual": 1.4
+  },
+  {
+    "id": 85,
+    "actual": 38.1,
+    "rf_predicted": 38.4,
+    "xgb_predicted": 36.7,
+    "rf_residual": 0.3,
+    "xgb_residual": -1.4
+  },
+  {
+    "id": 86,
+    "actual": 66.7,
+    "rf_predicted": 49.8,
+    "xgb_predicted": 58.9,
+    "rf_residual": -16.9,
+    "xgb_residual": -7.8
+  },
+  {
+    "id": 87,
+    "actual": 58.5,
+    "rf_predicted": 65.9,
+    "xgb_predicted": 68.6,
+    "rf_residual": 7.4,
+    "xgb_residual": 10.1
+  },
+  {
+    "id": 88,
+    "actual": 35.7,
+    "rf_predicted": 43.7,
+    "xgb_predicted": 44.1,
+    "rf_residual": 8.0,
+    "xgb_residual": 8.4
+  },
+  {
+    "id": 89,
+    "actual": 40.7,
+    "rf_predicted": 32.9,
+    "xgb_predicted": 34.2,
+    "rf_residual": -7.8,
+    "xgb_residual": -6.5
+  },
+  {
+    "id": 90,
+    "actual": 44.0,
+    "rf_predicted": 39.9,
+    "xgb_predicted": 43.3,
+    "rf_residual": -4.1,
+    "xgb_residual": -0.7
+  },
+  {
+    "id": 91,
+    "actual": 70.5,
+    "rf_predicted": 67.7,
+    "xgb_predicted": 73.5,
+    "rf_residual": -2.8,
+    "xgb_residual": 3.0
+  },
+  {
+    "id": 92,
+    "actual": 29.2,
+    "rf_predicted": 27.4,
+    "xgb_predicted": 25.9,
+    "rf_residual": -1.8,
+    "xgb_residual": -3.3
+  },
+  {
+    "id": 93,
+    "actual": 104.7,
+    "rf_predicted": 118.8,
+    "xgb_predicted": 117.9,
+    "rf_residual": 14.1,
+    "xgb_residual": 13.2
+  },
+  {
+    "id": 94,
+    "actual": 200.0,
+    "rf_predicted": 155.5,
+    "xgb_predicted": 149.7,
+    "rf_residual": -44.5,
+    "xgb_residual": -50.3
+  },
+  {
+    "id": 95,
+    "actual": 110.2,
+    "rf_predicted": 114.0,
+    "xgb_predicted": 112.9,
+    "rf_residual": 3.8,
+    "xgb_residual": 2.7
+  },
+  {
+    "id": 96,
+    "actual": 36.4,
+    "rf_predicted": 42.7,
+    "xgb_predicted": 43.1,
+    "rf_residual": 6.4,
+    "xgb_residual": 6.8
+  },
+  {
+    "id": 97,
+    "actual": 43.6,
+    "rf_predicted": 42.7,
+    "xgb_predicted": 41.9,
+    "rf_residual": -0.8,
+    "xgb_residual": -1.6
+  },
+  {
+    "id": 98,
+    "actual": 80.5,
+    "rf_predicted": 70.3,
+    "xgb_predicted": 61.1,
+    "rf_residual": -10.2,
+    "xgb_residual": -19.4
+  },
+  {
+    "id": 99,
+    "actual": 47.7,
+    "rf_predicted": 45.3,
+    "xgb_predicted": 45.9,
+    "rf_residual": -2.4,
+    "xgb_residual": -1.8
+  },
+  {
+    "id": 100,
+    "actual": 86.9,
+    "rf_predicted": 56.4,
+    "xgb_predicted": 63.3,
+    "rf_residual": -30.5,
+    "xgb_residual": -23.6
+  },
+  {
+    "id": 101,
+    "actual": 157.4,
+    "rf_predicted": 146.6,
+    "xgb_predicted": 146.8,
+    "rf_residual": -10.8,
+    "xgb_residual": -10.5
+  },
+  {
+    "id": 102,
+    "actual": 47.2,
+    "rf_predicted": 45.6,
+    "xgb_predicted": 45.4,
+    "rf_residual": -1.7,
+    "xgb_residual": -1.9
+  },
+  {
+    "id": 103,
+    "actual": 106.4,
+    "rf_predicted": 61.0,
+    "xgb_predicted": 66.9,
+    "rf_residual": -45.4,
+    "xgb_residual": -39.5
+  },
+  {
+    "id": 104,
+    "actual": 54.7,
+    "rf_predicted": 50.9,
+    "xgb_predicted": 50.9,
+    "rf_residual": -3.8,
+    "xgb_residual": -3.8
+  },
+  {
+    "id": 105,
+    "actual": 186.4,
+    "rf_predicted": 162.7,
+    "xgb_predicted": 178.8,
+    "rf_residual": -23.7,
+    "xgb_residual": -7.6
+  },
+  {
+    "id": 106,
+    "actual": 33.8,
+    "rf_predicted": 30.5,
+    "xgb_predicted": 31.8,
+    "rf_residual": -3.3,
+    "xgb_residual": -2.0
+  },
+  {
+    "id": 107,
+    "actual": 84.6,
+    "rf_predicted": 79.3,
+    "xgb_predicted": 80.6,
+    "rf_residual": -5.3,
+    "xgb_residual": -4.0
+  },
+  {
+    "id": 108,
+    "actual": 47.2,
+    "rf_predicted": 49.9,
+    "xgb_predicted": 46.3,
+    "rf_residual": 2.7,
+    "xgb_residual": -0.9
+  },
+  {
+    "id": 109,
+    "actual": 45.1,
+    "rf_predicted": 48.4,
+    "xgb_predicted": 47.1,
+    "rf_residual": 3.2,
+    "xgb_residual": 1.9
+  },
+  {
+    "id": 110,
+    "actual": 40.0,
+    "rf_predicted": 41.1,
+    "xgb_predicted": 43.7,
+    "rf_residual": 1.2,
+    "xgb_residual": 3.8
+  },
+  {
+    "id": 111,
+    "actual": 77.9,
+    "rf_predicted": 79.0,
+    "xgb_predicted": 73.0,
+    "rf_residual": 1.2,
+    "xgb_residual": -4.9
+  },
+  {
+    "id": 112,
+    "actual": 93.3,
+    "rf_predicted": 68.7,
+    "xgb_predicted": 69.1,
+    "rf_residual": -24.6,
+    "xgb_residual": -24.3
+  },
+  {
+    "id": 113,
+    "actual": 23.1,
+    "rf_predicted": 39.3,
+    "xgb_predicted": 36.7,
+    "rf_residual": 16.3,
+    "xgb_residual": 13.6
+  },
+  {
+    "id": 114,
+    "actual": 6.9,
+    "rf_predicted": 11.5,
+    "xgb_predicted": 8.9,
+    "rf_residual": 4.7,
+    "xgb_residual": 2.0
+  },
+  {
+    "id": 115,
+    "actual": 40.1,
+    "rf_predicted": 42.4,
+    "xgb_predicted": 41.3,
+    "rf_residual": 2.3,
+    "xgb_residual": 1.2
+  },
+  {
+    "id": 116,
+    "actual": 41.0,
+    "rf_predicted": 52.3,
+    "xgb_predicted": 50.7,
+    "rf_residual": 11.3,
+    "xgb_residual": 9.7
+  },
+  {
+    "id": 117,
+    "actual": 3.0,
+    "rf_predicted": 3.3,
+    "xgb_predicted": 2.6,
+    "rf_residual": 0.3,
+    "xgb_residual": -0.4
+  },
+  {
+    "id": 118,
+    "actual": 2.9,
+    "rf_predicted": 3.1,
+    "xgb_predicted": 1.3,
+    "rf_residual": 0.2,
+    "xgb_residual": -1.6
+  },
+  {
+    "id": 119,
+    "actual": 75.8,
+    "rf_predicted": 67.0,
+    "xgb_predicted": 75.8,
+    "rf_residual": -8.7,
+    "xgb_residual": 0.0
+  },
+  {
+    "id": 120,
+    "actual": 200.0,
+    "rf_predicted": 193.2,
+    "xgb_predicted": 190.0,
+    "rf_residual": -6.8,
+    "xgb_residual": -10.0
+  },
+  {
+    "id": 121,
+    "actual": 58.0,
+    "rf_predicted": 55.2,
+    "xgb_predicted": 51.2,
+    "rf_residual": -2.8,
+    "xgb_residual": -6.8
+  },
+  {
+    "id": 122,
+    "actual": 48.9,
+    "rf_predicted": 47.3,
+    "xgb_predicted": 48.5,
+    "rf_residual": -1.5,
+    "xgb_residual": -0.3
+  },
+  {
+    "id": 123,
+    "actual": 22.9,
+    "rf_predicted": 43.1,
+    "xgb_predicted": 45.1,
+    "rf_residual": 20.2,
+    "xgb_residual": 22.2
+  },
+  {
+    "id": 124,
+    "actual": 47.5,
+    "rf_predicted": 41.0,
+    "xgb_predicted": 42.9,
+    "rf_residual": -6.5,
+    "xgb_residual": -4.6
+  },
+  {
+    "id": 125,
+    "actual": 47.4,
+    "rf_predicted": 47.6,
+    "xgb_predicted": 48.3,
+    "rf_residual": 0.2,
+    "xgb_residual": 0.9
+  },
+  {
+    "id": 126,
+    "actual": 2.6,
+    "rf_predicted": 3.4,
+    "xgb_predicted": 3.9,
+    "rf_residual": 0.8,
+    "xgb_residual": 1.3
+  },
+  {
+    "id": 127,
+    "actual": 93.9,
+    "rf_predicted": 82.3,
+    "xgb_predicted": 84.2,
+    "rf_residual": -11.6,
+    "xgb_residual": -9.7
+  },
+  {
+    "id": 128,
+    "actual": 67.3,
+    "rf_predicted": 60.8,
+    "xgb_predicted": 57.0,
+    "rf_residual": -6.5,
+    "xgb_residual": -10.3
+  },
+  {
+    "id": 129,
+    "actual": 55.5,
+    "rf_predicted": 52.0,
+    "xgb_predicted": 49.7,
+    "rf_residual": -3.5,
+    "xgb_residual": -5.8
+  },
+  {
+    "id": 130,
+    "actual": 47.6,
+    "rf_predicted": 51.1,
+    "xgb_predicted": 52.4,
+    "rf_residual": 3.5,
+    "xgb_residual": 4.8
+  },
+  {
+    "id": 131,
+    "actual": 6.5,
+    "rf_predicted": 11.3,
+    "xgb_predicted": 13.1,
+    "rf_residual": 4.8,
+    "xgb_residual": 6.6
+  },
+  {
+    "id": 132,
+    "actual": 62.9,
+    "rf_predicted": 68.1,
+    "xgb_predicted": 70.9,
+    "rf_residual": 5.1,
+    "xgb_residual": 8.0
+  },
+  {
+    "id": 133,
+    "actual": 43.3,
+    "rf_predicted": 35.7,
+    "xgb_predicted": 31.8,
+    "rf_residual": -7.6,
+    "xgb_residual": -11.5
+  },
+  {
+    "id": 134,
+    "actual": 15.0,
+    "rf_predicted": 21.7,
+    "xgb_predicted": 19.7,
+    "rf_residual": 6.8,
+    "xgb_residual": 4.8
+  },
+  {
+    "id": 135,
+    "actual": 84.7,
+    "rf_predicted": 64.6,
+    "xgb_predicted": 69.5,
+    "rf_residual": -20.1,
+    "xgb_residual": -15.2
+  },
+  {
+    "id": 136,
+    "actual": 44.3,
+    "rf_predicted": 49.2,
+    "xgb_predicted": 49.7,
+    "rf_residual": 4.9,
+    "xgb_residual": 5.4
+  },
+  {
+    "id": 137,
+    "actual": 56.6,
+    "rf_predicted": 56.3,
+    "xgb_predicted": 58.8,
+    "rf_residual": -0.3,
+    "xgb_residual": 2.1
+  },
+  {
+    "id": 138,
+    "actual": 39.1,
+    "rf_predicted": 38.1,
+    "xgb_predicted": 37.4,
+    "rf_residual": -1.0,
+    "xgb_residual": -1.8
+  },
+  {
+    "id": 139,
+    "actual": 38.1,
+    "rf_predicted": 38.1,
+    "xgb_predicted": 36.9,
+    "rf_residual": 0.0,
+    "xgb_residual": -1.2
+  },
+  {
+    "id": 140,
+    "actual": 20.5,
+    "rf_predicted": 19.8,
+    "xgb_predicted": 21.5,
+    "rf_residual": -0.7,
+    "xgb_residual": 1.0
+  },
+  {
+    "id": 141,
+    "actual": 3.1,
+    "rf_predicted": 7.6,
+    "xgb_predicted": 5.3,
+    "rf_residual": 4.5,
+    "xgb_residual": 2.2
+  },
+  {
+    "id": 142,
+    "actual": 37.5,
+    "rf_predicted": 46.3,
+    "xgb_predicted": 43.7,
+    "rf_residual": 8.7,
+    "xgb_residual": 6.2
+  },
+  {
+    "id": 143,
+    "actual": 216.7,
+    "rf_predicted": 148.4,
+    "xgb_predicted": 107.2,
+    "rf_residual": -68.2,
+    "xgb_residual": -109.4
+  },
+  {
+    "id": 144,
+    "actual": 112.0,
+    "rf_predicted": 106.0,
+    "xgb_predicted": 109.5,
+    "rf_residual": -6.0,
+    "xgb_residual": -2.5
+  },
+  {
+    "id": 145,
+    "actual": 71.0,
+    "rf_predicted": 54.3,
+    "xgb_predicted": 75.6,
+    "rf_residual": -16.7,
+    "xgb_residual": 4.6
+  },
+  {
+    "id": 146,
+    "actual": 32.7,
+    "rf_predicted": 23.2,
+    "xgb_predicted": 24.1,
+    "rf_residual": -9.5,
+    "xgb_residual": -8.6
+  },
+  {
+    "id": 147,
+    "actual": 62.7,
+    "rf_predicted": 74.8,
+    "xgb_predicted": 79.3,
+    "rf_residual": 12.1,
+    "xgb_residual": 16.6
+  },
+  {
+    "id": 148,
+    "actual": 26.2,
+    "rf_predicted": 53.6,
+    "xgb_predicted": 52.6,
+    "rf_residual": 27.4,
+    "xgb_residual": 26.4
+  },
+  {
+    "id": 149,
+    "actual": 50.8,
+    "rf_predicted": 51.6,
+    "xgb_predicted": 45.5,
+    "rf_residual": 0.8,
+    "xgb_residual": -5.4
+  },
+  {
+    "id": 150,
+    "actual": 46.5,
+    "rf_predicted": 51.6,
+    "xgb_predicted": 50.7,
+    "rf_residual": 5.1,
+    "xgb_residual": 4.2
+  },
+  {
+    "id": 151,
+    "actual": 56.7,
+    "rf_predicted": 56.6,
+    "xgb_predicted": 53.9,
+    "rf_residual": -0.1,
+    "xgb_residual": -2.8
+  },
+  {
+    "id": 152,
+    "actual": 48.3,
+    "rf_predicted": 48.2,
+    "xgb_predicted": 45.9,
+    "rf_residual": -0.1,
+    "xgb_residual": -2.4
+  },
+  {
+    "id": 153,
+    "actual": 33.2,
+    "rf_predicted": 31.4,
+    "xgb_predicted": 31.9,
+    "rf_residual": -1.8,
+    "xgb_residual": -1.3
+  },
+  {
+    "id": 154,
+    "actual": 41.6,
+    "rf_predicted": 50.4,
+    "xgb_predicted": 46.8,
+    "rf_residual": 8.8,
+    "xgb_residual": 5.1
+  },
+  {
+    "id": 155,
+    "actual": 14.1,
+    "rf_predicted": 45.6,
+    "xgb_predicted": 45.3,
+    "rf_residual": 31.5,
+    "xgb_residual": 31.1
+  },
+  {
+    "id": 156,
+    "actual": 52.1,
+    "rf_predicted": 59.1,
+    "xgb_predicted": 60.1,
+    "rf_residual": 6.9,
+    "xgb_residual": 7.9
+  },
+  {
+    "id": 157,
+    "actual": 36.8,
+    "rf_predicted": 37.4,
+    "xgb_predicted": 37.1,
+    "rf_residual": 0.6,
+    "xgb_residual": 0.3
+  },
+  {
+    "id": 158,
+    "actual": 60.0,
+    "rf_predicted": 63.6,
+    "xgb_predicted": 61.9,
+    "rf_residual": 3.6,
+    "xgb_residual": 1.9
+  },
+  {
+    "id": 159,
+    "actual": 43.9,
+    "rf_predicted": 52.0,
+    "xgb_predicted": 46.0,
+    "rf_residual": 8.1,
+    "xgb_residual": 2.1
+  },
+  {
+    "id": 160,
+    "actual": 50.0,
+    "rf_predicted": 67.1,
+    "xgb_predicted": 65.8,
+    "rf_residual": 17.1,
+    "xgb_residual": 15.8
+  },
+  {
+    "id": 161,
+    "actual": 67.8,
+    "rf_predicted": 81.8,
+    "xgb_predicted": 85.7,
+    "rf_residual": 14.0,
+    "xgb_residual": 17.9
+  },
+  {
+    "id": 162,
+    "actual": 40.0,
+    "rf_predicted": 56.2,
+    "xgb_predicted": 56.5,
+    "rf_residual": 16.2,
+    "xgb_residual": 16.5
+  },
+  {
+    "id": 163,
+    "actual": 2.9,
+    "rf_predicted": 2.7,
+    "xgb_predicted": 2.2,
+    "rf_residual": -0.2,
+    "xgb_residual": -0.7
+  },
+  {
+    "id": 164,
+    "actual": 42.9,
+    "rf_predicted": 42.9,
+    "xgb_predicted": 39.9,
+    "rf_residual": 0.1,
+    "xgb_residual": -3.0
+  },
+  {
+    "id": 165,
+    "actual": 101.4,
+    "rf_predicted": 89.2,
+    "xgb_predicted": 90.9,
+    "rf_residual": -12.2,
+    "xgb_residual": -10.5
+  },
+  {
+    "id": 166,
+    "actual": 96.6,
+    "rf_predicted": 126.4,
+    "xgb_predicted": 124.6,
+    "rf_residual": 29.8,
+    "xgb_residual": 28.0
+  },
+  {
+    "id": 167,
+    "actual": 46.8,
+    "rf_predicted": 42.4,
+    "xgb_predicted": 45.0,
+    "rf_residual": -4.3,
+    "xgb_residual": -1.8
+  },
+  {
+    "id": 168,
+    "actual": 49.3,
+    "rf_predicted": 38.2,
+    "xgb_predicted": 41.9,
+    "rf_residual": -11.1,
+    "xgb_residual": -7.4
+  },
+  {
+    "id": 169,
+    "actual": 48.9,
+    "rf_predicted": 46.0,
+    "xgb_predicted": 45.6,
+    "rf_residual": -2.9,
+    "xgb_residual": -3.3
+  },
+  {
+    "id": 170,
+    "actual": 100.0,
+    "rf_predicted": 91.2,
+    "xgb_predicted": 87.5,
+    "rf_residual": -8.8,
+    "xgb_residual": -12.5
+  },
+  {
+    "id": 171,
+    "actual": 58.5,
+    "rf_predicted": 53.5,
+    "xgb_predicted": 60.4,
+    "rf_residual": -5.1,
+    "xgb_residual": 1.8
+  },
+  {
+    "id": 172,
+    "actual": 75.1,
+    "rf_predicted": 66.3,
+    "xgb_predicted": 76.7,
+    "rf_residual": -8.7,
+    "xgb_residual": 1.6
+  },
+  {
+    "id": 173,
+    "actual": 37.0,
+    "rf_predicted": 39.0,
+    "xgb_predicted": 37.9,
+    "rf_residual": 2.0,
+    "xgb_residual": 0.9
+  },
+  {
+    "id": 174,
+    "actual": 102.4,
+    "rf_predicted": 109.1,
+    "xgb_predicted": 117.4,
+    "rf_residual": 6.7,
+    "xgb_residual": 15.0
+  },
+  {
+    "id": 175,
+    "actual": 76.2,
+    "rf_predicted": 59.4,
+    "xgb_predicted": 58.4,
+    "rf_residual": -16.8,
+    "xgb_residual": -17.8
+  },
+  {
+    "id": 176,
+    "actual": 103.6,
+    "rf_predicted": 94.5,
+    "xgb_predicted": 93.7,
+    "rf_residual": -9.0,
+    "xgb_residual": -9.9
+  },
+  {
+    "id": 177,
+    "actual": 39.7,
+    "rf_predicted": 38.6,
+    "xgb_predicted": 38.1,
+    "rf_residual": -1.1,
+    "xgb_residual": -1.6
+  },
+  {
+    "id": 178,
+    "actual": 89.3,
+    "rf_predicted": 85.0,
+    "xgb_predicted": 87.4,
+    "rf_residual": -4.3,
+    "xgb_residual": -1.9
+  },
+  {
+    "id": 179,
+    "actual": 89.3,
+    "rf_predicted": 70.8,
+    "xgb_predicted": 77.0,
+    "rf_residual": -18.5,
+    "xgb_residual": -12.3
+  },
+  {
+    "id": 180,
+    "actual": 3.9,
+    "rf_predicted": 2.7,
+    "xgb_predicted": 6.3,
+    "rf_residual": -1.2,
+    "xgb_residual": 2.5
+  },
+  {
+    "id": 181,
+    "actual": 38.4,
+    "rf_predicted": 37.9,
+    "xgb_predicted": 37.1,
+    "rf_residual": -0.5,
+    "xgb_residual": -1.3
+  },
+  {
+    "id": 182,
+    "actual": 47.1,
+    "rf_predicted": 49.8,
+    "xgb_predicted": 51.1,
+    "rf_residual": 2.7,
+    "xgb_residual": 4.0
+  },
+  {
+    "id": 183,
+    "actual": 39.3,
+    "rf_predicted": 29.7,
+    "xgb_predicted": 30.5,
+    "rf_residual": -9.6,
+    "xgb_residual": -8.8
+  },
+  {
+    "id": 184,
+    "actual": 46.6,
+    "rf_predicted": 49.9,
+    "xgb_predicted": 49.4,
+    "rf_residual": 3.4,
+    "xgb_residual": 2.9
+  },
+  {
+    "id": 185,
+    "actual": 16.5,
+    "rf_predicted": 9.1,
+    "xgb_predicted": 8.9,
+    "rf_residual": -7.4,
+    "xgb_residual": -7.6
+  },
+  {
+    "id": 186,
+    "actual": 83.6,
+    "rf_predicted": 85.9,
+    "xgb_predicted": 87.7,
+    "rf_residual": 2.3,
+    "xgb_residual": 4.1
+  },
+  {
+    "id": 187,
+    "actual": 28.9,
+    "rf_predicted": 32.3,
+    "xgb_predicted": 31.7,
+    "rf_residual": 3.4,
+    "xgb_residual": 2.8
+  },
+  {
+    "id": 188,
+    "actual": 35.3,
+    "rf_predicted": 40.6,
+    "xgb_predicted": 40.4,
+    "rf_residual": 5.3,
+    "xgb_residual": 5.1
+  },
+  {
+    "id": 189,
+    "actual": 41.2,
+    "rf_predicted": 38.5,
+    "xgb_predicted": 36.3,
+    "rf_residual": -2.7,
+    "xgb_residual": -4.9
+  },
+  {
+    "id": 190,
+    "actual": 75.0,
+    "rf_predicted": 59.9,
+    "xgb_predicted": 62.2,
+    "rf_residual": -15.1,
+    "xgb_residual": -12.8
+  },
+  {
+    "id": 191,
+    "actual": 66.9,
+    "rf_predicted": 83.2,
+    "xgb_predicted": 71.7,
+    "rf_residual": 16.2,
+    "xgb_residual": 4.8
+  },
+  {
+    "id": 192,
+    "actual": 94.4,
+    "rf_predicted": 75.0,
+    "xgb_predicted": 73.9,
+    "rf_residual": -19.5,
+    "xgb_residual": -20.6
+  },
+  {
+    "id": 193,
+    "actual": 130.5,
+    "rf_predicted": 105.4,
+    "xgb_predicted": 106.6,
+    "rf_residual": -25.1,
+    "xgb_residual": -23.9
+  },
+  {
+    "id": 194,
+    "actual": 98.1,
+    "rf_predicted": 93.0,
+    "xgb_predicted": 100.5,
+    "rf_residual": -5.1,
+    "xgb_residual": 2.4
+  },
+  {
+    "id": 195,
+    "actual": 16.5,
+    "rf_predicted": 12.1,
+    "xgb_predicted": 9.4,
+    "rf_residual": -4.4,
+    "xgb_residual": -7.1
+  },
+  {
+    "id": 196,
+    "actual": 65.8,
+    "rf_predicted": 67.7,
+    "xgb_predicted": 63.7,
+    "rf_residual": 1.9,
+    "xgb_residual": -2.1
+  },
+  {
+    "id": 197,
+    "actual": 57.1,
+    "rf_predicted": 57.7,
+    "xgb_predicted": 59.1,
+    "rf_residual": 0.5,
+    "xgb_residual": 1.9
+  },
+  {
+    "id": 198,
+    "actual": 58.0,
+    "rf_predicted": 58.1,
+    "xgb_predicted": 57.6,
+    "rf_residual": 0.1,
+    "xgb_residual": -0.4
+  },
+  {
+    "id": 199,
+    "actual": 35.6,
+    "rf_predicted": 37.4,
+    "xgb_predicted": 37.3,
+    "rf_residual": 1.8,
+    "xgb_residual": 1.7
+  },
+  {
+    "id": 200,
+    "actual": 46.6,
+    "rf_predicted": 43.3,
+    "xgb_predicted": 48.5,
+    "rf_residual": -3.3,
+    "xgb_residual": 1.9
+  },
+  {
+    "id": 201,
+    "actual": 62.1,
+    "rf_predicted": 56.8,
+    "xgb_predicted": 55.5,
+    "rf_residual": -5.3,
+    "xgb_residual": -6.7
+  },
+  {
+    "id": 202,
+    "actual": 20.5,
+    "rf_predicted": 5.5,
+    "xgb_predicted": 3.7,
+    "rf_residual": -15.0,
+    "xgb_residual": -16.8
+  },
+  {
+    "id": 203,
+    "actual": 61.8,
+    "rf_predicted": 59.0,
+    "xgb_predicted": 68.3,
+    "rf_residual": -2.9,
+    "xgb_residual": 6.5
+  },
+  {
+    "id": 204,
+    "actual": 57.5,
+    "rf_predicted": 72.0,
+    "xgb_predicted": 63.8,
+    "rf_residual": 14.5,
+    "xgb_residual": 6.3
+  },
+  {
+    "id": 205,
+    "actual": 17.5,
+    "rf_predicted": 27.5,
+    "xgb_predicted": 32.8,
+    "rf_residual": 10.0,
+    "xgb_residual": 15.3
+  },
+  {
+    "id": 206,
+    "actual": 60.8,
+    "rf_predicted": 37.5,
+    "xgb_predicted": 49.0,
+    "rf_residual": -23.3,
+    "xgb_residual": -11.8
+  },
+  {
+    "id": 207,
+    "actual": 28.6,
+    "rf_predicted": 40.6,
+    "xgb_predicted": 40.8,
+    "rf_residual": 12.0,
+    "xgb_residual": 12.2
+  },
+  {
+    "id": 208,
+    "actual": 91.1,
+    "rf_predicted": 76.6,
+    "xgb_predicted": 75.8,
+    "rf_residual": -14.5,
+    "xgb_residual": -15.3
+  },
+  {
+    "id": 209,
+    "actual": 47.3,
+    "rf_predicted": 41.7,
+    "xgb_predicted": 41.5,
+    "rf_residual": -5.5,
+    "xgb_residual": -5.7
+  },
+  {
+    "id": 210,
+    "actual": 16.4,
+    "rf_predicted": 20.6,
+    "xgb_predicted": 22.2,
+    "rf_residual": 4.2,
+    "xgb_residual": 5.8
+  },
+  {
+    "id": 211,
+    "actual": 88.0,
+    "rf_predicted": 64.5,
+    "xgb_predicted": 68.1,
+    "rf_residual": -23.5,
+    "xgb_residual": -19.9
+  },
+  {
+    "id": 212,
+    "actual": 56.3,
+    "rf_predicted": 57.3,
+    "xgb_predicted": 58.9,
+    "rf_residual": 1.0,
+    "xgb_residual": 2.6
+  },
+  {
+    "id": 213,
+    "actual": 59.0,
+    "rf_predicted": 62.3,
+    "xgb_predicted": 60.4,
+    "rf_residual": 3.3,
+    "xgb_residual": 1.4
+  },
+  {
+    "id": 214,
+    "actual": 16.5,
+    "rf_predicted": 32.4,
+    "xgb_predicted": 36.4,
+    "rf_residual": 15.9,
+    "xgb_residual": 19.9
+  },
+  {
+    "id": 215,
+    "actual": 64.7,
+    "rf_predicted": 62.3,
+    "xgb_predicted": 61.1,
+    "rf_residual": -2.4,
+    "xgb_residual": -3.5
+  },
+  {
+    "id": 216,
+    "actual": 37.9,
+    "rf_predicted": 20.1,
+    "xgb_predicted": 18.6,
+    "rf_residual": -17.8,
+    "xgb_residual": -19.3
+  },
+  {
+    "id": 217,
+    "actual": 37.0,
+    "rf_predicted": 68.7,
+    "xgb_predicted": 80.7,
+    "rf_residual": 31.6,
+    "xgb_residual": 43.6
+  },
+  {
+    "id": 218,
+    "actual": 3.1,
+    "rf_predicted": 2.9,
+    "xgb_predicted": 3.9,
+    "rf_residual": -0.1,
+    "xgb_residual": 0.8
+  },
+  {
+    "id": 219,
+    "actual": 64.1,
+    "rf_predicted": 64.2,
+    "xgb_predicted": 68.2,
+    "rf_residual": 0.1,
+    "xgb_residual": 4.1
+  },
+  {
+    "id": 220,
+    "actual": 31.4,
+    "rf_predicted": 28.8,
+    "xgb_predicted": 30.3,
+    "rf_residual": -2.7,
+    "xgb_residual": -1.1
+  },
+  {
+    "id": 221,
+    "actual": 55.5,
+    "rf_predicted": 58.8,
+    "xgb_predicted": 58.9,
+    "rf_residual": 3.2,
+    "xgb_residual": 3.3
+  },
+  {
+    "id": 222,
+    "actual": 85.2,
+    "rf_predicted": 86.9,
+    "xgb_predicted": 88.5,
+    "rf_residual": 1.8,
+    "xgb_residual": 3.4
+  },
+  {
+    "id": 223,
+    "actual": 100.7,
+    "rf_predicted": 90.3,
+    "xgb_predicted": 84.2,
+    "rf_residual": -10.4,
+    "xgb_residual": -16.5
+  },
+  {
+    "id": 224,
+    "actual": 28.6,
+    "rf_predicted": 25.3,
+    "xgb_predicted": 26.2,
+    "rf_residual": -3.3,
+    "xgb_residual": -2.5
+  },
+  {
+    "id": 225,
+    "actual": 35.0,
+    "rf_predicted": 35.3,
+    "xgb_predicted": 38.4,
+    "rf_residual": 0.3,
+    "xgb_residual": 3.4
+  },
+  {
+    "id": 226,
+    "actual": 99.6,
+    "rf_predicted": 89.0,
+    "xgb_predicted": 85.2,
+    "rf_residual": -10.7,
+    "xgb_residual": -14.4
+  },
+  {
+    "id": 227,
+    "actual": 68.3,
+    "rf_predicted": 63.6,
+    "xgb_predicted": 58.1,
+    "rf_residual": -4.7,
+    "xgb_residual": -10.2
+  },
+  {
+    "id": 228,
+    "actual": 50.9,
+    "rf_predicted": 46.2,
+    "xgb_predicted": 45.0,
+    "rf_residual": -4.7,
+    "xgb_residual": -5.9
+  },
+  {
+    "id": 229,
+    "actual": 45.8,
+    "rf_predicted": 53.1,
+    "xgb_predicted": 54.2,
+    "rf_residual": 7.2,
+    "xgb_residual": 8.4
+  },
+  {
+    "id": 230,
+    "actual": 216.1,
+    "rf_predicted": 166.9,
+    "xgb_predicted": 177.1,
+    "rf_residual": -49.2,
+    "xgb_residual": -39.0
+  },
+  {
+    "id": 231,
+    "actual": 49.6,
+    "rf_predicted": 51.6,
+    "xgb_predicted": 49.3,
+    "rf_residual": 2.1,
+    "xgb_residual": -0.3
+  },
+  {
+    "id": 232,
+    "actual": 2.0,
+    "rf_predicted": 5.7,
+    "xgb_predicted": 19.2,
+    "rf_residual": 3.7,
+    "xgb_residual": 17.2
+  },
+  {
+    "id": 233,
+    "actual": 1.1,
+    "rf_predicted": 6.6,
+    "xgb_predicted": 8.3,
+    "rf_residual": 5.5,
+    "xgb_residual": 7.1
+  },
+  {
+    "id": 234,
+    "actual": 45.4,
+    "rf_predicted": 48.1,
+    "xgb_predicted": 48.0,
+    "rf_residual": 2.7,
+    "xgb_residual": 2.6
+  },
+  {
+    "id": 235,
+    "actual": 66.6,
+    "rf_predicted": 40.2,
+    "xgb_predicted": 39.2,
+    "rf_residual": -26.4,
+    "xgb_residual": -27.4
+  },
+  {
+    "id": 236,
+    "actual": 3.2,
+    "rf_predicted": 3.3,
+    "xgb_predicted": 5.4,
+    "rf_residual": 0.0,
+    "xgb_residual": 2.1
+  },
+  {
+    "id": 237,
+    "actual": 37.9,
+    "rf_predicted": 41.9,
+    "xgb_predicted": 37.6,
+    "rf_residual": 4.0,
+    "xgb_residual": -0.3
+  },
+  {
+    "id": 238,
+    "actual": 68.3,
+    "rf_predicted": 92.4,
+    "xgb_predicted": 91.1,
+    "rf_residual": 24.1,
+    "xgb_residual": 22.8
+  },
+  {
+    "id": 239,
+    "actual": 50.4,
+    "rf_predicted": 50.9,
+    "xgb_predicted": 50.0,
+    "rf_residual": 0.5,
+    "xgb_residual": -0.4
+  },
+  {
+    "id": 240,
+    "actual": 63.0,
+    "rf_predicted": 53.8,
+    "xgb_predicted": 52.4,
+    "rf_residual": -9.2,
+    "xgb_residual": -10.6
+  },
+  {
+    "id": 241,
+    "actual": 78.5,
+    "rf_predicted": 28.0,
+    "xgb_predicted": 27.1,
+    "rf_residual": -50.5,
+    "xgb_residual": -51.4
+  },
+  {
+    "id": 242,
+    "actual": 3.0,
+    "rf_predicted": 3.2,
+    "xgb_predicted": 2.6,
+    "rf_residual": 0.2,
+    "xgb_residual": -0.3
+  },
+  {
+    "id": 243,
+    "actual": 37.5,
+    "rf_predicted": 37.4,
+    "xgb_predicted": 37.8,
+    "rf_residual": -0.1,
+    "xgb_residual": 0.2
+  },
+  {
+    "id": 244,
+    "actual": 50.2,
+    "rf_predicted": 52.1,
+    "xgb_predicted": 51.3,
+    "rf_residual": 2.0,
+    "xgb_residual": 1.1
+  },
+  {
+    "id": 245,
+    "actual": 77.2,
+    "rf_predicted": 63.9,
+    "xgb_predicted": 63.7,
+    "rf_residual": -13.3,
+    "xgb_residual": -13.4
+  },
+  {
+    "id": 246,
+    "actual": 58.8,
+    "rf_predicted": 55.6,
+    "xgb_predicted": 60.8,
+    "rf_residual": -3.2,
+    "xgb_residual": 2.0
+  },
+  {
+    "id": 247,
+    "actual": 79.9,
+    "rf_predicted": 74.6,
+    "xgb_predicted": 70.9,
+    "rf_residual": -5.3,
+    "xgb_residual": -9.0
+  },
+  {
+    "id": 248,
+    "actual": 29.1,
+    "rf_predicted": 39.7,
+    "xgb_predicted": 41.2,
+    "rf_residual": 10.6,
+    "xgb_residual": 12.1
+  },
+  {
+    "id": 249,
+    "actual": 71.5,
+    "rf_predicted": 52.2,
+    "xgb_predicted": 51.5,
+    "rf_residual": -19.3,
+    "xgb_residual": -20.0
+  },
+  {
+    "id": 250,
+    "actual": 94.0,
+    "rf_predicted": 87.4,
+    "xgb_predicted": 88.4,
+    "rf_residual": -6.6,
+    "xgb_residual": -5.6
+  },
+  {
+    "id": 251,
+    "actual": 20.0,
+    "rf_predicted": 19.7,
+    "xgb_predicted": 20.5,
+    "rf_residual": -0.3,
+    "xgb_residual": 0.5
+  },
+  {
+    "id": 252,
+    "actual": 57.2,
+    "rf_predicted": 57.1,
+    "xgb_predicted": 54.8,
+    "rf_residual": -0.1,
+    "xgb_residual": -2.4
+  },
+  {
+    "id": 253,
+    "actual": 58.3,
+    "rf_predicted": 52.8,
+    "xgb_predicted": 53.5,
+    "rf_residual": -5.5,
+    "xgb_residual": -4.8
+  },
+  {
+    "id": 254,
+    "actual": 133.3,
+    "rf_predicted": 155.6,
+    "xgb_predicted": 167.1,
+    "rf_residual": 22.3,
+    "xgb_residual": 33.8
+  },
+  {
+    "id": 255,
+    "actual": 12.1,
+    "rf_predicted": 21.7,
+    "xgb_predicted": 33.2,
+    "rf_residual": 9.6,
+    "xgb_residual": 21.1
+  },
+  {
+    "id": 256,
+    "actual": 1.8,
+    "rf_predicted": 23.1,
+    "xgb_predicted": 15.8,
+    "rf_residual": 21.4,
+    "xgb_residual": 14.0
+  },
+  {
+    "id": 257,
+    "actual": 47.2,
+    "rf_predicted": 50.7,
+    "xgb_predicted": 47.3,
+    "rf_residual": 3.5,
+    "xgb_residual": 0.1
+  },
+  {
+    "id": 258,
+    "actual": 60.5,
+    "rf_predicted": 43.8,
+    "xgb_predicted": 45.5,
+    "rf_residual": -16.7,
+    "xgb_residual": -15.0
+  },
+  {
+    "id": 259,
+    "actual": 34.7,
+    "rf_predicted": 45.0,
+    "xgb_predicted": 44.7,
+    "rf_residual": 10.3,
+    "xgb_residual": 10.0
+  },
+  {
+    "id": 260,
+    "actual": 36.8,
+    "rf_predicted": 50.5,
+    "xgb_predicted": 50.8,
+    "rf_residual": 13.7,
+    "xgb_residual": 14.1
+  },
+  {
+    "id": 261,
+    "actual": 36.8,
+    "rf_predicted": 37.2,
+    "xgb_predicted": 37.1,
+    "rf_residual": 0.5,
+    "xgb_residual": 0.4
+  },
+  {
+    "id": 262,
+    "actual": 74.1,
+    "rf_predicted": 72.0,
+    "xgb_predicted": 76.8,
+    "rf_residual": -2.1,
+    "xgb_residual": 2.7
+  },
+  {
+    "id": 263,
+    "actual": 64.1,
+    "rf_predicted": 78.6,
+    "xgb_predicted": 81.2,
+    "rf_residual": 14.5,
+    "xgb_residual": 17.1
+  },
+  {
+    "id": 264,
+    "actual": 97.8,
+    "rf_predicted": 86.3,
+    "xgb_predicted": 81.6,
+    "rf_residual": -11.5,
+    "xgb_residual": -16.3
+  },
+  {
+    "id": 265,
+    "actual": 3.4,
+    "rf_predicted": 6.8,
+    "xgb_predicted": 9.3,
+    "rf_residual": 3.4,
+    "xgb_residual": 5.9
+  },
+  {
+    "id": 266,
+    "actual": 65.1,
+    "rf_predicted": 60.3,
+    "xgb_predicted": 59.1,
+    "rf_residual": -4.8,
+    "xgb_residual": -6.0
+  },
+  {
+    "id": 267,
+    "actual": 2.4,
+    "rf_predicted": 2.9,
+    "xgb_predicted": 3.8,
+    "rf_residual": 0.5,
+    "xgb_residual": 1.4
+  },
+  {
+    "id": 268,
+    "actual": 53.9,
+    "rf_predicted": 56.4,
+    "xgb_predicted": 48.2,
+    "rf_residual": 2.6,
+    "xgb_residual": -5.6
+  },
+  {
+    "id": 269,
+    "actual": 66.7,
+    "rf_predicted": 74.0,
+    "xgb_predicted": 67.3,
+    "rf_residual": 7.3,
+    "xgb_residual": 0.6
+  },
+  {
+    "id": 270,
+    "actual": 72.6,
+    "rf_predicted": 70.5,
+    "xgb_predicted": 68.9,
+    "rf_residual": -2.1,
+    "xgb_residual": -3.7
+  },
+  {
+    "id": 271,
+    "actual": 82.4,
+    "rf_predicted": 86.3,
+    "xgb_predicted": 90.7,
+    "rf_residual": 3.9,
+    "xgb_residual": 8.3
+  },
+  {
+    "id": 272,
+    "actual": 32.8,
+    "rf_predicted": 35.1,
+    "xgb_predicted": 38.5,
+    "rf_residual": 2.3,
+    "xgb_residual": 5.8
+  },
+  {
+    "id": 273,
+    "actual": 42.2,
+    "rf_predicted": 49.4,
+    "xgb_predicted": 48.7,
+    "rf_residual": 7.1,
+    "xgb_residual": 6.5
+  },
+  {
+    "id": 274,
+    "actual": 54.0,
+    "rf_predicted": 75.0,
+    "xgb_predicted": 74.4,
+    "rf_residual": 21.0,
+    "xgb_residual": 20.4
+  },
+  {
+    "id": 275,
+    "actual": 52.2,
+    "rf_predicted": 44.4,
+    "xgb_predicted": 48.7,
+    "rf_residual": -7.8,
+    "xgb_residual": -3.5
+  },
+  {
+    "id": 276,
+    "actual": 34.2,
+    "rf_predicted": 39.0,
+    "xgb_predicted": 38.5,
+    "rf_residual": 4.7,
+    "xgb_residual": 4.3
+  },
+  {
+    "id": 277,
+    "actual": 162.0,
+    "rf_predicted": 157.6,
+    "xgb_predicted": 170.0,
+    "rf_residual": -4.4,
+    "xgb_residual": 8.0
+  },
+  {
+    "id": 278,
+    "actual": 42.6,
+    "rf_predicted": 42.7,
+    "xgb_predicted": 42.8,
+    "rf_residual": 0.1,
+    "xgb_residual": 0.2
+  },
+  {
+    "id": 279,
+    "actual": 51.3,
+    "rf_predicted": 53.9,
+    "xgb_predicted": 52.5,
+    "rf_residual": 2.6,
+    "xgb_residual": 1.2
+  },
+  {
+    "id": 280,
+    "actual": 15.9,
+    "rf_predicted": 23.5,
+    "xgb_predicted": 17.2,
+    "rf_residual": 7.6,
+    "xgb_residual": 1.2
+  },
+  {
+    "id": 281,
+    "actual": 65.2,
+    "rf_predicted": 63.3,
+    "xgb_predicted": 58.1,
+    "rf_residual": -1.9,
+    "xgb_residual": -7.1
+  },
+  {
+    "id": 282,
+    "actual": 1.6,
+    "rf_predicted": 9.7,
+    "xgb_predicted": 10.9,
+    "rf_residual": 8.1,
+    "xgb_residual": 9.4
+  },
+  {
+    "id": 283,
+    "actual": 39.6,
+    "rf_predicted": 38.7,
+    "xgb_predicted": 40.2,
+    "rf_residual": -1.0,
+    "xgb_residual": 0.6
+  },
+  {
+    "id": 284,
+    "actual": 43.1,
+    "rf_predicted": 37.9,
+    "xgb_predicted": 41.4,
+    "rf_residual": -5.2,
+    "xgb_residual": -1.7
+  },
+  {
+    "id": 285,
+    "actual": 1.0,
+    "rf_predicted": 6.0,
+    "xgb_predicted": 5.4,
+    "rf_residual": 5.0,
+    "xgb_residual": 4.4
+  },
+  {
+    "id": 286,
+    "actual": 51.6,
+    "rf_predicted": 59.4,
+    "xgb_predicted": 57.7,
+    "rf_residual": 7.8,
+    "xgb_residual": 6.1
+  },
+  {
+    "id": 287,
+    "actual": 76.3,
+    "rf_predicted": 71.1,
+    "xgb_predicted": 72.6,
+    "rf_residual": -5.3,
+    "xgb_residual": -3.7
+  },
+  {
+    "id": 288,
+    "actual": 37.0,
+    "rf_predicted": 37.7,
+    "xgb_predicted": 35.5,
+    "rf_residual": 0.7,
+    "xgb_residual": -1.6
+  },
+  {
+    "id": 289,
+    "actual": 41.2,
+    "rf_predicted": 42.0,
+    "xgb_predicted": 42.2,
+    "rf_residual": 0.8,
+    "xgb_residual": 1.0
+  },
+  {
+    "id": 290,
+    "actual": 51.8,
+    "rf_predicted": 54.7,
+    "xgb_predicted": 57.5,
+    "rf_residual": 2.8,
+    "xgb_residual": 5.6
+  },
+  {
+    "id": 291,
+    "actual": 52.0,
+    "rf_predicted": 48.3,
+    "xgb_predicted": 46.9,
+    "rf_residual": -3.7,
+    "xgb_residual": -5.1
+  },
+  {
+    "id": 292,
+    "actual": 6.7,
+    "rf_predicted": 20.8,
+    "xgb_predicted": 16.3,
+    "rf_residual": 14.1,
+    "xgb_residual": 9.6
+  },
+  {
+    "id": 293,
+    "actual": 66.2,
+    "rf_predicted": 66.3,
+    "xgb_predicted": 64.9,
+    "rf_residual": 0.0,
+    "xgb_residual": -1.3
+  },
+  {
+    "id": 294,
+    "actual": 33.6,
+    "rf_predicted": 46.4,
+    "xgb_predicted": 40.2,
+    "rf_residual": 12.8,
+    "xgb_residual": 6.6
+  },
+  {
+    "id": 295,
+    "actual": 41.9,
+    "rf_predicted": 41.6,
+    "xgb_predicted": 42.2,
+    "rf_residual": -0.3,
+    "xgb_residual": 0.3
+  },
+  {
+    "id": 296,
+    "actual": 77.7,
+    "rf_predicted": 59.1,
+    "xgb_predicted": 59.2,
+    "rf_residual": -18.6,
+    "xgb_residual": -18.5
+  },
+  {
+    "id": 297,
+    "actual": 41.9,
+    "rf_predicted": 41.6,
+    "xgb_predicted": 39.8,
+    "rf_residual": -0.3,
+    "xgb_residual": -2.1
+  },
+  {
+    "id": 298,
+    "actual": 110.4,
+    "rf_predicted": 102.7,
+    "xgb_predicted": 109.0,
+    "rf_residual": -7.7,
+    "xgb_residual": -1.4
+  },
+  {
+    "id": 299,
+    "actual": 52.3,
+    "rf_predicted": 57.0,
+    "xgb_predicted": 57.9,
+    "rf_residual": 4.7,
+    "xgb_residual": 5.6
+  }
+]

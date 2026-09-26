@@ -90,6 +90,17 @@ def upgrade_existing_tables(cursor):
     except Exception as e:
         pass
 
+    for tbl in ['farms', 'fields', 'predictions', 'alerts', 'soil_data', 'crop_records', 'weather_data', 'password_reset_tokens']:
+        try:
+            cursor.execute(f"ALTER TABLE `{tbl}` MODIFY COLUMN `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;")
+            cursor.execute(f"ALTER TABLE `{tbl}` MODIFY COLUMN `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;")
+        except Exception:
+            pass
+    try:
+        cursor.execute("ALTER TABLE `predictions` MODIFY COLUMN `ndvi` DECIMAL(4,2) NULL DEFAULT NULL;")
+    except Exception:
+        pass
+
 def main():
     print("=================================================================")
     print("🌾 Sugarcane Yield Decision Support System — Database Setup")

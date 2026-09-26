@@ -44,12 +44,14 @@ export const authApi = {
 
 // ─── Dashboard ─────────────────────────────────────────────────────────
 export const dashboardApi = {
-  getSummary: () => request('get', '/dashboard/summary'),
+  getSummary:   () => request('get', '/dashboard/summary'),
+  getMultiFarm: () => request('get', '/dashboard/multi-farm'),
 };
 
 // ─── Farms & Fields ────────────────────────────────────────────────────
 export const farmApi = {
   list:        ()          => request('get',    '/farms'),
+  mapData:     ()          => request('get',    '/farms/map-data'),
   create:      (d)         => request('post',   '/farms', d),
   update:      (id, d)     => request('patch',  `/farms/${id}`, d),
   remove:      (id)        => request('delete', `/farms/${id}`),
@@ -69,9 +71,31 @@ export const mlApi = {
 };
 
 export const predictionApi = {
-  list:   ()     => request('get',    '/predictions'),
-  save:   (d)    => request('post',   '/predictions', d),
-  remove: (id)   => request('delete', `/predictions/${id}`),
+  list:         (params) => request('get', `/predictions${params ? '?' + new URLSearchParams(params) : ''}`),
+  getDetails:   (id)     => request('get', `/predictions/${id}`),
+  save:         (d)      => request('post', '/predictions', d),
+  remove:       (id)     => request('delete', `/predictions/${id}`),
+  historyGraph: ()       => request('get', '/predictions/history-graph'),
+};
+
+export const yieldLossApi = {
+  analyze: (predId) => request('get', `/yield-loss/analysis${predId ? `?prediction_id=${predId}` : ''}`),
+};
+
+export const cropIntelApi = {
+  tracker: (fieldId) => request('get', `/crop-records/${fieldId}/tracker`),
+};
+
+export const irrigationApi = {
+  decisionSupport: (p) => request('get', `/irrigation/decision-support${p ? '?' + new URLSearchParams(p) : ''}`),
+};
+
+export const historicalYieldApi = {
+  analytics: (variety) => request('get', `/analytics/historical-yield${variety ? `?variety=${encodeURIComponent(variety)}` : ''}`),
+};
+
+export const advisorApi = {
+  suggestions: () => request('get', '/advisor/suggestions'),
 };
 
 // ─── Weather ───────────────────────────────────────────────────────────
@@ -98,16 +122,18 @@ export const varietyApi = {
 
 // ─── Alerts ────────────────────────────────────────────────────────────
 export const alertApi = {
-  list:         ()    => request('get',   '/alerts'),
-  generate:     ()    => request('post',  '/alerts/generate'),
-  markRead:     (id)  => request('patch', `/alerts/${id}/read`),
-  markAllRead:  ()    => request('patch', '/alerts/read-all'),
+  list:         (severity) => request('get', `/alerts${severity ? `?severity=${severity}` : ''}`),
+  generate:     ()         => request('post',  '/alerts/generate'),
+  markRead:     (id)       => request('patch', `/alerts/${id}/read`),
+  markAllRead:  ()         => request('patch', '/alerts/read-all'),
+  remove:       (id)       => request('delete', `/alerts/${id}`),
 };
 
 // ─── Reports ───────────────────────────────────────────────────────────
 export const reportApi = {
-  list:     ()    => request('get',  '/reports'),
-  generate: (d)   => request('post', '/reports/generate', d),
+  list:     ()           => request('get',  '/reports'),
+  generate: (d)          => request('post', '/reports/generate', d),
+  download: (id, format) => request('get', `/reports/${id}/download?format=${format || 'PDF'}`),
 };
 
 // ─── Chat ──────────────────────────────────────────────────────────────
@@ -124,6 +150,24 @@ export const profileApi = {
 
 // ─── Admin ─────────────────────────────────────────────────────────────
 export const adminApi = {
-  stats: () => request('get', '/admin/stats'),
-  users: () => request('get', '/admin/users'),
+  stats:            ()           => request('get',   '/admin/stats'),
+  getStats:         ()           => request('get',   '/admin/stats'),
+  users:            ()           => request('get',   '/admin/users'),
+  getUsers:         ()           => request('get',   '/admin/users'),
+  updateUserStatus: (id, status) => request('patch', `/admin/users/${id}/status`, { status }),
+  toggleUserStatus: (id, status) => request('patch', `/admin/users/${id}/status`, { status }),
+  varieties:        ()           => request('get',   '/admin/varieties'),
+  mlPerf:           ()           => request('get',   '/admin/ml-performance'),
+  getMlPerformance: ()           => request('get',   '/admin/ml-performance'),
 };
+
+// ─── Agricultural Officer ───────────────────────────────────────────────
+export const officerApi = {
+  farms:             () => request('get', '/officer/farms'),
+  getFarms:          () => request('get', '/officer/farms'),
+  highRiskFields:    () => request('get', '/officer/high-risk-fields'),
+  getHighRiskFields: () => request('get', '/officer/high-risk-fields'),
+  analytics:         () => request('get', '/officer/analytics'),
+  getAnalytics:      () => request('get', '/officer/analytics'),
+};
+

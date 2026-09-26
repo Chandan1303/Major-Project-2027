@@ -237,7 +237,10 @@ export default function VarietiesPage() {
           <>
             <div className="dash-panel">
               <div className="dash-panel-header"><h3>AI Variety Recommendation</h3><span className="badge badge-purple">ML-Powered</span></div>
-              <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 20 }}>Enter your field conditions to get the best variety recommendation.</p>
+              <p style={{ fontSize: 13, color: '#6b7280', marginBottom: 12 }}>Enter your field conditions to get the best variety recommendation.</p>
+              <div className="info-banner" style={{ background: '#fef3c7', borderLeft: '4px solid #f59e0b', color: '#92400e', padding: '10px 14px', borderRadius: '6px', marginBottom: 16, fontSize: '13px' }}>
+                ⚠️ <strong>Decision Support Notice:</strong> Recommendations are model-based decision support estimates derived from multi-season agronomic data. They do not constitute guaranteed agricultural advice. Local soil tests and extension recommendations should always be consulted.
+              </div>
               <div className="rec-form-grid">
                 {[
                   { label:'State', key:'state', type:'text', ph:'e.g., Maharashtra' },

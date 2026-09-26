@@ -1,836 +1,1016 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LineChart, Line, Legend } from 'recharts';
+import AppLayout from '../components/AppLayout';
 import { useAuth } from '../context/AuthContext';
-import WorkspaceLayout from '../layouts/WorkspaceLayout';
+import { mlApi, predictionApi, farmApi } from '../services/api';
+import toast, { Toaster } from 'react-hot-toast';
 
-/* ── data ─────────────────────────────────────────────────────── */
-const defaultVarieties = ['Co 86032', 'Co 0238', 'Co 0118'];
-const stateVarieties = {
-  'Maharashtra':        ['Co 86032', 'CoC 671', 'Co 775', 'Co 94012', 'Co 0238'],
-  'Uttar Pradesh':      ['CoJ 64', 'Co 0238', 'Co 0118', 'Co 05009', 'CoS 767'],
-  'Karnataka':          ['CoM 0265', 'Co 86032', 'Co 94012', 'Co 419', 'Co 62175'],
-  'Tamil Nadu':         ['CoC 671', 'Co 86032', 'Co 94012', 'Co 419', 'Co 62175'],
-  'Gujarat':            ['CoJ 64', 'Co 775', 'Co 94008', 'Co 86032', 'Co 0238'],
-  'Andhra Pradesh':     ['Co 86032', 'CoC 671', 'Co 94012', 'Co 05009', 'Co 7717'],
-  'Bihar':              ['CoJ 64', 'Co 0238', 'Co 0118', 'Bo 91', 'CoS 767'],
-  'Haryana':            ['CoJ 64', 'Co 0238', 'CoPant 90223', 'Co 0118', 'CoS 767'],
-  'Punjab':             ['CoJ 88', 'CoPb 92', 'CoJ 64', 'Co 0238', 'CoS 767'],
-  'Andaman And Nicobar Islands': defaultVarieties,
-  'Arunachal Pradesh':  defaultVarieties,
-  'Assam':              defaultVarieties,
-  'Chhattisgarh':       defaultVarieties,
-  'Dadra And Nagar Haveli': defaultVarieties,
-  'Delhi':              defaultVarieties,
-  'Goa':                defaultVarieties,
-  'Himachal Pradesh':   defaultVarieties,
-  'Jammu And Kashmir':  defaultVarieties,
-  'Jharkhand':          defaultVarieties,
-  'Kerala':             defaultVarieties,
-  'Madhya Pradesh':     defaultVarieties,
-  'Manipur':            defaultVarieties,
-  'Meghalaya':          defaultVarieties,
-  'Mizoram':            defaultVarieties,
-  'Nagaland':           defaultVarieties,
-  'Odisha':             defaultVarieties,
-  'Puducherry':         defaultVarieties,
-  'Rajasthan':          defaultVarieties,
-  'Telangana':          defaultVarieties,
-  'Tripura':            defaultVarieties,
-  'Uttarakhand':        defaultVarieties,
-  'West Bengal':        defaultVarieties,
-};
-
-const varietySeasons = {
-  'Co 86032': ['Kharif', 'Summer'], 'CoC 671': ['Kharif', 'Summer'],
-  'Co 775': ['Kharif'], 'Co 94012': ['Kharif', 'Summer'], 'Co 0238': ['Rabi', 'Summer'],
-  'CoJ 64': ['Rabi'], 'Co 0118': ['Rabi'], 'Co 05009': ['Rabi', 'Summer'], 'CoS 767': ['Rabi'],
-  'CoM 0265': ['Kharif', 'Summer'], 'Co 419': ['Kharif', 'Summer'], 'Co 62175': ['Kharif'],
-  'Co 94008': ['Kharif', 'Summer'], 'Co 7717': ['Kharif', 'Summer'],
-  'Bo 91': ['Rabi'], 'CoPant 90223': ['Rabi'], 'CoJ 88': ['Rabi'], 'CoPb 92': ['Rabi'],
-};
-const allSeasons = ['Kharif', 'Rabi', 'Summer'];
-const states = Object.keys(stateVarieties);
-
-const STEPS = [
-  { id: 1, label: 'Crop Info',    icon: '🌾', desc: 'State, variety & area' },
-  { id: 2, label: 'Weather',      icon: '☁️', desc: 'Climate conditions' },
-  { id: 3, label: 'Soil',         icon: '🪨', desc: 'NPK & nutrients' },
-  { id: 4, label: 'Management',   icon: '💧', desc: 'Irrigation & history' },
+const VARIETIES = ['Co 86032', 'Co 0238', 'CoC 671', 'Co 99004', 'CoM 0265'];
+const SOIL_TYPES = ['Black Soil', 'Alluvial Soil', 'Red Loam', 'Clay Loam', 'Sandy Loam'];
+const GROWTH_STAGES = ['Planting', 'Germination', 'Tillering', 'Grand Growth', 'Maturity', 'Harvest'];
+const STATES = [
+  'Maharashtra', 'Karnataka', 'Tamil Nadu', 'Uttar Pradesh', 'Gujarat',
+  'Andhra Pradesh', 'Bihar', 'Punjab', 'Haryana', 'Madhya Pradesh', 'Telangana'
 ];
 
-/* ── animated counter ──────────────────────────────────────────── */
-function CountUp({ to, duration = 1400, decimals = 2 }) {
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    let start = null;
-    const target = parseFloat(to);
-    const step = (ts) => {
-      if (!start) start = ts;
-      const p = Math.min((ts - start) / duration, 1);
-      const ease = 1 - Math.pow(1 - p, 4);
-      setVal((ease * target).toFixed(decimals));
-      if (p < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }, [to]);
-  return <>{val}</>;
-}
-
-/* ── confidence arc ────────────────────────────────────────────── */
-function ConfidenceArc({ pct, risk }) {
-  const r = 54;
-  const circ = 2 * Math.PI * r;
-  const dash = (pct / 100) * circ;
-  const color = risk === 'Low' ? '#16a34a' : risk === 'Medium' ? '#f59e0b' : '#ef4444';
-  return (
-    <svg viewBox="0 0 120 120" width="140" height="140" style={{ overflow: 'visible' }}>
-      <circle cx="60" cy="60" r={r} fill="none" stroke="#e5e7eb" strokeWidth="10" />
-      <circle
-        cx="60" cy="60" r={r} fill="none"
-        stroke={color} strokeWidth="10"
-        strokeDasharray={`${dash} ${circ}`}
-        strokeLinecap="round"
-        transform="rotate(-90 60 60)"
-        style={{ transition: 'stroke-dasharray 1.4s cubic-bezier(.17,.67,.35,1)', filter: `drop-shadow(0 0 6px ${color}88)` }}
-      />
-      <text x="60" y="56" textAnchor="middle" fontSize="18" fontWeight="800" fill={color}>{pct}%</text>
-      <text x="60" y="72" textAnchor="middle" fontSize="9" fill="#9ca3af" letterSpacing="1">CONFIDENCE</text>
-    </svg>
-  );
-}
-
-/* ── field input with icon ─────────────────────────────────────── */
-function Field({ label, icon, hint, children, required }) {
-  return (
-    <div className="pp-field">
-      <label className="pp-label">
-        <span className="pp-label-icon">{icon}</span>
-        {label}{required && <span className="pp-required">*</span>}
-      </label>
-      {children}
-      {hint && <span className="pp-hint">{hint}</span>}
-    </div>
-  );
-}
-
-/* ── loading dots ──────────────────────────────────────────────── */
-function LoadingDots() {
-  return (
-    <div className="pp-loading-overlay">
-      <div className="pp-loading-box">
-        <div className="pp-loading-icon">🌾</div>
-        <div className="pp-loading-title">Analyzing your data…</div>
-        <div className="pp-loading-sub">Running XGBoost · Random Forest · Gradient Boost</div>
-        <div className="pp-dots">
-          <span /><span /><span />
-        </div>
-        <div className="pp-loading-steps">
-          <LoadingStep label="Processing inputs" delay={0} />
-          <LoadingStep label="Running ML models" delay={600} />
-          <LoadingStep label="Aggregating results" delay={1200} />
-          <LoadingStep label="Generating insights" delay={1700} />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function LoadingStep({ label, delay }) {
-  const [done, setDone] = useState(false);
-  useEffect(() => {
-    const t = setTimeout(() => setDone(true), delay);
-    return () => clearTimeout(t);
-  }, [delay]);
-  return (
-    <div className={`pp-ls ${done ? 'pp-ls-done' : ''}`}>
-      <span className="pp-ls-dot">{done ? '✓' : '·'}</span>
-      {label}
-    </div>
-  );
-}
-
-/* ── main component ────────────────────────────────────────────── */
 export default function PredictionPage() {
   const { user } = useAuth();
-  const [step, setStep]       = useState(1);
+  const [activeTab, setActiveTab] = useState('predict'); // 'predict' | 'history'
   const [loading, setLoading] = useState(false);
-  const [result, setResult]   = useState(null);
-  const resultRef             = useRef(null);
+  const [result, setResult] = useState(null);
+  const resultRef = useRef(null);
 
+  // Farms and fields for pre-filling
+  const [farms, setFarms] = useState([]);
+  const [selectedFarmId, setSelectedFarmId] = useState('');
+  const [selectedFieldId, setSelectedFieldId] = useState('');
+
+  // 11 Core Agronomic Inputs
   const [formData, setFormData] = useState({
-    state: 'Maharashtra',
-    variety: stateVarieties['Maharashtra'][0],
-    season: varietySeasons[stateVarieties['Maharashtra'][0]]?.[0] || 'Kharif',
-    area_hectare: '',
-    rainfall_mm: '',
-    temperature_c: '',
-    soil_nitrogen: '',
-    soil_phosphorus: '',
-    soil_potassium: '',
-    irrigation_frequency: '',
-    prev_year_yield: '',
+    location: 'Kolhapur, Maharashtra',
+    variety: 'Co 86032',
+    area: '2.5',
+    soil_type: 'Black Soil',
+    soil_ph: '7.2',
+    soil_moisture: '62.0',
+    rainfall: '1200.0',
+    temperature: '29.5',
+    humidity: '70.0',
+    planting_date: '2025-10-15',
+    crop_growth_stage: 'Grand Growth',
+    historical_yield: '95.0'
   });
 
-  const availableVarieties = stateVarieties[formData.state] || [];
-  const availableSeasons   = varietySeasons[formData.variety] || allSeasons;
+  // Data Quality state
+  const [dataQuality, setDataQuality] = useState(null);
+  const [dqChecking, setDqChecking] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    if (name === 'state') {
-      const vars = stateVarieties[value] || [];
-      const v = vars[0] || '';
-      const ss = varietySeasons[v] || allSeasons;
-      setFormData(f => ({ ...f, state: value, variety: v, season: ss[0] || 'Kharif' }));
-    } else if (name === 'variety') {
-      const ss = varietySeasons[value] || allSeasons;
-      setFormData(f => ({ ...f, variety: value, season: ss[0] || 'Kharif' }));
-    } else {
-      setFormData(f => ({ ...f, [name]: value }));
+  // History state
+  const [historyList, setHistoryList] = useState([]);
+  const [historySearch, setHistorySearch] = useState('');
+  const [historyVariety, setHistoryVariety] = useState('');
+  const [historyRisk, setHistoryRisk] = useState('');
+  const [historyDateFrom, setHistoryDateFrom] = useState('');
+  const [historyDateTo, setHistoryDateTo] = useState('');
+  const [graphData, setGraphData] = useState([]);
+  const [detailsModal, setDetailsModal] = useState(null);
+  const [historyLoading, setHistoryLoading] = useState(false);
+
+  // Load farms & fields for autofill
+  useEffect(() => {
+    farmApi.list()
+      .then(res => {
+        const list = res.data?.farms || [];
+        setFarms(list);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Pre-fill when Farm/Field is selected
+  const handleFarmSelect = (e) => {
+    const fid = e.target.value;
+    setSelectedFarmId(fid);
+    setSelectedFieldId('');
+
+    const farm = farms.find(f => String(f.id) === String(fid));
+    if (farm) {
+      setFormData(prev => ({
+        ...prev,
+        location: farm.location || `${farm.district}, ${farm.state}`,
+        area: farm.total_area ? String(farm.total_area) : prev.area
+      }));
     }
   };
 
-  /* step validation */
-  const stepValid = () => {
-    if (step === 1) return formData.state && formData.variety && formData.season && formData.area_hectare;
-    if (step === 2) return formData.rainfall_mm && formData.temperature_c;
-    if (step === 3) return formData.soil_nitrogen && formData.soil_phosphorus && formData.soil_potassium;
-    return formData.irrigation_frequency;
+  const handleFieldSelect = (e) => {
+    const flid = e.target.value;
+    setSelectedFieldId(flid);
+
+    const farm = farms.find(f => String(f.id) === String(selectedFarmId));
+    if (farm && farm.fields) {
+      const field = farm.fields.find(fld => String(fld.id) === String(flid));
+      if (field) {
+        setFormData(prev => ({
+          ...prev,
+          variety: field.sugarcane_variety || prev.variety,
+          area: field.area ? String(field.area) : prev.area,
+          soil_type: field.soil_type || prev.soil_type,
+          soil_ph: field.soil_ph ? String(field.soil_ph) : prev.soil_ph,
+          soil_moisture: field.soil_moisture ? String(field.soil_moisture) : prev.soil_moisture,
+          planting_date: field.planting_date ? String(field.planting_date).slice(0, 10) : prev.planting_date
+        }));
+        toast.success(`Loaded agronomic data from field: ${field.name}`);
+      }
+    }
   };
 
-  const handleNext = () => {
-    if (stepValid()) setStep(s => Math.min(s + 1, 4));
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleBack = () => setStep(s => Math.max(s - 1, 1));
+  // Run Data Quality Verification
+  const checkDataQuality = async () => {
+    setDqChecking(true);
+    try {
+      const res = await mlApi.dataQuality({
+        ...formData,
+        area: Number(formData.area),
+        soil_ph: Number(formData.soil_ph),
+        soil_moisture: Number(formData.soil_moisture),
+        rainfall: Number(formData.rainfall),
+        temperature: Number(formData.temperature),
+        historical_yield: Number(formData.historical_yield)
+      });
+      setDataQuality(res.data);
+      if (res.data?.quality_score >= 80) {
+        toast.success(`Data Quality Score: ${res.data.quality_score}/100 — Ready for prediction!`);
+      } else {
+        toast.error(`Data Quality Warnings: Score ${res.data.quality_score}/100`);
+      }
+    } catch (err) {
+      toast.error('Data quality check failed: ' + err.message);
+    } finally {
+      setDqChecking(false);
+    }
+  };
 
-  const handleSubmit = async (e) => {
+  // Execute AI Yield Prediction
+  const handlePredict = async (e) => {
     e.preventDefault();
-    if (!stepValid()) return;
     setLoading(true);
     setResult(null);
 
-    setTimeout(() => {
-      const isNewVariety = !formData.prev_year_yield || parseFloat(formData.prev_year_yield) === 0;
-      let yld  = (Math.random() * 30 + 50).toFixed(2);
-      let conf = (Math.random() * 15 + 80).toFixed(1);
-      if (isNewVariety) { conf = (parseFloat(conf) - 10).toFixed(1); yld = (parseFloat(yld) - 5).toFixed(2); }
-      const risk = parseFloat(yld) > 65 ? 'Low' : parseFloat(yld) > 55 ? 'Medium' : 'High';
-      const totalProd = (parseFloat(yld) * parseFloat(formData.area_hectare)).toFixed(1);
+    try {
+      const payload = {
+        ...formData,
+        area_hectare: parseFloat(formData.area) || 1.0,
+        rainfall_mm: parseFloat(formData.rainfall) || 1200.0,
+        temperature_c: parseFloat(formData.temperature) || 29.5,
+        humidity_pct: parseFloat(formData.humidity) || 70.0,
+        soil_moisture: parseFloat(formData.soil_moisture) || 60.0,
+        soil_ph: parseFloat(formData.soil_ph) || 7.0,
+        historical_yield: parseFloat(formData.historical_yield) || 85.0,
+        farm_id: selectedFarmId ? Number(selectedFarmId) : null,
+        field_id: selectedFieldId ? Number(selectedFieldId) : null
+      };
 
-      setResult({ yield: yld, confidence: conf, model: 'XGBoost + Ensemble', risk, isNewVariety, totalProd });
+      const res = await mlApi.predict(payload);
+      if (res.success && res.data) {
+        setResult(res.data);
+        toast.success('Yield predicted & saved to MySQL!');
+        setTimeout(() => {
+          resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+      } else {
+        toast.error(res.message || 'Prediction failed.');
+      }
+    } catch (err) {
+      toast.error('Prediction Error: ' + err.message);
+    } finally {
       setLoading(false);
-      setTimeout(() => resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-    }, 2200);
+    }
   };
 
-  const handleReset = () => {
-    setFormData({
-      state: 'Maharashtra', variety: stateVarieties['Maharashtra'][0],
-      season: varietySeasons[stateVarieties['Maharashtra'][0]]?.[0] || 'Kharif',
-      area_hectare: '', rainfall_mm: '', temperature_c: '',
-      soil_nitrogen: '', soil_phosphorus: '', soil_potassium: '',
-      irrigation_frequency: '', prev_year_yield: '',
-    });
-    setResult(null);
-    setStep(1);
+  // Load History & Graph Data
+  const loadHistory = async () => {
+    setHistoryLoading(true);
+    try {
+      const params = {};
+      if (historySearch) params.search = historySearch;
+      if (historyVariety) params.variety = historyVariety;
+      if (historyRisk) params.risk = historyRisk;
+      if (historyDateFrom) params.date_from = historyDateFrom;
+      if (historyDateTo) params.date_to = historyDateTo;
+
+      const [histRes, graphRes] = await Promise.all([
+        predictionApi.list(params),
+        predictionApi.historyGraph()
+      ]);
+
+      setHistoryList(histRes.data?.predictions || []);
+      setGraphData(graphRes.data || []);
+    } catch (err) {
+      toast.error('Failed to load prediction history: ' + err.message);
+    } finally {
+      setHistoryLoading(false);
+    }
   };
 
-  const downloadReport = () => {
-    if (!result) return;
-    const txt = `
-SUGARCANE YIELD PREDICTION REPORT
-===============================================
-Generated : ${new Date().toLocaleDateString('en-IN', { dateStyle: 'full' })}
-User      : ${user?.name || 'User'}
+  useEffect(() => {
+    if (activeTab === 'history') {
+      loadHistory();
+    }
+  }, [activeTab, historyVariety, historyRisk, historyDateFrom, historyDateTo]);
 
-INPUT PARAMETERS
-───────────────
-State         : ${formData.state}
-Variety       : ${formData.variety}
-Season        : ${formData.season}
-Area          : ${formData.area_hectare} ha
-Rainfall      : ${formData.rainfall_mm} mm
-Temperature   : ${formData.temperature_c} °C
-Nitrogen (N)  : ${formData.soil_nitrogen} kg/ha
-Phosphorus (P): ${formData.soil_phosphorus} kg/ha
-Potassium (K) : ${formData.soil_potassium} kg/ha
-Irrigation    : ${formData.irrigation_frequency}×/month
-Prev. Yield   : ${formData.prev_year_yield || 'N/A'} t/ha
-
-PREDICTION RESULTS
-───────────────────
-Predicted Yield   : ${result.yield} t/ha
-Total Production  : ${result.totalProd} tonnes
-Confidence        : ${result.confidence}%
-Model             : ${result.model}
-Risk Level        : ${result.risk}
-${result.isNewVariety ? '\n⚠️  NEW VARIETY — lower confidence due to experimental nature.\n' : ''}
-
-RECOMMENDATIONS
-───────────────
-${result.isNewVariety
-  ? '• Start with small experimental plots\n• Monitor crop health closely\n• Document all observations'
-  : '• Maintain consistent irrigation schedule\n• Monitor NDVI every 2 weeks\n• Regular soil testing recommended'}
-
-===============================================
-SugarYield AI · Smart Agricultural Decision Support
-===============================================`;
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([txt], { type: 'text/plain' }));
-    a.download = `Yield_Report_${formData.variety.replace(/ /g,'_')}_${new Date().toISOString().split('T')[0]}.txt`;
-    a.click();
+  const handleDeletePrediction = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this prediction record?')) return;
+    try {
+      await predictionApi.remove(id);
+      toast.success('Prediction deleted.');
+      loadHistory();
+    } catch (err) {
+      toast.error('Delete failed: ' + err.message);
+    }
   };
 
-  const riskColor = result
-    ? result.risk === 'Low' ? '#16a34a' : result.risk === 'Medium' ? '#f59e0b' : '#ef4444'
-    : '#2d7a3e';
+  const riskColor = (risk) => {
+    switch (risk?.toLowerCase()) {
+      case 'low': return '#16a34a';
+      case 'medium': return '#f59e0b';
+      case 'high': return '#ea580c';
+      case 'critical': return '#dc2626';
+      default: return '#2d7a3e';
+    }
+  };
 
   return (
-    <WorkspaceLayout active="prediction">
-      {loading && <LoadingDots />}
-
-      <div className="pp-page">
-        {/* ── Hero header ── */}
-        <div className="pp-hero">
-          <div className="pp-hero-bg" />
-          <div className="pp-hero-content">
-            <span className="pp-eyebrow">🤖 AI-Powered Forecasting</span>
-            <h1 className="pp-title">Sugarcane Yield Prediction</h1>
-            <p className="pp-subtitle">
-              Enter your field parameters and get an accurate yield forecast from
-              an ensemble of 5 ML models trained on 12,000+ real samples.
+    <AppLayout>
+      <Toaster position="top-right" />
+      <div className="page-container">
+        {/* Header */}
+        <div className="page-header" style={{ marginBottom: 20 }}>
+          <div>
+            <p className="eyebrow">Artificial Intelligence & Decision Support</p>
+            <h1 className="page-title">AI Sugarcane Yield Prediction</h1>
+            <p className="page-subtitle">
+              Dual-model forecasting using trained <strong>Random Forest & XGBoost Regressors</strong> with pure agronomic factors.
+              Zero NDVI / satellite dependencies.
             </p>
-            <div className="pp-hero-chips">
-              <span className="pp-chip">🌾 XGBoost</span>
-              <span className="pp-chip">🌲 Random Forest</span>
-              <span className="pp-chip">📈 Gradient Boost</span>
-              <span className="pp-chip">86.2% Accuracy</span>
-            </div>
+          </div>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button
+              className={`btn ${activeTab === 'predict' ? 'btn-primary' : 'btn-outline'}`}
+              onClick={() => setActiveTab('predict')}
+            >
+              🎯 New Prediction
+            </button>
+            <button
+              className={`btn ${activeTab === 'history' ? 'btn-primary' : 'btn-outline'}`}
+              onClick={() => setActiveTab('history')}
+            >
+              📜 Prediction History & Analytics
+            </button>
           </div>
         </div>
 
-        <div className="pp-body">
-          {/* ── Stepper ── */}
-          <div className="pp-stepper">
-            {STEPS.map((s, i) => {
-              const state = step === s.id ? 'active' : step > s.id ? 'done' : 'idle';
-              return (
-                <React.Fragment key={s.id}>
-                  <button
-                    className={`pp-step pp-step-${state}`}
-                    onClick={() => step > s.id && setStep(s.id)}
-                    disabled={step < s.id}
+        {/* ========================================================================= */}
+        {/* TAB 1: RUN PREDICTION */}
+        {/* ========================================================================= */}
+        {activeTab === 'predict' && (
+          <div className="prediction-flow">
+            {/* Quick Prefill Section */}
+            <div className="dash-panel" style={{ marginBottom: 20, background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+                <div>
+                  <h4 style={{ margin: '0 0 4px', color: '#1e293b' }}>⚡ Quick Autofill from Saved Farms & Fields</h4>
+                  <p style={{ margin: 0, fontSize: 13, color: '#64748b' }}>
+                    Select an existing farm to automatically fill soil test readings, variety, and location data.
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+                  <select
+                    className="form-control"
+                    value={selectedFarmId}
+                    onChange={handleFarmSelect}
+                    style={{ minWidth: 200, padding: '8px 12px' }}
                   >
-                    <span className="pp-step-circle">
-                      {state === 'done' ? '✓' : s.icon}
-                    </span>
-                    <span className="pp-step-label">{s.label}</span>
-                    <span className="pp-step-desc">{s.desc}</span>
-                  </button>
-                  {i < STEPS.length - 1 && (
-                    <div className={`pp-step-line ${step > s.id ? 'pp-step-line-done' : ''}`} />
-                  )}
-                </React.Fragment>
-              );
-            })}
-          </div>
+                    <option value="">-- Choose Farm --</option>
+                    {farms.map(f => (
+                      <option key={f.id} value={f.id}>{f.name} ({f.district || f.location})</option>
+                    ))}
+                  </select>
 
-          <form onSubmit={handleSubmit}>
-            {/* ── Step 1: Crop Info ── */}
-            {step === 1 && (
-              <div className="pp-card pp-card-anim">
-                <div className="pp-card-header">
-                  <span className="pp-card-icon">🌾</span>
-                  <div>
-                    <h2>Crop Information</h2>
-                    <p>Select your state, variety, season, and field area.</p>
-                  </div>
-                </div>
-
-                <div className="pp-grid-2">
-                  <Field label="State" icon="📍" hint="Varieties update based on state" required>
-                    <div className="pp-select-wrap">
-                      <select name="state" value={formData.state} onChange={handleChange} className="pp-select" required>
-                        {states.map(s => <option key={s}>{s}</option>)}
-                      </select>
-                      <span className="pp-select-arrow">▾</span>
-                    </div>
-                  </Field>
-
-                  <Field label="Sugarcane Variety" icon="🌱" hint={`${availableVarieties.length} varieties for ${formData.state}`} required>
-                    <div className="pp-select-wrap">
-                      <select name="variety" value={formData.variety} onChange={handleChange} className="pp-select" required>
-                        {availableVarieties.map(v => <option key={v}>{v}</option>)}
-                      </select>
-                      <span className="pp-select-arrow">▾</span>
-                    </div>
-                  </Field>
-
-                  <Field label="Season" icon="📅" hint={`Valid for ${formData.variety}`} required>
-                    <div className="pp-season-btns">
-                      {availableSeasons.map(s => (
-                        <label key={s} className={`pp-season-btn ${formData.season === s ? 'pp-season-active' : ''}`}>
-                          <input type="radio" name="season" value={s} checked={formData.season === s} onChange={handleChange} hidden />
-                          {s === 'Kharif' ? '☔' : s === 'Rabi' ? '❄️' : '☀️'} {s}
-                        </label>
+                  {selectedFarmId && (
+                    <select
+                      className="form-control"
+                      value={selectedFieldId}
+                      onChange={handleFieldSelect}
+                      style={{ minWidth: 200, padding: '8px 12px' }}
+                    >
+                      <option value="">-- Choose Field / Plot --</option>
+                      {(farms.find(f => String(f.id) === String(selectedFarmId))?.fields || []).map(fld => (
+                        <option key={fld.id} value={fld.id}>{fld.name} ({fld.sugarcane_variety})</option>
                       ))}
-                    </div>
-                  </Field>
-
-                  <Field label="Area (Hectares)" icon="📐" required>
-                    <div className="pp-input-wrap">
-                      <input type="number" name="area_hectare" value={formData.area_hectare}
-                        onChange={handleChange} placeholder="e.g., 5.5" step="0.1" min="0"
-                        className="pp-input" required />
-                      <span className="pp-input-unit">ha</span>
-                    </div>
-                  </Field>
-                </div>
-
-                {/* variety info card */}
-                <div className="pp-info-card">
-                  <span className="pp-info-icon">💡</span>
-                  <div>
-                    <strong>{formData.variety}</strong> is recommended for <strong>{formData.state}</strong> during
-                    the <strong>{formData.season}</strong> season.
-                  </div>
+                    </select>
+                  )}
                 </div>
               </div>
-            )}
+            </div>
 
-            {/* ── Step 2: Weather ── */}
-            {step === 2 && (
-              <div className="pp-card pp-card-anim">
-                <div className="pp-card-header">
-                  <span className="pp-card-icon">☁️</span>
+            {/* Inputs Form Grid */}
+            <form onSubmit={handlePredict}>
+              <div className="dash-panel" style={{ marginBottom: 24 }}>
+                <div className="dash-panel-header" style={{ marginBottom: 16 }}>
                   <div>
-                    <h2>Weather Conditions</h2>
-                    <p>Climate data directly impacts yield predictions.</p>
+                    <h3 style={{ margin: 0 }}>Agronomic Input Parameters (11 Factors)</h3>
+                    <p style={{ margin: '4px 0 0', fontSize: 13, color: '#64748b' }}>
+                      All inputs are evaluated by trained Random Forest (R²=0.80) and XGBoost (R²=0.79) algorithms.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-outline"
+                    onClick={checkDataQuality}
+                    disabled={dqChecking}
+                    style={{ fontSize: 13 }}
+                  >
+                    {dqChecking ? 'Checking…' : '🔍 Verify Data Quality'}
+                  </button>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 18 }}>
+                  {/* 1. Location */}
+                  <div className="form-group">
+                    <label style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      📍 Location / District *
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="location"
+                      value={formData.location}
+                      onChange={handleChange}
+                      placeholder="e.g. Kolhapur, Maharashtra"
+                      required
+                    />
+                    <small style={{ color: '#64748b' }}>State / agro-climatic zone</small>
+                  </div>
+
+                  {/* 2. Variety */}
+                  <div className="form-group">
+                    <label style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      🌾 Sugarcane Variety *
+                    </label>
+                    <select
+                      className="form-control"
+                      name="variety"
+                      value={formData.variety}
+                      onChange={handleChange}
+                      required
+                    >
+                      {VARIETIES.map(v => (
+                        <option key={v} value={v}>{v}</option>
+                      ))}
+                    </select>
+                    <small style={{ color: '#64748b' }}>Officially supported high-sucrose varieties</small>
+                  </div>
+
+                  {/* 3. Area */}
+                  <div className="form-group">
+                    <label style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      📐 Field Area (Hectares) *
+                    </label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      min="0.1"
+                      max="1000"
+                      className="form-control"
+                      name="area"
+                      value={formData.area}
+                      onChange={handleChange}
+                      placeholder="e.g. 2.5"
+                      required
+                    />
+                    <small style={{ color: '#64748b' }}>Total plot surface in hectares</small>
+                  </div>
+
+                  {/* 4. Soil Type */}
+                  <div className="form-group">
+                    <label style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      🪨 Soil Classification *
+                    </label>
+                    <select
+                      className="form-control"
+                      name="soil_type"
+                      value={formData.soil_type}
+                      onChange={handleChange}
+                      required
+                    >
+                      {SOIL_TYPES.map(st => (
+                        <option key={st} value={st}>{st}</option>
+                      ))}
+                    </select>
+                    <small style={{ color: '#64748b' }}>Texture and drainage behavior</small>
+                  </div>
+
+                  {/* 5. Soil pH */}
+                  <div className="form-group">
+                    <label style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      🧪 Soil pH Level * ({formData.soil_ph})
+                    </label>
+                    <input
+                      type="range"
+                      min="5.0"
+                      max="9.0"
+                      step="0.1"
+                      name="soil_ph"
+                      value={formData.soil_ph}
+                      onChange={handleChange}
+                      style={{ width: '100%', accentColor: '#2d7a3e' }}
+                    />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#64748b' }}>
+                      <span>5.0 (Acidic)</span>
+                      <span style={{ color: '#2d7a3e', fontWeight: 600 }}>6.5–7.8 (Optimal)</span>
+                      <span>9.0 (Alkaline)</span>
+                    </div>
+                  </div>
+
+                  {/* 6. Soil Moisture */}
+                  <div className="form-group">
+                    <label style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      💧 Soil Moisture (%) * ({formData.soil_moisture}%)
+                    </label>
+                    <input
+                      type="range"
+                      min="20.0"
+                      max="90.0"
+                      step="1"
+                      name="soil_moisture"
+                      value={formData.soil_moisture}
+                      onChange={handleChange}
+                      style={{ width: '100%', accentColor: '#2563eb' }}
+                    />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#64748b' }}>
+                      <span>&lt;40% (Stress)</span>
+                      <span style={{ color: '#2563eb', fontWeight: 600 }}>50–70% (Adequate)</span>
+                      <span>&gt;80% (Waterlog)</span>
+                    </div>
+                  </div>
+
+                  {/* 7. Rainfall */}
+                  <div className="form-group">
+                    <label style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      🌧️ Annual / Crop Rainfall (mm) *
+                    </label>
+                    <input
+                      type="number"
+                      step="10"
+                      min="100"
+                      max="4000"
+                      className="form-control"
+                      name="rainfall"
+                      value={formData.rainfall}
+                      onChange={handleChange}
+                      placeholder="e.g. 1200"
+                      required
+                    />
+                    <small style={{ color: '#64748b' }}>Cumulative rainfall over crop lifecycle</small>
+                  </div>
+
+                  {/* 8. Temperature */}
+                  <div className="form-group">
+                    <label style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      🌡️ Mean Temperature (°C) *
+                    </label>
+                    <input
+                      type="number"
+                      step="0.5"
+                      min="10"
+                      max="50"
+                      className="form-control"
+                      name="temperature"
+                      value={formData.temperature}
+                      onChange={handleChange}
+                      placeholder="e.g. 29.5"
+                      required
+                    />
+                    <small style={{ color: '#64748b' }}>Optimal growth window: 27°C to 34°C</small>
+                  </div>
+
+                  {/* 9. Humidity */}
+                  <div className="form-group">
+                    <label style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      💨 Relative Humidity (%) *
+                    </label>
+                    <input
+                      type="number"
+                      step="1"
+                      min="20"
+                      max="100"
+                      className="form-control"
+                      name="humidity"
+                      value={formData.humidity}
+                      onChange={handleChange}
+                      placeholder="e.g. 70"
+                      required
+                    />
+                    <small style={{ color: '#64748b' }}>Average atmospheric relative humidity</small>
+                  </div>
+
+                  {/* 10. Planting Date */}
+                  <div className="form-group">
+                    <label style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      📅 Planting Date *
+                    </label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      name="planting_date"
+                      value={formData.planting_date}
+                      onChange={handleChange}
+                      required
+                    />
+                    <small style={{ color: '#64748b' }}>Date setts/ratoon planted</small>
+                  </div>
+
+                  {/* 11. Growth Stage */}
+                  <div className="form-group">
+                    <label style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      🌱 Current Phenology Stage *
+                    </label>
+                    <select
+                      className="form-control"
+                      name="crop_growth_stage"
+                      value={formData.crop_growth_stage}
+                      onChange={handleChange}
+                      required
+                    >
+                      {GROWTH_STAGES.map(gs => (
+                        <option key={gs} value={gs}>{gs}</option>
+                      ))}
+                    </select>
+                    <small style={{ color: '#64748b' }}>Active developmental lifecycle phase</small>
+                  </div>
+
+                  {/* 12. Historical Yield */}
+                  <div className="form-group">
+                    <label style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
+                      📊 Historical Baseline Yield (t/ha) *
+                    </label>
+                    <input
+                      type="number"
+                      step="0.5"
+                      min="30"
+                      max="220"
+                      className="form-control"
+                      name="historical_yield"
+                      value={formData.historical_yield}
+                      onChange={handleChange}
+                      placeholder="e.g. 95.0"
+                      required
+                    />
+                    <small style={{ color: '#64748b' }}>Prior year field yield or local benchmark</small>
                   </div>
                 </div>
 
-                <div className="pp-weather-visual">
-                  <div className="pp-wv-item">
-                    <span className="pp-wv-emoji">🌧️</span>
-                    <span className="pp-wv-label">Optimal Rainfall</span>
-                    <span className="pp-wv-range">1,200 – 1,500 mm/year</span>
-                  </div>
-                  <div className="pp-wv-divider" />
-                  <div className="pp-wv-item">
-                    <span className="pp-wv-emoji">🌡️</span>
-                    <span className="pp-wv-label">Optimal Temperature</span>
-                    <span className="pp-wv-range">27 – 34°C</span>
-                  </div>
-                  <div className="pp-wv-divider" />
-                  <div className="pp-wv-item">
-                    <span className="pp-wv-emoji">💧</span>
-                    <span className="pp-wv-label">Optimal Humidity</span>
-                    <span className="pp-wv-range">60 – 80%</span>
-                  </div>
-                </div>
-
-                <div className="pp-grid-2">
-                  <Field label="Annual Rainfall" icon="🌧️" required>
-                    <div className="pp-input-wrap">
-                      <input type="number" name="rainfall_mm" value={formData.rainfall_mm}
-                        onChange={handleChange} placeholder="e.g., 1200" min="0"
-                        className={`pp-input ${formData.rainfall_mm && (parseFloat(formData.rainfall_mm) < 1200 || parseFloat(formData.rainfall_mm) > 1500) ? 'pp-input-warn' : ''}`}
-                        required />
-                      <span className="pp-input-unit">mm</span>
+                {/* Data Quality Report Card if checked */}
+                {dataQuality && (
+                  <div style={{
+                    marginTop: 20,
+                    padding: 16,
+                    borderRadius: 10,
+                    background: dataQuality.quality_score >= 80 ? '#f0fdf4' : '#fffbeb',
+                    border: `1px solid ${dataQuality.quality_score >= 80 ? '#bbf7d0' : '#fef08a'}`
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <strong style={{ color: dataQuality.quality_score >= 80 ? '#166534' : '#854d0e' }}>
+                        🛡️ Data Quality Audit: {dataQuality.quality_score}/100 ({dataQuality.status})
+                      </strong>
+                      <span className={`badge ${dataQuality.quality_score >= 80 ? 'badge-green' : 'badge-amber'}`}>
+                        {dataQuality.is_ready_for_prediction ? 'Passed Validation' : 'Review Inputs'}
+                      </span>
                     </div>
-                    {formData.rainfall_mm && parseFloat(formData.rainfall_mm) >= 1200 && parseFloat(formData.rainfall_mm) <= 1500 &&
-                      <span className="pp-ok-hint">✓ Optimal range</span>}
-                    {formData.rainfall_mm && parseFloat(formData.rainfall_mm) < 1200 &&
-                      <span className="pp-warn-hint">⚠ Below optimal — may reduce yield</span>}
-                  </Field>
-
-                  <Field label="Average Temperature" icon="🌡️" required>
-                    <div className="pp-input-wrap">
-                      <input type="number" name="temperature_c" value={formData.temperature_c}
-                        onChange={handleChange} placeholder="e.g., 28.5" step="0.1" min="0"
-                        className={`pp-input ${formData.temperature_c && (parseFloat(formData.temperature_c) < 27 || parseFloat(formData.temperature_c) > 34) ? 'pp-input-warn' : ''}`}
-                        required />
-                      <span className="pp-input-unit">°C</span>
-                    </div>
-                    {formData.temperature_c && parseFloat(formData.temperature_c) >= 27 && parseFloat(formData.temperature_c) <= 34 &&
-                      <span className="pp-ok-hint">✓ Optimal range</span>}
-                  </Field>
-
-                  <Field label="Average Humidity" icon="💧">
-                    <div className="pp-input-wrap">
-                      <input type="number" name="humidity" value={formData.humidity || ''}
-                        onChange={handleChange} placeholder="e.g., 68" min="0" max="100"
-                        className="pp-input" />
-                      <span className="pp-input-unit">%</span>
-                    </div>
-                  </Field>
-
-                  <Field label="NDVI Value" icon="🛰️" hint="Vegetation health index (0–1)">
-                    <div className="pp-input-wrap">
-                      <input type="number" name="ndvi" value={formData.ndvi || ''}
-                        onChange={handleChange} placeholder="e.g., 0.74" step="0.01" min="0" max="1"
-                        className="pp-input" />
-                    </div>
-                    {formData.ndvi && (
-                      <div className="pp-ndvi-bar-wrap">
-                        <div className="pp-ndvi-bar">
-                          <div className="pp-ndvi-fill" style={{
-                            width: `${parseFloat(formData.ndvi) * 100}%`,
-                            background: parseFloat(formData.ndvi) > 0.6 ? '#16a34a' : parseFloat(formData.ndvi) > 0.4 ? '#f59e0b' : '#ef4444'
-                          }} />
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 8, fontSize: 13 }}>
+                      {dataQuality.checklist.map((c, i) => (
+                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <span>{c.passed ? '✅' : '⚠️'}</span>
+                          <span style={{ fontWeight: 500 }}>{c.item}:</span>
+                          <span style={{ color: '#64748b' }}>{c.status}</span>
                         </div>
-                        <span style={{ fontSize: 11, color: parseFloat(formData.ndvi) > 0.6 ? '#16a34a' : '#f59e0b' }}>
-                          {parseFloat(formData.ndvi) > 0.6 ? 'Healthy' : parseFloat(formData.ndvi) > 0.4 ? 'Moderate' : 'Stressed'}
-                        </span>
+                      ))}
+                    </div>
+                    {dataQuality.issues?.length > 0 && (
+                      <div style={{ marginTop: 10, fontSize: 12, color: '#dc2626' }}>
+                        {dataQuality.issues.map((iss, i) => <div key={i}>• {iss}</div>)}
                       </div>
                     )}
-                  </Field>
-                </div>
-              </div>
-            )}
-
-            {/* ── Step 3: Soil ── */}
-            {step === 3 && (
-              <div className="pp-card pp-card-anim">
-                <div className="pp-card-header">
-                  <span className="pp-card-icon">🪨</span>
-                  <div>
-                    <h2>Soil Parameters</h2>
-                    <p>NPK nutrients, pH, and moisture shape the yield potential.</p>
                   </div>
-                </div>
+                )}
 
-                <div className="pp-npk-guide">
-                  {[
-                    { label: 'N', color: '#2d7a3e', range: '150–250', desc: 'Nitrogen' },
-                    { label: 'P', color: '#1a73e8', range: '50–100', desc: 'Phosphorus' },
-                    { label: 'K', color: '#f59e0b', range: '75–150', desc: 'Potassium' },
-                  ].map(n => (
-                    <div key={n.label} className="pp-npk-pill" style={{ background: `${n.color}15`, borderColor: `${n.color}40` }}>
-                      <span className="pp-npk-sym" style={{ color: n.color }}>{n.label}</span>
-                      <span className="pp-npk-name">{n.desc}</span>
-                      <span className="pp-npk-range">{n.range} kg/ha</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="pp-grid-3">
-                  {[
-                    { name: 'soil_nitrogen',    label: 'Nitrogen (N)',   icon: '🟢', unit: 'kg/ha', ph: 'e.g., 180', color: '#2d7a3e', min: 150, max: 250 },
-                    { name: 'soil_phosphorus',  label: 'Phosphorus (P)', icon: '🔵', unit: 'kg/ha', ph: 'e.g., 60',  color: '#1a73e8', min: 50,  max: 100 },
-                    { name: 'soil_potassium',   label: 'Potassium (K)',  icon: '🟡', unit: 'kg/ha', ph: 'e.g., 80',  color: '#f59e0b', min: 75,  max: 150 },
-                  ].map(f => {
-                    const v = parseFloat(formData[f.name]);
-                    const pct = formData[f.name] ? Math.min((v / f.max) * 100, 110) : 0;
-                    const ok  = v >= f.min && v <= f.max;
-                    return (
-                      <div key={f.name} className="pp-soil-field">
-                        <label className="pp-label">
-                          <span className="pp-label-icon">{f.icon}</span>
-                          {f.label}<span className="pp-required">*</span>
-                        </label>
-                        <div className="pp-input-wrap">
-                          <input type="number" name={f.name} value={formData[f.name]}
-                            onChange={handleChange} placeholder={f.ph} min="0"
-                            className={`pp-input ${formData[f.name] && !ok ? 'pp-input-warn' : ''}`}
-                            required />
-                          <span className="pp-input-unit">{f.unit}</span>
-                        </div>
-                        {formData[f.name] && (
-                          <div className="pp-soil-meter">
-                            <div className="pp-soil-track">
-                              <div className="pp-soil-fill" style={{ width: `${Math.min(pct, 100)}%`, background: ok ? f.color : '#ef4444' }} />
-                              <div className="pp-soil-opt" style={{ left: `${(f.min / f.max) * 100}%`, width: `${((f.max - f.min) / f.max) * 100}%` }} />
-                            </div>
-                            <span className={ok ? 'pp-ok-hint' : 'pp-warn-hint'}>{ok ? '✓ Optimal' : '⚠ Adjust level'}</span>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                <div className="pp-grid-2" style={{ marginTop: 20 }}>
-                  <Field label="Soil pH" icon="⚗️" hint="Optimal: 6.0 – 7.5">
-                    <div className="pp-input-wrap">
-                      <input type="number" name="soil_ph" value={formData.soil_ph || ''}
-                        onChange={handleChange} placeholder="e.g., 6.8" step="0.1" min="0" max="14"
-                        className="pp-input" />
-                    </div>
-                  </Field>
-                  <Field label="Soil Moisture" icon="💧" hint="Optimal: 50–70%">
-                    <div className="pp-input-wrap">
-                      <input type="number" name="soil_moisture" value={formData.soil_moisture || ''}
-                        onChange={handleChange} placeholder="e.g., 62" min="0" max="100"
-                        className="pp-input" />
-                      <span className="pp-input-unit">%</span>
-                    </div>
-                  </Field>
-                </div>
-              </div>
-            )}
-
-            {/* ── Step 4: Management ── */}
-            {step === 4 && (
-              <div className="pp-card pp-card-anim">
-                <div className="pp-card-header">
-                  <span className="pp-card-icon">💧</span>
-                  <div>
-                    <h2>Management Practices</h2>
-                    <p>Irrigation frequency and historical yield data improve accuracy.</p>
-                  </div>
-                </div>
-
-                <div className="pp-grid-2">
-                  <Field label="Irrigation Frequency" icon="💧" hint="Recommended: 4–6 times/month" required>
-                    <div className="pp-input-wrap">
-                      <input type="number" name="irrigation_frequency" value={formData.irrigation_frequency}
-                        onChange={handleChange} placeholder="e.g., 4" min="0"
-                        className="pp-input" required />
-                      <span className="pp-input-unit">×/mo</span>
-                    </div>
-                    <div className="pp-irr-scale">
-                      {[1,2,3,4,5,6,7,8].map(n => (
-                        <div key={n} className={`pp-irr-dot ${parseFloat(formData.irrigation_frequency) >= n ? 'pp-irr-active' : ''}`} title={`${n}×/mo`} />
-                      ))}
-                      <span className="pp-irr-hint">optimal ↑ at 5×</span>
-                    </div>
-                  </Field>
-
-                  <Field label="Previous Year Yield" icon="📊" hint="Enter 0 for a new variety experiment">
-                    <div className="pp-input-wrap">
-                      <input type="number" name="prev_year_yield" value={formData.prev_year_yield}
-                        onChange={handleChange} placeholder="e.g., 65.5" step="0.1" min="0"
-                        className="pp-input" />
-                      <span className="pp-input-unit">t/ha</span>
-                    </div>
-                  </Field>
-
-                  <Field label="Soil Type" icon="🪨">
-                    <div className="pp-select-wrap">
-                      <select name="soil_type" value={formData.soil_type || ''} onChange={handleChange} className="pp-select">
-                        <option value="">Select soil type</option>
-                        <option>Black Cotton Soil</option>
-                        <option>Alluvial Soil</option>
-                        <option>Red Laterite Soil</option>
-                        <option>Sandy Loam</option>
-                        <option>Clay Loam</option>
-                      </select>
-                      <span className="pp-select-arrow">▾</span>
-                    </div>
-                  </Field>
-
-                  <Field label="Crop Stage" icon="📈">
-                    <div className="pp-select-wrap">
-                      <select name="crop_stage" value={formData.crop_stage || ''} onChange={handleChange} className="pp-select">
-                        <option value="">Select current stage</option>
-                        <option>Germination</option>
-                        <option>Tillering</option>
-                        <option>Grand Growth</option>
-                        <option>Ripening</option>
-                      </select>
-                      <span className="pp-select-arrow">▾</span>
-                    </div>
-                  </Field>
-                </div>
-
-                {/* Summary before submit */}
-                <div className="pp-summary-card">
-                  <h4>📋 Prediction Summary</h4>
-                  <div className="pp-summary-grid">
-                    {[
-                      { l: 'State',       v: formData.state },
-                      { l: 'Variety',     v: formData.variety },
-                      { l: 'Season',      v: formData.season },
-                      { l: 'Area',        v: formData.area_hectare ? `${formData.area_hectare} ha` : '—' },
-                      { l: 'Rainfall',    v: formData.rainfall_mm ? `${formData.rainfall_mm} mm` : '—' },
-                      { l: 'Temperature', v: formData.temperature_c ? `${formData.temperature_c}°C` : '—' },
-                      { l: 'N / P / K',   v: `${formData.soil_nitrogen || '—'} / ${formData.soil_phosphorus || '—'} / ${formData.soil_potassium || '—'}` },
-                      { l: 'Irrigation',  v: formData.irrigation_frequency ? `${formData.irrigation_frequency}×/mo` : '—' },
-                    ].map(r => (
-                      <div key={r.l} className="pp-sum-row">
-                        <span className="pp-sum-label">{r.l}</span>
-                        <span className="pp-sum-value">{r.v}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* ── Navigation ── */}
-            <div className="pp-nav">
-              {step > 1 && (
-                <button type="button" className="pp-btn-back" onClick={handleBack}>
-                  ← Back
-                </button>
-              )}
-              <div style={{ flex: 1 }} />
-              {step < 4 ? (
-                <button type="button" className={`pp-btn-next ${!stepValid() ? 'pp-btn-disabled' : ''}`} onClick={handleNext} disabled={!stepValid()}>
-                  Continue → <span className="pp-btn-next-label">{STEPS[step].label}</span>
-                </button>
-              ) : (
-                <button type="submit" className="pp-btn-predict" disabled={!stepValid() || loading}>
-                  <span className="pp-btn-predict-icon">🌾</span>
-                  Run AI Prediction
-                </button>
-              )}
-            </div>
-          </form>
-
-          {/* ── Result ── */}
-          {result && (
-            <div className="pp-result" ref={resultRef}>
-              {/* Confetti burst */}
-              <div className="pp-confetti">
-                {Array.from({ length: 18 }).map((_, i) => (
-                  <span key={i} className="pp-confetti-piece" style={{ '--i': i }} />
-                ))}
-              </div>
-
-              <div className="pp-result-hero">
-                <div className="pp-result-left">
-                  <span className="pp-result-eyebrow">🎯 Prediction Complete</span>
-                  <div className="pp-result-yield">
-                    <span className="pp-result-num">
-                      <CountUp to={result.yield} decimals={2} />
-                    </span>
-                    <span className="pp-result-unit">t/ha</span>
-                  </div>
-                  <span className="pp-result-label">Predicted Yield</span>
-                  <div className="pp-result-total">
-                    Total production: <strong>
-                      <CountUp to={result.totalProd} decimals={1} /> tonnes
-                    </strong> from {formData.area_hectare} ha
-                  </div>
-                </div>
-                <div className="pp-result-arc">
-                  <ConfidenceArc pct={parseFloat(result.confidence)} risk={result.risk} />
-                </div>
-              </div>
-
-              {/* Metric pills */}
-              <div className="pp-result-pills">
-                {[
-                  { icon: '🤖', label: 'Model',      value: result.model },
-                  { icon: '🌱', label: 'Variety',     value: formData.variety },
-                  { icon: '📍', label: 'State',       value: formData.state },
-                  { icon: '📅', label: 'Season',      value: formData.season },
-                ].map(p => (
-                  <div className="pp-pill" key={p.label}>
-                    <span className="pp-pill-icon">{p.icon}</span>
-                    <div>
-                      <span className="pp-pill-label">{p.label}</span>
-                      <span className="pp-pill-value">{p.value}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Risk badge */}
-              <div className="pp-risk-row">
-                <div className="pp-risk-badge" style={{ background: `${riskColor}18`, borderColor: `${riskColor}40`, color: riskColor }}>
-                  <span>{result.risk === 'Low' ? '🟢' : result.risk === 'Medium' ? '🟡' : '🔴'}</span>
-                  <strong>{result.risk} Risk</strong>
-                  <span className="pp-risk-desc">
-                    {result.risk === 'Low' ? 'Excellent yield prospects' : result.risk === 'Medium' ? 'Monitor conditions closely' : 'Requires immediate attention'}
+                {/* Submit button */}
+                <div style={{ marginTop: 24, display: 'flex', gap: 14, alignItems: 'center' }}>
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={loading}
+                    style={{ padding: '12px 28px', fontSize: 16, fontWeight: 700 }}
+                  >
+                    {loading ? 'Running Random Forest & XGBoost Models…' : '🔮 Run AI Yield Prediction'}
+                  </button>
+                  <span style={{ fontSize: 13, color: '#64748b' }}>
+                    Results are calculated using actual saved machine learning models and saved directly into MySQL.
                   </span>
                 </div>
               </div>
+            </form>
 
-              {result.isNewVariety && (
-                <div className="pp-new-variety-banner">
-                  <span>⚠️</span>
-                  <div>
-                    <strong>New Variety Experiment</strong>
-                    <p>This variety hasn't been grown in this region before. Prediction confidence is reduced. Start with small experimental plots.</p>
+            {/* Results Section */}
+            {result && (
+              <div ref={resultRef} className="prediction-results" style={{ marginTop: 30 }}>
+                {/* Result Hero Header */}
+                <div style={{
+                  padding: 24,
+                  borderRadius: 14,
+                  background: 'linear-gradient(135deg, #064e3b 0%, #065f46 60%, #047857 100%)',
+                  color: '#fff',
+                  marginBottom: 24,
+                  boxShadow: '0 10px 25px -5px rgba(6, 78, 59, 0.25)'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16 }}>
+                    <div>
+                      <span style={{ fontSize: 12, letterSpacing: '1px', textTransform: 'uppercase', color: '#6ee7b7', fontWeight: 700 }}>
+                        FORECAST GENERATED VIA {result.model_used?.toUpperCase()}
+                      </span>
+                      <h2 style={{ fontSize: 32, margin: '6px 0 10px', color: '#fff', fontWeight: 800 }}>
+                        {result.predicted_yield} <span style={{ fontSize: 20, fontWeight: 400 }}>tonnes / hectare</span>
+                      </h2>
+                      <p style={{ margin: 0, fontSize: 15, color: '#a7f3d0' }}>
+                        For <strong>{formData.variety}</strong> in <strong>{formData.location}</strong> ({formData.area} hectares total area)
+                      </p>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: 14 }}>
+                      <div style={{ background: 'rgba(255,255,255,0.15)', padding: '10px 18px', borderRadius: 10, textAlign: 'center' }}>
+                        <span style={{ fontSize: 11, color: '#d1fae5', textTransform: 'uppercase', display: 'block' }}>Expected Production</span>
+                        <strong style={{ fontSize: 24, color: '#fff' }}>{result.expected_production} t</strong>
+                      </div>
+                      <div style={{ background: 'rgba(255,255,255,0.15)', padding: '10px 18px', borderRadius: 10, textAlign: 'center' }}>
+                        <span style={{ fontSize: 11, color: '#d1fae5', textTransform: 'uppercase', display: 'block' }}>Model Confidence</span>
+                        <strong style={{ fontSize: 24, color: '#6ee7b7' }}>{result.confidence}%</strong>
+                      </div>
+                    </div>
                   </div>
                 </div>
+
+                {/* Key Outputs Metric Cards */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 16, marginBottom: 24 }}>
+                  {/* Expected Range */}
+                  <div className="dash-panel" style={{ padding: 18 }}>
+                    <span style={{ fontSize: 12, color: '#64748b', textTransform: 'uppercase', fontWeight: 600 }}>Expected Yield Range</span>
+                    <h3 style={{ margin: '6px 0', fontSize: 22, color: '#1e293b' }}>
+                      {result.expected_range?.low} – {result.expected_range?.high} <span style={{ fontSize: 14, color: '#64748b' }}>t/ha</span>
+                    </h3>
+                    <small style={{ color: '#10b981' }}>±92% confidence boundary</small>
+                  </div>
+
+                  {/* Production */}
+                  <div className="dash-panel" style={{ padding: 18 }}>
+                    <span style={{ fontSize: 12, color: '#64748b', textTransform: 'uppercase', fontWeight: 600 }}>Total Expected Production</span>
+                    <h3 style={{ margin: '6px 0', fontSize: 22, color: '#1e293b' }}>
+                      {result.expected_production} <span style={{ fontSize: 14, color: '#64748b' }}>Tonnes</span>
+                    </h3>
+                    <small style={{ color: '#64748b' }}>{result.predicted_yield} t/ha × {formData.area} ha</small>
+                  </div>
+
+                  {/* Risk Level */}
+                  <div className="dash-panel" style={{ padding: 18 }}>
+                    <span style={{ fontSize: 12, color: '#64748b', textTransform: 'uppercase', fontWeight: 600 }}>Risk Level</span>
+                    <h3 style={{ margin: '6px 0', fontSize: 22, color: riskColor(result.risk) }}>
+                      {result.risk} Risk
+                    </h3>
+                    <small style={{ color: '#64748b' }}>Based on yield loss vulnerability</small>
+                  </div>
+
+                  {/* Loss Percentage */}
+                  <div className="dash-panel" style={{ padding: 18 }}>
+                    <span style={{ fontSize: 12, color: '#64748b', textTransform: 'uppercase', fontWeight: 600 }}>Yield Loss Deficit</span>
+                    <h3 style={{ margin: '6px 0', fontSize: 22, color: result.loss_percentage > 20 ? '#ea580c' : '#16a34a' }}>
+                      {result.loss_percentage}%
+                    </h3>
+                    <small style={{ color: '#64748b' }}>Benchmark: {result.reference_yield} t/ha potential</small>
+                  </div>
+                </div>
+
+                {/* Model Consensus & Comparison */}
+                <div className="dash-two-col" style={{ marginBottom: 24 }}>
+                  <div className="dash-panel">
+                    <div className="dash-panel-header">
+                      <h3>Machine Learning Model Comparison</h3>
+                      <span className="badge badge-green">Trained Weights</span>
+                    </div>
+                    <p style={{ fontSize: 13, color: '#64748b', margin: '0 0 16px' }}>
+                      Both algorithms run simultaneously on your exact inputs without hardcoded formulas.
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                      <div style={{ padding: 14, borderRadius: 10, background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                        <div style={{ fontSize: 12, color: '#64748b' }}>🌲 Random Forest Regressor</div>
+                        <div style={{ fontSize: 24, fontWeight: 700, color: '#1e293b', margin: '4px 0' }}>
+                          {result.models_comparison?.random_forest} t/ha
+                        </div>
+                        <small style={{ color: '#16a34a' }}>5-Fold CV Score: R²=0.8005</small>
+                      </div>
+
+                      <div style={{ padding: 14, borderRadius: 10, background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                        <div style={{ fontSize: 12, color: '#64748b' }}>🚀 XGBoost Regressor</div>
+                        <div style={{ fontSize: 24, fontWeight: 700, color: '#1e293b', margin: '4px 0' }}>
+                          {result.models_comparison?.xgboost} t/ha
+                        </div>
+                        <small style={{ color: '#2563eb' }}>5-Fold CV Score: R²=0.7936</small>
+                      </div>
+                    </div>
+
+                    <div style={{ marginTop: 14, padding: 10, background: '#eff6ff', borderRadius: 8, fontSize: 12, color: '#1e40af' }}>
+                      Ensemble agreement is <strong>{result.confidence}%</strong>. Prediction saved under ID #{result.prediction_id}.
+                    </div>
+                  </div>
+
+                  {/* Feature Importance Bar Chart */}
+                  <div className="dash-panel">
+                    <div className="dash-panel-header">
+                      <h3>Feature Contributions (Model Weights)</h3>
+                      <span className="badge badge-blue">Agronomic Factors</span>
+                    </div>
+                    <ResponsiveContainer width="100%" height={230}>
+                      <BarChart
+                        data={(result.feature_importance || []).slice(0, 6)}
+                        layout="vertical"
+                        margin={{ top: 5, right: 30, left: 40, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
+                        <XAxis type="number" unit="%" tick={{ fontSize: 11 }} />
+                        <YAxis type="category" dataKey="feature" tick={{ fontSize: 11 }} width={90} />
+                        <Tooltip formatter={(v) => [`${v}%`, 'Importance']} />
+                        <Bar dataKey="pct" fill="#2d7a3e" radius={[0, 4, 4, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* Explainable AI Factors */}
+                {result.explainable_ai && (
+                  <div className="dash-panel" style={{ marginBottom: 24 }}>
+                    <div className="dash-panel-header">
+                      <h3>Explainable AI (XAI) Agronomic Diagnosis</h3>
+                      <span className="badge badge-green">Evidence Based</span>
+                    </div>
+                    <p style={{ margin: '0 0 16px', color: '#475569', fontSize: 14 }}>
+                      {result.explainable_ai.summary}
+                    </p>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
+                      {/* Positive Drivers */}
+                      <div style={{ background: '#f0fdf4', padding: 16, borderRadius: 10, border: '1px solid #bbf7d0' }}>
+                        <h4 style={{ margin: '0 0 10px', color: '#166534', display: 'flex', alignItems: 'center', gap: 6 }}>
+                          ✅ Positive Yield Drivers
+                        </h4>
+                        {(result.explainable_ai.positive_factors || []).length === 0 ? (
+                          <p style={{ fontSize: 13, color: '#64748b' }}>No strong positive drivers detected.</p>
+                        ) : (
+                          (result.explainable_ai.positive_factors || []).map((p, idx) => (
+                            <div key={idx} style={{ marginBottom: 8, fontSize: 13 }}>
+                              <strong style={{ color: '#14532d' }}>{p.factor} ({p.value}):</strong> {p.note}
+                            </div>
+                          ))
+                        )}
+                      </div>
+
+                      {/* Limiting Factors */}
+                      <div style={{ background: '#fef2f2', padding: 16, borderRadius: 10, border: '1px solid #fecaca' }}>
+                        <h4 style={{ margin: '0 0 10px', color: '#991b1b', display: 'flex', alignItems: 'center', gap: 6 }}>
+                          ⚠️ Limiting / Deficit Factors
+                        </h4>
+                        {(result.explainable_ai.negative_factors || []).length === 0 ? (
+                          <p style={{ fontSize: 13, color: '#166534' }}>All agronomic parameters are within acceptable bands.</p>
+                        ) : (
+                          (result.explainable_ai.negative_factors || []).map((n, idx) => (
+                            <div key={idx} style={{ marginBottom: 8, fontSize: 13 }}>
+                              <strong style={{ color: '#7f1d1d' }}>{n.factor} ({n.value}):</strong> {n.note}
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 2: PREDICTION HISTORY & ANALYTICS */}
+        {/* ========================================================================= */}
+        {activeTab === 'history' && (
+          <div className="history-flow">
+            {/* Historical Trend Graph */}
+            <div className="dash-panel" style={{ marginBottom: 24 }}>
+              <div className="dash-panel-header">
+                <div>
+                  <h3 style={{ margin: 0 }}>Historical Prediction Trend</h3>
+                  <p style={{ margin: '4px 0 0', fontSize: 13, color: '#64748b' }}>
+                    Temporal progression of predicted yields across your evaluated farms and seasons.
+                  </p>
+                </div>
+                <span className="badge badge-green">MySQL Persisted Data</span>
+              </div>
+
+              {graphData.length === 0 ? (
+                <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>
+                  No historical prediction data points yet. Run your first prediction above!
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height={260}>
+                  <LineChart data={graphData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <XAxis dataKey="date" tick={{ fontSize: 11 }} />
+                    <YAxis unit=" t" tick={{ fontSize: 11 }} />
+                    <Tooltip formatter={(v, n) => [n === 'yield' ? `${v} t/ha` : `${v} t`, n === 'yield' ? 'Predicted Yield' : 'Production']} />
+                    <Legend />
+                    <Line type="monotone" dataKey="yield" stroke="#2d7a3e" strokeWidth={2.5} name="Yield (t/ha)" activeDot={{ r: 6 }} />
+                    <Line type="monotone" dataKey="production" stroke="#2563eb" strokeWidth={1.5} name="Total Production (t)" strokeDasharray="4 4" />
+                  </LineChart>
+                </ResponsiveContainer>
               )}
+            </div>
 
-              {/* Analysis breakdown */}
-              <div className="pp-analysis">
-                <h3>Analysis Breakdown</h3>
-                <div className="pp-analysis-grid">
-                  {[
-                    {
-                      icon: '🌾', title: 'Variety Performance',
-                      body: `${formData.variety} ${result.isNewVariety ? 'is being trialled in this region for the first time' : `shows ${parseFloat(result.yield) > 65 ? 'excellent' : parseFloat(result.yield) > 55 ? 'good' : 'moderate'} yield potential`} in ${formData.state}.`,
-                      tag: result.isNewVariety ? 'Experimental' : 'Established',
-                      tagColor: result.isNewVariety ? '#f59e0b' : '#16a34a',
-                    },
-                    {
-                      icon: '🌧️', title: 'Weather Impact',
-                      body: `Rainfall (${formData.rainfall_mm} mm) and temperature (${formData.temperature_c}°C) are ${parseFloat(formData.rainfall_mm) > 1000 && parseFloat(formData.temperature_c) > 25 ? 'optimal' : 'acceptable'} for sugarcane growth this season.`,
-                      tag: parseFloat(formData.rainfall_mm) > 1000 ? 'Optimal' : 'Acceptable',
-                      tagColor: parseFloat(formData.rainfall_mm) > 1000 ? '#16a34a' : '#f59e0b',
-                    },
-                    {
-                      icon: '🪨', title: 'Soil Fertility',
-                      body: `NPK levels (N:${formData.soil_nitrogen}, P:${formData.soil_phosphorus}, K:${formData.soil_potassium} kg/ha) indicate ${parseFloat(formData.soil_nitrogen) > 150 ? 'good' : 'moderate'} nutrient availability.`,
-                      tag: parseFloat(formData.soil_nitrogen) > 150 ? 'Good' : 'Moderate',
-                      tagColor: parseFloat(formData.soil_nitrogen) > 150 ? '#16a34a' : '#f59e0b',
-                    },
-                    {
-                      icon: '💧', title: 'Irrigation Status',
-                      body: `Irrigation at ${formData.irrigation_frequency}×/month is ${parseFloat(formData.irrigation_frequency) >= 4 ? 'adequate' : 'below recommended'}. ${parseFloat(formData.irrigation_frequency) < 4 ? 'Increasing to 5×/month could improve yield.' : 'Good management practice.'}`,
-                      tag: parseFloat(formData.irrigation_frequency) >= 4 ? 'Adequate' : 'Low',
-                      tagColor: parseFloat(formData.irrigation_frequency) >= 4 ? '#16a34a' : '#ef4444',
-                    },
-                  ].map(a => (
-                    <div className="pp-analysis-card" key={a.title}>
-                      <div className="pp-ac-header">
-                        <span className="pp-ac-icon">{a.icon}</span>
-                        <span className="pp-ac-title">{a.title}</span>
-                        <span className="pp-ac-tag" style={{ background: `${a.tagColor}18`, color: a.tagColor }}>{a.tag}</span>
-                      </div>
-                      <p className="pp-ac-body">{a.body}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {/* Filter and Search Bar */}
+            <div className="dash-panel" style={{ marginBottom: 24, padding: 16 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12 }}>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="🔍 Search farm, field, location…"
+                  value={historySearch}
+                  onChange={e => setHistorySearch(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && loadHistory()}
+                />
 
-              {/* Feature importance mini bars */}
-              <div className="pp-importance">
-                <h3>Key Factors (Feature Importance)</h3>
-                <div className="pp-imp-list">
-                  {[
-                    { label: 'NDVI / Crop Health',      pct: 28, color: '#2d7a3e' },
-                    { label: 'Annual Rainfall',          pct: 22, color: '#1a73e8' },
-                    { label: 'Soil Nitrogen (N)',         pct: 18, color: '#16a34a' },
-                    { label: 'Temperature',              pct: 12, color: '#f59e0b' },
-                    { label: 'Potassium (K)',             pct: 8,  color: '#8b5cf6' },
-                    { label: 'Irrigation Frequency',     pct: 6,  color: '#3b82f6' },
-                    { label: 'Soil pH',                  pct: 4,  color: '#ec4899' },
-                    { label: 'Previous Year Yield',      pct: 2,  color: '#6b7280' },
-                  ].map((f, i) => (
-                    <div className="pp-imp-row" key={f.label} style={{ animationDelay: `${i * 60}ms` }}>
-                      <span className="pp-imp-label">{f.label}</span>
-                      <div className="pp-imp-track">
-                        <div className="pp-imp-fill" style={{ width: `${f.pct * 3}%`, background: f.color }} />
-                      </div>
-                      <span className="pp-imp-pct">{f.pct}%</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                <select
+                  className="form-control"
+                  value={historyVariety}
+                  onChange={e => setHistoryVariety(e.target.value)}
+                >
+                  <option value="">All Varieties</option>
+                  {VARIETIES.map(v => <option key={v} value={v}>{v}</option>)}
+                </select>
 
-              {/* Actions */}
-              <div className="pp-result-actions">
-                <button className="pp-btn-back" onClick={handleReset}>
-                  🔄 New Prediction
-                </button>
-                <button className="pp-btn-download" onClick={downloadReport}>
-                  ⬇ Download Report
-                </button>
-                <button className="pp-btn-predict" onClick={() => window.location.href = '/insights'} style={{ flex: 0, padding: '14px 24px' }}>
-                  🤖 Full AI Insights →
+                <select
+                  className="form-control"
+                  value={historyRisk}
+                  onChange={e => setHistoryRisk(e.target.value)}
+                >
+                  <option value="">All Risk Levels</option>
+                  <option value="Low">Low Risk</option>
+                  <option value="Medium">Medium Risk</option>
+                  <option value="High">High Risk</option>
+                  <option value="Critical">Critical Risk</option>
+                </select>
+
+                <input
+                  type="date"
+                  className="form-control"
+                  value={historyDateFrom}
+                  onChange={e => setHistoryDateFrom(e.target.value)}
+                  title="From Date"
+                />
+
+                <input
+                  type="date"
+                  className="form-control"
+                  value={historyDateTo}
+                  onChange={e => setHistoryDateTo(e.target.value)}
+                  title="To Date"
+                />
+
+                <button className="btn btn-outline" onClick={loadHistory}>
+                  Apply Filters
                 </button>
               </div>
             </div>
-          )}
-        </div>
+
+            {/* History Table */}
+            <div className="dash-panel">
+              <div className="dash-panel-header">
+                <h3>Prediction History ({historyList.length})</h3>
+                <span className="badge badge-blue">Complete Audit Trail</span>
+              </div>
+
+              {historyLoading ? (
+                <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>Loading prediction records…</div>
+              ) : historyList.length === 0 ? (
+                <div style={{ padding: 40, textAlign: 'center', color: '#64748b' }}>
+                  No prediction records match your query.
+                </div>
+              ) : (
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 13 }}>
+                    <thead>
+                      <tr style={{ borderBottom: '2px solid #e2e8f0', color: '#64748b' }}>
+                        <th style={{ padding: '10px 12px' }}>Date</th>
+                        <th style={{ padding: '10px 12px' }}>Farm / Location</th>
+                        <th style={{ padding: '10px 12px' }}>Field</th>
+                        <th style={{ padding: '10px 12px' }}>Variety</th>
+                        <th style={{ padding: '10px 12px' }}>Yield (t/ha)</th>
+                        <th style={{ padding: '10px 12px' }}>Production (t)</th>
+                        <th style={{ padding: '10px 12px' }}>Confidence</th>
+                        <th style={{ padding: '10px 12px' }}>Risk</th>
+                        <th style={{ padding: '10px 12px' }}>Loss %</th>
+                        <th style={{ padding: '10px 12px', textAlign: 'center' }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {historyList.map(r => (
+                        <tr key={r.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                          <td style={{ padding: '10px 12px', whiteSpace: 'nowrap' }}>
+                            {r.created_at ? r.created_at.slice(0, 10) : '—'}
+                          </td>
+                          <td style={{ padding: '10px 12px' }}>
+                            <strong>{r.farm_name || r.location}</strong>
+                          </td>
+                          <td style={{ padding: '10px 12px' }}>{r.field_name || 'Plot'}</td>
+                          <td style={{ padding: '10px 12px' }}>
+                            <span className="badge badge-green">{r.variety}</span>
+                          </td>
+                          <td style={{ padding: '10px 12px', fontWeight: 700, color: '#065f46' }}>
+                            {Number(r.predicted_yield).toFixed(1)}
+                          </td>
+                          <td style={{ padding: '10px 12px' }}>
+                            {Number(r.expected_production || 0).toFixed(1)}
+                          </td>
+                          <td style={{ padding: '10px 12px' }}>{r.confidence}%</td>
+                          <td style={{ padding: '10px 12px' }}>
+                            <span style={{
+                              padding: '2px 8px',
+                              borderRadius: 4,
+                              fontSize: 11,
+                              fontWeight: 600,
+                              color: '#fff',
+                              background: riskColor(r.risk_level || r.risk)
+                            }}>
+                              {r.risk_level || r.risk || 'Low'}
+                            </span>
+                          </td>
+                          <td style={{ padding: '10px 12px', color: (r.loss_percentage || r.expected_loss) > 20 ? '#dc2626' : '#16a34a' }}>
+                            {Number(r.loss_percentage || r.expected_loss || 0).toFixed(1)}%
+                          </td>
+                          <td style={{ padding: '10px 12px', textAlign: 'center', whiteSpace: 'nowrap' }}>
+                            <button
+                              className="btn btn-outline"
+                              style={{ padding: '4px 8px', fontSize: 12, marginRight: 6 }}
+                              onClick={() => setDetailsModal(r)}
+                            >
+                              Details
+                            </button>
+                            <button
+                              className="btn btn-outline"
+                              style={{ padding: '4px 8px', fontSize: 12, color: '#dc2626', borderColor: '#fca5a5' }}
+                              onClick={() => handleDeletePrediction(r.id)}
+                            >
+                              Delete
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            {/* Details Modal */}
+            {detailsModal && (
+              <div style={{
+                position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                zIndex: 9999, padding: 20
+              }}>
+                <div style={{ background: '#fff', borderRadius: 12, maxWidth: 600, width: '100%', maxHeight: '90vh', overflowY: 'auto', padding: 24 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, borderBottom: '1px solid #e2e8f0', paddingBottom: 10 }}>
+                    <h3 style={{ margin: 0 }}>Prediction Record Details #{detailsModal.id}</h3>
+                    <button className="btn btn-outline" onClick={() => setDetailsModal(null)} style={{ padding: '2px 8px' }}>✕</button>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, fontSize: 13, marginBottom: 16 }}>
+                    <div><strong>Date:</strong> {detailsModal.created_at?.slice(0, 10)}</div>
+                    <div><strong>Farm:</strong> {detailsModal.farm_name || detailsModal.location}</div>
+                    <div><strong>Field:</strong> {detailsModal.field_name || 'Plot'}</div>
+                    <div><strong>Variety:</strong> {detailsModal.variety}</div>
+                    <div><strong>Area:</strong> {detailsModal.area} ha</div>
+                    <div><strong>Predicted Yield:</strong> {detailsModal.predicted_yield} t/ha</div>
+                    <div><strong>Expected Production:</strong> {detailsModal.expected_production} t</div>
+                    <div><strong>Confidence:</strong> {detailsModal.confidence}%</div>
+                    <div><strong>Risk Level:</strong> {detailsModal.risk_level || detailsModal.risk}</div>
+                    <div><strong>Loss Deficit:</strong> {detailsModal.loss_percentage || detailsModal.expected_loss}%</div>
+                  </div>
+
+                  {detailsModal.explanation && (
+                    <div style={{ background: '#f8fafc', padding: 12, borderRadius: 8, fontSize: 12, marginBottom: 14 }}>
+                      <strong>AI Explanation:</strong>
+                      <p style={{ margin: '4px 0 0' }}>{detailsModal.explanation.summary}</p>
+                    </div>
+                  )}
+
+                  <div style={{ textAlign: 'right' }}>
+                    <button className="btn btn-primary" onClick={() => setDetailsModal(null)}>Close</button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
-    </WorkspaceLayout>
+    </AppLayout>
   );
 }

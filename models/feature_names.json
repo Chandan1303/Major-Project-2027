@@ -1,21 +1,13 @@
 [
   "rainfall_mm",
   "temperature_c",
-  "sunlight_hours",
-  "soil_nitrogen",
-  "soil_phosphorus",
-  "soil_potassium",
-  "ndvi_mean",
-  "ndvi_max",
-  "ndvi_min",
-  "ndvi_std",
-  "crop_duration_days",
-  "irrigation_frequency",
-  "prev_year_yield",
-  "yield_3yr_avg",
-  "yield_5yr_avg",
+  "humidity_pct",
+  "soil_moisture",
+  "soil_ph",
   "area_hectare",
+  "historical_yield",
   "variety_encoded",
-  "state_encoded",
-  "season_encoded"
+  "soil_type_encoded",
+  "growth_stage_encoded",
+  "state_encoded"
 ]

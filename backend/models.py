@@ -487,3 +487,325 @@ class PasswordResetToken(db.Model):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     user = relationship("User", back_populates="reset_tokens")
+
+
+# -----------------------------------------------------------------------------
+# 12. YIELD PREDICTION MODEL (Complete ML Inference Records)
+# -----------------------------------------------------------------------------
+class YieldPrediction(db.Model):
+    __tablename__ = "yield_predictions"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    farm_id = Column(Integer, ForeignKey("farms.id", ondelete="SET NULL"), nullable=True, index=True)
+    field_id = Column(Integer, ForeignKey("fields.id", ondelete="SET NULL"), nullable=True, index=True)
+    location = Column(String(200), nullable=False)
+    variety = Column(String(120), nullable=False, index=True)
+    area = Column(Numeric(10, 2), nullable=False)
+    soil_type = Column(String(80), nullable=False)
+    soil_ph = Column(Numeric(4, 2), nullable=False)
+    soil_moisture = Column(Numeric(5, 2), nullable=False)
+    rainfall = Column(Numeric(10, 2), nullable=False)
+    temperature = Column(Numeric(5, 2), nullable=False)
+    humidity = Column(Numeric(5, 2), nullable=False)
+    planting_date = Column(Date, nullable=False)
+    crop_growth_stage = Column(String(50), nullable=False)
+    historical_yield = Column(Numeric(10, 2), nullable=False)
+    predicted_yield = Column(Numeric(10, 2), nullable=False)
+    expected_production = Column(Numeric(12, 2), nullable=False)
+    confidence = Column(Numeric(5, 2), nullable=False)
+    expected_range_low = Column(Numeric(10, 2), nullable=False)
+    expected_range_high = Column(Numeric(10, 2), nullable=False)
+    risk_level = Column(String(50), default="Low", nullable=False)
+    loss_percentage = Column(Numeric(5, 2), default=0.00, nullable=False)
+    expected_loss_tonnes = Column(Numeric(10, 2), default=0.00, nullable=False)
+    model_used = Column(String(50), default="Random Forest", nullable=False)
+    crop_health = Column(String(50), default="Good", nullable=False)
+    is_demo = Column(Boolean, default=False, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False, index=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+    user = relationship("User", backref="yield_predictions")
+    farm = relationship("Farm")
+    field = relationship("Field")
+    explanation = relationship("PredictionExplanation", back_populates="prediction", uselist=False, cascade="all, delete-orphan")
+    history_records = relationship("PredictionHistory", back_populates="prediction", cascade="all, delete-orphan")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "farm_id": self.farm_id,
+            "farm_name": self.farm.name if self.farm else "",
+            "field_id": self.field_id,
+            "field_name": self.field.name if self.field else "",
+            "location": self.location,
+            "variety": self.variety,
+            "area": float(self.area),
+            "soil_type": self.soil_type,
+            "soil_ph": float(self.soil_ph),
+            "soil_moisture": float(self.soil_moisture),
+            "rainfall": float(self.rainfall),
+            "temperature": float(self.temperature),
+            "humidity": float(self.humidity),
+            "planting_date": self.planting_date.isoformat() if self.planting_date else None,
+            "crop_growth_stage": self.crop_growth_stage,
+            "historical_yield": float(self.historical_yield),
+            "predicted_yield": float(self.predicted_yield),
+            "expected_production": float(self.expected_production),
+            "confidence": float(self.confidence),
+            "expected_range": {
+                "low": float(self.expected_range_low),
+                "high": float(self.expected_range_high)
+            },
+            "risk": self.risk_level,
+            "risk_level": self.risk_level,
+            "loss_percentage": float(self.loss_percentage),
+            "expected_loss_pct": float(self.loss_percentage),
+            "expected_loss_tonnes": float(self.expected_loss_tonnes),
+            "model_used": self.model_used,
+            "crop_health": self.crop_health,
+            "is_demo": self.is_demo,
+            "created_at": self.created_at.isoformat() if self.created_at else None
+        }
+
+
+# -----------------------------------------------------------------------------
+# 13. PREDICTION HISTORY MODEL
+# -----------------------------------------------------------------------------
+class PredictionHistory(db.Model):
+    __tablename__ = "prediction_history"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    prediction_id = Column(Integer, ForeignKey("yield_predictions.id", ondelete="SET NULL"), nullable=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    farm_id = Column(Integer, nullable=True)
+    field_id = Column(Integer, nullable=True)
+    farm_name = Column(String(120), nullable=True)
+    field_name = Column(String(120), nullable=True)
+    variety = Column(String(120), nullable=False)
+    predicted_yield = Column(Numeric(10, 2), nullable=False)
+    expected_production = Column(Numeric(12, 2), nullable=False)
+    confidence = Column(Numeric(5, 2), nullable=False)
+    risk_level = Column(String(50), nullable=False)
+    loss_percentage = Column(Numeric(5, 2), nullable=False)
+    scenario_name = Column(String(100), default="Current Baseline", nullable=False)
+    is_simulation = Column(Boolean, default=False, nullable=False)
+    details_json = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    prediction = relationship("YieldPrediction", back_populates="history_records")
+    user = relationship("User", backref="prediction_history")
+
+    def to_dict(self):
+        import json
+        details = {}
+        if self.details_json:
+            try:
+                details = json.loads(self.details_json)
+            except Exception:
+                pass
+        return {
+            "id": self.id,
+            "prediction_id": self.prediction_id,
+            "user_id": self.user_id,
+            "farm_id": self.farm_id,
+            "field_id": self.field_id,
+            "farm_name": self.farm_name or "N/A",
+            "field_name": self.field_name or "N/A",
+            "variety": self.variety,
+            "predicted_yield": float(self.predicted_yield),
+            "expected_production": float(self.expected_production),
+            "confidence": float(self.confidence),
+            "risk": self.risk_level,
+            "risk_level": self.risk_level,
+            "loss_percentage": float(self.loss_percentage),
+            "scenario_name": self.scenario_name,
+            "is_simulation": self.is_simulation,
+            "details": details,
+            "created_at": self.created_at.isoformat() if self.created_at else None
+        }
+
+
+# -----------------------------------------------------------------------------
+# 14. PREDICTION EXPLANATIONS MODEL (XAI)
+# -----------------------------------------------------------------------------
+class PredictionExplanation(db.Model):
+    __tablename__ = "prediction_explanations"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    prediction_id = Column(Integer, ForeignKey("yield_predictions.id", ondelete="CASCADE"), nullable=False, index=True)
+    feature_importances_json = Column(Text, nullable=True)
+    feature_contributions_json = Column(Text, nullable=True)
+    positive_factors_json = Column(Text, nullable=True)
+    negative_factors_json = Column(Text, nullable=True)
+    confidence_reasons_json = Column(Text, nullable=True)
+    summary_explanation = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    prediction = relationship("YieldPrediction", back_populates="explanation")
+
+    def to_dict(self):
+        import json
+        def _parse(val):
+            if not val:
+                return []
+            try:
+                return json.loads(val)
+            except Exception:
+                return []
+
+        return {
+            "id": self.id,
+            "prediction_id": self.prediction_id,
+            "feature_importances": _parse(self.feature_importances_json),
+            "feature_contributions": _parse(self.feature_contributions_json),
+            "positive_factors": _parse(self.positive_factors_json),
+            "negative_factors": _parse(self.negative_factors_json),
+            "confidence_reasons": _parse(self.confidence_reasons_json),
+            "summary": self.summary_explanation or "",
+            "created_at": self.created_at.isoformat() if self.created_at else None
+        }
+
+
+# -----------------------------------------------------------------------------
+# 15. RECOMMENDATION MODEL (AI Advisor & Decision Support)
+# -----------------------------------------------------------------------------
+class Recommendation(db.Model):
+    __tablename__ = "recommendations"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    farm_id = Column(Integer, nullable=True)
+    field_id = Column(Integer, nullable=True)
+    category = Column(String(50), default="advisor", nullable=False, index=True)
+    title = Column(String(200), nullable=False)
+    content = Column(Text, nullable=False)
+    explanation = Column(Text, nullable=True)
+    priority = Column(String(50), default="medium", nullable=False)
+    status = Column(String(50), default="active", nullable=False)
+    action_required = Column(String(255), nullable=True)
+    is_demo = Column(Boolean, default=False, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+
+    user = relationship("User", backref="recommendations")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "farm_id": self.farm_id,
+            "field_id": self.field_id,
+            "category": self.category,
+            "title": self.title,
+            "content": self.content,
+            "explanation": self.explanation,
+            "priority": self.priority,
+            "status": self.status,
+            "action_required": self.action_required,
+            "is_demo": self.is_demo,
+            "created_at": self.created_at.isoformat() if self.created_at else None
+        }
+
+
+# -----------------------------------------------------------------------------
+# 16. MODEL PERFORMANCE MODEL
+# -----------------------------------------------------------------------------
+class ModelPerformance(db.Model):
+    __tablename__ = "model_performance"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    model_name = Column(String(80), nullable=False, index=True)
+    version = Column(String(50), default="2.0.0", nullable=False)
+    mae = Column(Numeric(8, 4), nullable=False)
+    rmse = Column(Numeric(8, 4), nullable=False)
+    r2_score = Column(Numeric(8, 4), nullable=False)
+    cv_score = Column(Numeric(8, 4), nullable=False)
+    cv_folds = Column(Integer, default=5, nullable=False)
+    n_train_samples = Column(Integer, nullable=False)
+    n_test_samples = Column(Integer, nullable=False)
+    is_active = Column(Boolean, default=True, nullable=False)
+    metrics_json = Column(Text, nullable=True)
+    feature_importance_json = Column(Text, nullable=True)
+    actual_vs_predicted_json = Column(Text, nullable=True)
+    residuals_json = Column(Text, nullable=True)
+    evaluated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    def to_dict(self):
+        import json
+        def _parse(val):
+            if not val:
+                return None
+            try:
+                return json.loads(val)
+            except Exception:
+                return None
+
+        return {
+            "id": self.id,
+            "model_name": self.model_name,
+            "version": self.version,
+            "mae": float(self.mae),
+            "rmse": float(self.rmse),
+            "r2_score": float(self.r2_score),
+            "cv_score": float(self.cv_score),
+            "cv_folds": self.cv_folds,
+            "n_train_samples": self.n_train_samples,
+            "n_test_samples": self.n_test_samples,
+            "is_active": self.is_active,
+            "metrics": _parse(self.metrics_json),
+            "feature_importance": _parse(self.feature_importance_json),
+            "actual_vs_predicted": _parse(self.actual_vs_predicted_json),
+            "evaluated_at": self.evaluated_at.isoformat() if self.evaluated_at else None
+        }
+
+
+# -----------------------------------------------------------------------------
+# 17. REPORT MODEL
+# -----------------------------------------------------------------------------
+class Report(db.Model):
+    __tablename__ = "reports"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    farm_id = Column(Integer, nullable=True)
+    field_id = Column(Integer, nullable=True)
+    report_type = Column(String(100), nullable=False, index=True)
+    title = Column(String(255), nullable=False)
+    summary = Column(Text, nullable=True)
+    parameters_json = Column(Text, nullable=True)
+    report_data_json = Column(Text, nullable=True)
+    file_format = Column(String(20), default="PDF", nullable=False)
+    download_count = Column(Integer, default=0, nullable=False)
+    is_demo = Column(Boolean, default=False, nullable=False)
+    generated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+    user = relationship("User", backref="reports")
+
+    def to_dict(self):
+        import json
+        def _parse(val):
+            if not val:
+                return {}
+            try:
+                return json.loads(val)
+            except Exception:
+                return {}
+
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "farm_id": self.farm_id,
+            "field_id": self.field_id,
+            "report_type": self.report_type,
+            "title": self.title,
+            "summary": self.summary or "",
+            "parameters": _parse(self.parameters_json),
+            "report_data": _parse(self.report_data_json),
+            "file_format": self.file_format,
+            "download_count": self.download_count,
+            "is_demo": self.is_demo,
+            "generated_at": self.generated_at.isoformat() if self.generated_at else None
+        }
+

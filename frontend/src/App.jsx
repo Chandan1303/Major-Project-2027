@@ -32,6 +32,8 @@ import ChatPage        from './pages/ChatPage';
 import AlertsPage      from './pages/AlertsPage';
 import ProfilePage     from './pages/ProfilePage';
 import AboutPage       from './pages/AboutPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
+import OfficerDashboardPage from './pages/OfficerDashboardPage';
 
 function Protected({ children }) {
   return <ProtectedRoute>{children}</ProtectedRoute>;
@@ -71,6 +73,8 @@ export default function App() {
       <Route path="/alerts"      element={<Protected><AlertsPage /></Protected>} />
       <Route path="/profile"     element={<Protected><ProfilePage /></Protected>} />
       <Route path="/about"       element={<Protected><AboutPage /></Protected>} />
+      <Route path="/admin"       element={<Protected><AdminDashboardPage /></Protected>} />
+      <Route path="/officer"     element={<Protected><OfficerDashboardPage /></Protected>} />
 
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>

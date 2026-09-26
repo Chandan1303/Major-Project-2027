@@ -34,6 +34,10 @@ const NAV = [
     { label: 'AI Chat',          path: '/chat',        icon: '💬' },
     { label: 'Alerts',           path: '/alerts',      icon: '🔔' },
   ]},
+  { group: 'Management',  items: [
+    { label: 'Admin Portal',     path: '/admin',       icon: '⚙️' },
+    { label: 'Officer Dashboard',path: '/officer',     icon: '📋' },
+  ]},
   { group: 'Account',     items: [
     { label: 'Profile',          path: '/profile',     icon: '👤' },
     { label: 'About',            path: '/about',       icon: 'ℹ️'  },

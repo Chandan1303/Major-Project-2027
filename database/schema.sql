@@ -295,4 +295,165 @@ CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
   CONSTRAINT `fk_prt_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- ----------------------------------------------------------------------------
+-- 12. YIELD PREDICTIONS TABLE (Advanced Complete System)
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `yield_predictions` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT UNSIGNED NOT NULL,
+  `farm_id` INT UNSIGNED NULL,
+  `field_id` INT UNSIGNED NULL,
+  `location` VARCHAR(200) NOT NULL,
+  `variety` VARCHAR(120) NOT NULL,
+  `area` DECIMAL(10, 2) NOT NULL,
+  `soil_type` VARCHAR(80) NOT NULL,
+  `soil_ph` DECIMAL(4, 2) NOT NULL,
+  `soil_moisture` DECIMAL(5, 2) NOT NULL,
+  `rainfall` DECIMAL(10, 2) NOT NULL,
+  `temperature` DECIMAL(5, 2) NOT NULL,
+  `humidity` DECIMAL(5, 2) NOT NULL,
+  `planting_date` DATE NOT NULL,
+  `crop_growth_stage` VARCHAR(50) NOT NULL,
+  `historical_yield` DECIMAL(10, 2) NOT NULL,
+  `predicted_yield` DECIMAL(10, 2) NOT NULL,
+  `expected_production` DECIMAL(12, 2) NOT NULL,
+  `confidence` DECIMAL(5, 2) NOT NULL,
+  `expected_range_low` DECIMAL(10, 2) NOT NULL,
+  `expected_range_high` DECIMAL(10, 2) NOT NULL,
+  `risk_level` ENUM('Low', 'Medium', 'High', 'Critical') NOT NULL DEFAULT 'Low',
+  `loss_percentage` DECIMAL(5, 2) NOT NULL DEFAULT 0.00,
+  `expected_loss_tonnes` DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  `model_used` VARCHAR(50) NOT NULL DEFAULT 'Random Forest',
+  `crop_health` VARCHAR(50) NOT NULL DEFAULT 'Good',
+  `is_demo` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `idx_yp_user` (`user_id`),
+  INDEX `idx_yp_farm` (`farm_id`),
+  INDEX `idx_yp_field` (`field_id`),
+  INDEX `idx_yp_variety` (`variety`),
+  INDEX `idx_yp_date` (`created_at`),
+  CONSTRAINT `fk_yp_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_yp_farm` FOREIGN KEY (`farm_id`) REFERENCES `farms` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `fk_yp_field` FOREIGN KEY (`field_id`) REFERENCES `fields` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------------------------
+-- 13. PREDICTION HISTORY TABLE
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `prediction_history` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `prediction_id` INT UNSIGNED NULL,
+  `user_id` INT UNSIGNED NOT NULL,
+  `farm_id` INT UNSIGNED NULL,
+  `field_id` INT UNSIGNED NULL,
+  `farm_name` VARCHAR(120) NULL,
+  `field_name` VARCHAR(120) NULL,
+  `variety` VARCHAR(120) NOT NULL,
+  `predicted_yield` DECIMAL(10, 2) NOT NULL,
+  `expected_production` DECIMAL(12, 2) NOT NULL,
+  `confidence` DECIMAL(5, 2) NOT NULL,
+  `risk_level` VARCHAR(50) NOT NULL,
+  `loss_percentage` DECIMAL(5, 2) NOT NULL,
+  `scenario_name` VARCHAR(100) NOT NULL DEFAULT 'Current Baseline',
+  `is_simulation` TINYINT(1) NOT NULL DEFAULT 0,
+  `details_json` TEXT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `idx_ph_user` (`user_id`),
+  INDEX `idx_ph_pred` (`prediction_id`),
+  CONSTRAINT `fk_ph_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_ph_pred` FOREIGN KEY (`prediction_id`) REFERENCES `yield_predictions` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------------------------
+-- 14. PREDICTION EXPLANATIONS TABLE (Explainable AI - XAI)
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `prediction_explanations` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `prediction_id` INT UNSIGNED NOT NULL,
+  `feature_importances_json` TEXT NULL,
+  `feature_contributions_json` TEXT NULL,
+  `positive_factors_json` TEXT NULL,
+  `negative_factors_json` TEXT NULL,
+  `confidence_reasons_json` TEXT NULL,
+  `summary_explanation` TEXT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `idx_pe_pred` (`prediction_id`),
+  CONSTRAINT `fk_pe_pred` FOREIGN KEY (`prediction_id`) REFERENCES `yield_predictions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------------------------
+-- 15. RECOMMENDATIONS TABLE (AI Farm Advisor & Decision Support)
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `recommendations` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT UNSIGNED NOT NULL,
+  `farm_id` INT UNSIGNED NULL,
+  `field_id` INT UNSIGNED NULL,
+  `category` VARCHAR(50) NOT NULL DEFAULT 'advisor',
+  `title` VARCHAR(200) NOT NULL,
+  `content` TEXT NOT NULL,
+  `explanation` TEXT NULL,
+  `priority` ENUM('low', 'medium', 'high', 'critical') NOT NULL DEFAULT 'medium',
+  `status` VARCHAR(50) NOT NULL DEFAULT 'active',
+  `action_required` VARCHAR(255) NULL,
+  `is_demo` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `idx_rec_user` (`user_id`),
+  INDEX `idx_rec_category` (`category`),
+  CONSTRAINT `fk_rec_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------------------------
+-- 16. MODEL PERFORMANCE TABLE (RF vs XGBoost metrics)
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `model_performance` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `model_name` VARCHAR(80) NOT NULL,
+  `version` VARCHAR(50) NOT NULL DEFAULT '2.0.0',
+  `mae` DECIMAL(8, 4) NOT NULL,
+  `rmse` DECIMAL(8, 4) NOT NULL,
+  `r2_score` DECIMAL(8, 4) NOT NULL,
+  `cv_score` DECIMAL(8, 4) NOT NULL,
+  `cv_folds` INT NOT NULL DEFAULT 5,
+  `n_train_samples` INT NOT NULL,
+  `n_test_samples` INT NOT NULL,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `metrics_json` TEXT NULL,
+  `feature_importance_json` TEXT NULL,
+  `actual_vs_predicted_json` LONGTEXT NULL,
+  `residuals_json` LONGTEXT NULL,
+  `evaluated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `idx_mp_name` (`model_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------------------------------------------------------
+-- 17. REPORTS TABLE (7 Agronomic Reports & Exports)
+-- ----------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `reports` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_id` INT UNSIGNED NOT NULL,
+  `farm_id` INT UNSIGNED NULL,
+  `field_id` INT UNSIGNED NULL,
+  `report_type` VARCHAR(100) NOT NULL,
+  `title` VARCHAR(255) NOT NULL,
+  `summary` TEXT NULL,
+  `parameters_json` TEXT NULL,
+  `report_data_json` LONGTEXT NULL,
+  `file_format` VARCHAR(20) NOT NULL DEFAULT 'PDF',
+  `download_count` INT NOT NULL DEFAULT 0,
+  `is_demo` TINYINT(1) NOT NULL DEFAULT 0,
+  `generated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `idx_rep_user` (`user_id`),
+  INDEX `idx_rep_type` (`report_type`),
+  CONSTRAINT `fk_rep_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;

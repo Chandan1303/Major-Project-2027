@@ -1,69 +1,188 @@
 {
-  "best_model": "xgboost",
-  "training_date": "2026-09-15 11:17:31",
-  "n_samples_train": 6814,
-  "n_samples_test": 1704,
-  "n_features": 19,
+  "best_model": "random_forest",
+  "training_date": "2026-09-26 22:19:37",
+  "n_samples_train": 6288,
+  "n_samples_test": 1573,
+  "n_features": 11,
+  "features": [
+    "rainfall_mm",
+    "temperature_c",
+    "humidity_pct",
+    "soil_moisture",
+    "soil_ph",
+    "area_hectare",
+    "historical_yield",
+    "variety_encoded",
+    "soil_type_encoded",
+    "growth_stage_encoded",
+    "state_encoded"
+  ],
   "metrics": {
-    "linear_regression": {
-      "MSE": 12147.488958564381,
-      "RMSE": 110.21564752141313,
-      "MAE": 58.86383591301706,
-      "R2": 0.09000222033356442
-    },
     "random_forest": {
-      "MSE": 2123.1727377755196,
-      "RMSE": 46.07789858246055,
-      "MAE": 13.294462730320731,
-      "R2": 0.8409479947819299
+      "MAE": 8.84,
+      "RMSE": 15.33,
+      "R2": 0.7866,
+      "cv_r2_mean": 0.8005,
+      "cv_mae_mean": 8.67,
+      "cv_rmse_mean": 14.69,
+      "cv_scores": [
+        0.7878,
+        0.7848,
+        0.8288,
+        0.8067,
+        0.7943
+      ]
     },
     "xgboost": {
-      "MSE": 2114.4164465740855,
-      "RMSE": 45.98278424121451,
-      "MAE": 13.611624497569489,
-      "R2": 0.8416039497351386
+      "MAE": 9.17,
+      "RMSE": 16.06,
+      "R2": 0.7659,
+      "cv_r2_mean": 0.7936,
+      "cv_mae_mean": 8.92,
+      "cv_rmse_mean": 14.94,
+      "cv_scores": [
+        0.7739,
+        0.7868,
+        0.8163,
+        0.7919,
+        0.7993
+      ]
     }
+  },
+  "feature_importances": {
+    "xgboost": [
+      {
+        "feature": "historical_yield",
+        "importance": 0.4701
+      },
+      {
+        "feature": "soil_type_encoded",
+        "importance": 0.2088
+      },
+      {
+        "feature": "state_encoded",
+        "importance": 0.0992
+      },
+      {
+        "feature": "variety_encoded",
+        "importance": 0.0724
+      },
+      {
+        "feature": "area_hectare",
+        "importance": 0.0388
+      },
+      {
+        "feature": "rainfall_mm",
+        "importance": 0.0232
+      },
+      {
+        "feature": "temperature_c",
+        "importance": 0.023
+      },
+      {
+        "feature": "soil_moisture",
+        "importance": 0.0186
+      },
+      {
+        "feature": "soil_ph",
+        "importance": 0.0167
+      },
+      {
+        "feature": "humidity_pct",
+        "importance": 0.0154
+      },
+      {
+        "feature": "growth_stage_encoded",
+        "importance": 0.0138
+      }
+    ],
+    "random_forest": [
+      {
+        "feature": "historical_yield",
+        "importance": 0.8378
+      },
+      {
+        "feature": "area_hectare",
+        "importance": 0.035
+      },
+      {
+        "feature": "state_encoded",
+        "importance": 0.0324
+      },
+      {
+        "feature": "soil_ph",
+        "importance": 0.0207
+      },
+      {
+        "feature": "soil_moisture",
+        "importance": 0.0206
+      },
+      {
+        "feature": "humidity_pct",
+        "importance": 0.0201
+      },
+      {
+        "feature": "soil_type_encoded",
+        "importance": 0.0088
+      },
+      {
+        "feature": "growth_stage_encoded",
+        "importance": 0.0075
+      },
+      {
+        "feature": "rainfall_mm",
+        "importance": 0.0071
+      },
+      {
+        "feature": "variety_encoded",
+        "importance": 0.0055
+      },
+      {
+        "feature": "temperature_c",
+        "importance": 0.0045
+      }
+    ]
   },
   "feature_importance_top10": [
     {
-      "feature": "yield_3yr_avg",
-      "importance": 0.31439077854156494
+      "feature": "historical_yield",
+      "importance": 0.4701
     },
     {
-      "feature": "soil_potassium",
-      "importance": 0.3041561245918274
+      "feature": "soil_type_encoded",
+      "importance": 0.2088
     },
     {
       "feature": "state_encoded",
-      "importance": 0.07533153146505356
+      "importance": 0.0992
     },
     {
-      "feature": "soil_nitrogen",
-      "importance": 0.05642865598201752
-    },
-    {
-      "feature": "soil_phosphorus",
-      "importance": 0.055416885763406754
-    },
-    {
-      "feature": "yield_5yr_avg",
-      "importance": 0.040832795202732086
-    },
-    {
-      "feature": "season_encoded",
-      "importance": 0.030257951468229294
-    },
-    {
-      "feature": "prev_year_yield",
-      "importance": 0.026083994656801224
-    },
-    {
-      "feature": "temperature_c",
-      "importance": 0.022794868797063828
+      "feature": "variety_encoded",
+      "importance": 0.0724
     },
     {
       "feature": "area_hectare",
-      "importance": 0.022549783810973167
+      "importance": 0.0388
+    },
+    {
+      "feature": "rainfall_mm",
+      "importance": 0.0232
+    },
+    {
+      "feature": "temperature_c",
+      "importance": 0.023
+    },
+    {
+      "feature": "soil_moisture",
+      "importance": 0.0186
+    },
+    {
+      "feature": "soil_ph",
+      "importance": 0.0167
+    },
+    {
+      "feature": "humidity_pct",
+      "importance": 0.0154
     }
   ]
 }
