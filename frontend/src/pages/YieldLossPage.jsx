@@ -1,36 +1,59 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, Legend } from 'recharts';
 import AppLayout from '../components/AppLayout';
+import { predictionApi, mlApi } from '../services/api';
 
-const lossFactors = [
-  { factor: 'Drought Stress',       impact: -8.2,  category: 'weather', icon: '🔆' },
-  { factor: 'High Temperature',     impact: -3.4,  category: 'weather', icon: '🌡️' },
-  { factor: 'Pest Infestation',     impact: -5.1,  category: 'biotic',  icon: '🐛' },
-  { factor: 'Soil Nutrient Deficit',impact: -4.8,  category: 'soil',    icon: '🪨' },
-  { factor: 'Waterlogging',         impact: -2.1,  category: 'weather', icon: '💧' },
-  { factor: 'Disease (Smut)',       impact: -1.9,  category: 'biotic',  icon: '🦠' },
-  { factor: 'Optimal NDVI',         impact: +6.3,  category: 'positive',icon: '🌿' },
-  { factor: 'Good Soil pH',         impact: +4.1,  category: 'positive',icon: '⚗️' },
-];
-
-const fields = [
-  { field: 'North Block', expected: 75, actual: 71.2, area: 4.5, variety: 'Co 86032' },
-  { field: 'South Plot',  expected: 70, actual: 65.8, area: 2.8, variety: 'CoC 671' },
-  { field: 'East Field',  expected: 68, actual: 58.3, area: 6.1, variety: 'CoM 0265' },
-  { field: 'West Block',  expected: 72, actual: 74.6, area: 3.3, variety: 'Co 0238' },
-];
-
-const categoryColors = {
-  weather:  '#3b82f6',
-  biotic:   '#ef4444',
-  soil:     '#92400e',
-  positive: '#16a34a',
-};
+const REF_YIELD = 85;
 
 export default function YieldLossPage() {
-  const [activeField, setActiveField] = useState(fields[0]);
-  const loss = activeField.expected - activeField.actual;
-  const lossPct = ((loss / activeField.expected) * 100).toFixed(1);
-  const totalProduction = (activeField.actual * activeField.area).toFixed(1);
+  const [preds, setPreds]   = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [explain, setExplain]   = useState(null);
+  const [loading, setLoading]   = useState(true);
+
+  useEffect(() => {
+    predictionApi.list().then(r => {
+      const list = r.data?.predictions || [];
+      setPreds(list);
+      if (list.length) setSelected(list[0]);
+    }).catch(e => console.error(e)).finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (!selected) return;
+    mlApi.explain({
+      predicted_yield: selected.predicted_yield,
+      rainfall_mm: selected.rainfall, temperature_c: selected.temperature,
+      soil_ph: selected.soil_ph, soil_moisture: selected.soil_moisture, soil_nitrogen: 150
+    }).then(r => setExplain(r.data)).catch(() => {});
+  }, [selected]);
+
+  if (loading) return <AppLayout><div className="page-loading-center"><div className="loading-spinner" /><p>Loading loss analysis…</p></div></AppLayout>;
+
+  const calcLoss = (p) => {
+    const yld  = Number(p.predicted_yield);
+    const loss = Math.max(0, REF_YIELD - yld);
+    const pct  = ((loss / REF_YIELD) * 100).toFixed(1);
+    const risk = loss < 8.5 ? 'Low' : loss < 21.25 ? 'Medium' : loss < 34 ? 'High' : 'Critical';
+    return { yld, loss: +loss.toFixed(2), pct: +pct, risk };
+  };
+
+  const sel = selected ? calcLoss(selected) : null;
+  const allData = preds.map(p => {
+    const { yld, loss, pct, risk } = calcLoss(p);
+    return { name: p.variety, predicted: yld, reference: REF_YIELD, loss, pct, risk, variety: p.variety, date: new Date(p.created_at).toLocaleDateString('en-IN') };
+  });
+
+  const riskColors = { Low:'#16a34a', Medium:'#f59e0b', High:'#ef4444', Critical:'#dc2626' };
+
+  const pieData = Object.entries(
+    preds.reduce((acc, p) => { const { risk } = calcLoss(p); acc[risk] = (acc[risk]||0)+1; return acc; }, {})
+  ).map(([name, value]) => ({ name, value }));
+
+  const fiFactors = explain?.feature_importance?.slice(0,6) || [
+    { feature:'Rainfall', pct:22 },{ feature:'Soil Nitrogen', pct:18 },{ feature:'Temperature', pct:15 },
+    { feature:'Irrigation', pct:12 },{ feature:'Previous Yield', pct:10 },{ feature:'Soil pH', pct:8 },
+  ];
 
   return (
     <AppLayout>
@@ -39,135 +62,136 @@ export default function YieldLossPage() {
           <div>
             <p className="eyebrow">Loss Intelligence</p>
             <h1 className="page-title">Yield & Loss Analysis</h1>
-            <p className="page-subtitle">Predicted vs actual yield, estimated losses, and root cause analysis.</p>
+            <p className="page-subtitle">Compare predicted vs reference yield, quantify loss, and identify root causes.</p>
           </div>
         </div>
 
-        {/* Field Selector */}
-        <div className="profile-selector">
-          {fields.map(f => (
-            <button
-              key={f.field}
-              className={`profile-btn ${activeField.field === f.field ? 'profile-btn-active' : ''}`}
-              onClick={() => setActiveField(f)}
-            >
-              🏡 {f.field}
-            </button>
-          ))}
-        </div>
-
-        {/* Loss Summary */}
-        <div className="summary-grid">
-          {[
-            { icon: '🎯', label: 'Expected Yield',    value: `${activeField.expected} t/ha`,  color: '#6366f1' },
-            { icon: '🌾', label: 'Actual Yield',       value: `${activeField.actual} t/ha`,   color: loss > 0 ? '#ca8a04' : '#16a34a' },
-            { icon: '📉', label: 'Yield Loss',         value: `${Math.abs(loss).toFixed(1)} t/ha`, color: loss > 0 ? '#ef4444' : '#16a34a' },
-            { icon: '📊', label: 'Loss Percentage',    value: `${Math.abs(lossPct)}%`,         color: loss > 0 ? '#ef4444' : '#16a34a' },
-            { icon: '📦', label: 'Total Production',   value: `${totalProduction} t`,          color: '#2d7a3e' },
-            { icon: '🌿', label: 'Variety',            value: activeField.variety,             color: '#7b1fa2' },
-          ].map(c => (
-            <div className="summary-card" key={c.label} style={{ '--card-accent': c.color }}>
-              <div className="sc-icon">{c.icon}</div>
-              <div className="sc-body">
-                <span className="sc-label">{c.label}</span>
-                <span className="sc-value">{c.value}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="dash-two-col">
-          {/* Predicted vs Actual Chart */}
-          <div className="dash-panel">
-            <div className="dash-panel-header">
-              <h3>Predicted vs Actual Yield</h3>
-            </div>
-            <div className="yield-compare-chart">
-              <div className="ycc-bars">
-                <div className="ycc-bar-group">
-                  <div className="ycc-bar ycc-expected" style={{ height: `${(activeField.expected / 100) * 200}px` }}>
-                    <span className="ycc-label">{activeField.expected}</span>
-                  </div>
-                  <span className="ycc-bar-label">Expected</span>
-                </div>
-                <div className="ycc-bar-group">
-                  <div
-                    className="ycc-bar ycc-actual"
-                    style={{
-                      height: `${(activeField.actual / 100) * 200}px`,
-                      background: activeField.actual >= activeField.expected ? '#16a34a' : '#f59e0b'
-                    }}
-                  >
-                    <span className="ycc-label">{activeField.actual}</span>
-                  </div>
-                  <span className="ycc-bar-label">Actual</span>
-                </div>
-              </div>
-              <div className="ycc-unit">t/ha</div>
-              <div className="ycc-diff" style={{ color: loss > 0 ? '#ef4444' : '#16a34a' }}>
-                {loss > 0 ? `▼ ${loss.toFixed(1)} t/ha below expected` : `▲ ${Math.abs(loss).toFixed(1)} t/ha above expected`}
-              </div>
-            </div>
+        {preds.length === 0 ? (
+          <div className="empty-page-state">
+            <div className="eps-icon">📉</div>
+            <h2>No Prediction Data</h2>
+            <p>Run predictions first to see yield loss analysis.</p>
           </div>
+        ) : (
+          <>
+            {/* Prediction selector */}
+            <div className="profile-selector">
+              {preds.map(p => (
+                <button key={p.id} className={`profile-btn ${selected?.id===p.id?'profile-btn-active':''}`} onClick={() => setSelected(p)}>
+                  🌾 {p.variety} — {new Date(p.created_at).toLocaleDateString('en-IN')}
+                </button>
+              ))}
+            </div>
 
-          {/* All Fields Comparison */}
-          <div className="dash-panel">
-            <div className="dash-panel-header"><h3>All Fields Overview</h3></div>
-            <div className="all-fields-list">
-              {fields.map(f => {
-                const fl = f.expected - f.actual;
-                const flPct = ((fl / f.expected) * 100).toFixed(1);
-                return (
-                  <div key={f.field} className={`field-loss-row ${activeField.field === f.field ? 'flr-active' : ''}`}
-                    onClick={() => setActiveField(f)}>
-                    <div>
-                      <span className="flr-name">{f.field}</span>
-                      <span className="flr-variety">{f.variety}</span>
+            {sel && selected && (
+              <>
+                {/* Summary cards */}
+                <div className="stats-grid-4">
+                  {[
+                    { icon:'🎯', label:'Reference Yield',  value:`${REF_YIELD} t/ha`,     color:'#6366f1' },
+                    { icon:'🌾', label:'Predicted Yield',   value:`${sel.yld.toFixed(1)} t/ha`, color: sel.yld >= REF_YIELD ? '#16a34a' : '#f59e0b' },
+                    { icon:'📉', label:'Yield Loss',        value:`${sel.loss} t/ha`,      color: sel.loss > 0 ? '#ef4444' : '#16a34a' },
+                    { icon:'📊', label:'Loss Percentage',   value:`${sel.pct}%`,           color: riskColors[sel.risk] },
+                  ].map(c => (
+                    <div key={c.label} className="stat-card" style={{ '--card-accent': c.color }}>
+                      <div className="sc-icon">{c.icon}</div>
+                      <div className="sc-body"><span className="sc-label">{c.label}</span><span className="sc-value">{c.value}</span></div>
                     </div>
-                    <div className="flr-bar-wrap">
-                      <div className="flr-track">
-                        <div className="flr-expected-bar" style={{ width: `${f.expected}%` }} />
-                        <div className="flr-actual-bar" style={{ width: `${(f.actual / f.expected) * 100}%`, background: fl > 0 ? '#f59e0b' : '#16a34a' }} />
+                  ))}
+                </div>
+
+                {/* Risk badge */}
+                <div className="risk-display-card" style={{ background:`${riskColors[sel.risk]}12`, borderColor:`${riskColors[sel.risk]}40`, color:riskColors[sel.risk] }}>
+                  <span className="rdc-icon">{sel.risk==='Low'?'🟢':sel.risk==='Medium'?'🟡':sel.risk==='High'?'🟠':'🔴'}</span>
+                  <div>
+                    <strong>Risk Level: {sel.risk}</strong>
+                    <p>{sel.risk==='Low'?'Yield is within acceptable range of the reference benchmark.':sel.risk==='Medium'?'Moderate loss detected. Monitor conditions and consider corrective action.':sel.risk==='High'?'Significant yield loss expected. Immediate intervention recommended.':'Critical loss predicted. Urgent action required.'}</p>
+                  </div>
+                </div>
+              </>
+            )}
+
+            <div className="dash-two-col">
+              {/* Bar comparison */}
+              <div className="dash-panel">
+                <div className="dash-panel-header"><h3>Predicted vs Reference Yield</h3><span className="badge badge-blue">All Predictions</span></div>
+                <ResponsiveContainer width="100%" height={240}>
+                  <BarChart data={allData.slice(0,8)} margin={{ top:4,right:8,bottom:20,left:-10 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis dataKey="name" tick={{ fontSize: 10 }} angle={-20} textAnchor="end" />
+                    <YAxis tick={{ fontSize: 11 }} unit="t/ha" />
+                    <Tooltip formatter={(v) => [`${v} t/ha`]} />
+                    <Legend />
+                    <Bar dataKey="reference" name="Reference" fill="#e5e7eb" radius={[4,4,0,0]} />
+                    <Bar dataKey="predicted" name="Predicted" radius={[4,4,0,0]}>
+                      {allData.map((d, i) => <Cell key={i} fill={riskColors[d.risk]} />)}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Pie */}
+              <div className="dash-panel">
+                <div className="dash-panel-header"><h3>Risk Distribution</h3></div>
+                {pieData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={220}>
+                    <PieChart>
+                      <Pie data={pieData} cx="50%" cy="50%" outerRadius={80} dataKey="value" label={({ name, value }) => `${name} (${value})`}>
+                        {pieData.map((entry, i) => <Cell key={i} fill={riskColors[entry.name] || '#6b7280'} />)}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : <div className="empty-state-sm"><p>Not enough data yet.</p></div>}
+              </div>
+            </div>
+
+            {/* Loss factors */}
+            <div className="dash-panel">
+              <div className="dash-panel-header"><h3>Major Factors Affecting Yield Loss</h3><span className="badge badge-green">Feature Importance</span></div>
+              <p style={{ fontSize:13, color:'#6b7280', marginBottom:16 }}>
+                Based on the ML model's feature importance, these are the key drivers of yield variance in your predictions.
+              </p>
+              <div className="loss-factors-grid">
+                {fiFactors.map(f => {
+                  const pct = f.pct || +(f.importance * 100).toFixed(1);
+                  return (
+                    <div key={f.feature} className="loss-factor-card" style={{ '--lf-color': '#2d7a3e' }}>
+                      <div className="lf-body">
+                        <span className="lf-name">{f.feature}</span>
+                        <span className="lf-pct">{pct}% importance</span>
                       </div>
+                      <div className="lf-bar-wrap"><div className="lf-bar" style={{ width:`${Math.min(pct*4,100)}%`, background:'#2d7a3e' }} /></div>
                     </div>
-                    <span className={`flr-pct ${fl > 0 ? 'flr-loss' : 'flr-gain'}`}>
-                      {fl > 0 ? `▼ ${flPct}%` : `▲ ${Math.abs(flPct)}%`}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        {/* Loss Factors */}
-        <div className="dash-panel">
-          <div className="dash-panel-header">
-            <h3>Major Factors Affecting Yield</h3>
-          </div>
-          <div className="loss-factors-grid">
-            {lossFactors.map(f => (
-              <div key={f.factor} className="loss-factor-card" style={{ '--lf-color': categoryColors[f.category] }}>
-                <span className="lf-icon">{f.icon}</span>
-                <div className="lf-body">
-                  <span className="lf-name">{f.factor}</span>
-                  <span className={`lf-impact ${f.impact < 0 ? 'lf-neg' : 'lf-pos'}`}>
-                    {f.impact > 0 ? '+' : ''}{f.impact}% yield impact
-                  </span>
-                </div>
-                <div className="lf-bar-wrap">
-                  <div
-                    className="lf-bar"
-                    style={{
-                      width: `${Math.abs(f.impact) * 8}%`,
-                      background: f.impact < 0 ? '#ef4444' : '#16a34a'
-                    }}
-                  />
-                </div>
+                  );
+                })}
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+
+            {/* All predictions table */}
+            <div className="dash-panel">
+              <div className="dash-panel-header"><h3>All Predictions — Loss Summary</h3></div>
+              <div className="table-wrap">
+                <table className="data-table">
+                  <thead><tr><th>Date</th><th>Variety</th><th>Reference</th><th>Predicted</th><th>Loss (t/ha)</th><th>Loss %</th><th>Risk</th></tr></thead>
+                  <tbody>
+                    {allData.map((row, i) => (
+                      <tr key={i}>
+                        <td className="td-muted">{row.date}</td>
+                        <td className="td-bold">{row.variety}</td>
+                        <td>{REF_YIELD} t/ha</td>
+                        <td className={row.predicted >= REF_YIELD ? 'td-green' : ''}>{row.predicted.toFixed(1)} t/ha</td>
+                        <td style={{ color: row.loss > 0 ? '#ef4444' : '#16a34a' }}>{row.loss > 0 ? `▼ ${row.loss}` : `▲ ${Math.abs(row.loss)}`}</td>
+                        <td>{row.pct}%</td>
+                        <td><span className="status-badge" style={{ background:`${riskColors[row.risk]}18`, color:riskColors[row.risk] }}>{row.risk}</span></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </AppLayout>
   );

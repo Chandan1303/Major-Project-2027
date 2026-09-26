@@ -1,42 +1,43 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ScatterChart, Scatter, LineChart, Line, Legend } from 'recharts';
 import AppLayout from '../components/AppLayout';
-
-const featureImportance = [
-  { feature: 'NDVI Value',              importance: 0.28, impact: 'positive', icon: '🌿' },
-  { feature: 'Annual Rainfall (mm)',    importance: 0.22, impact: 'positive', icon: '🌧️' },
-  { feature: 'Soil Nitrogen (N)',       importance: 0.18, impact: 'positive', icon: '🔬' },
-  { feature: 'Temperature (°C)',        importance: 0.12, impact: 'positive', icon: '🌡️' },
-  { feature: 'Soil Potassium (K)',      importance: 0.08, impact: 'positive', icon: '🔬' },
-  { feature: 'Irrigation Frequency',   importance: 0.06, impact: 'positive', icon: '💧' },
-  { feature: 'Soil pH',                importance: 0.04, impact: 'positive', icon: '⚗️' },
-  { feature: 'Previous Year Yield',    importance: 0.02, impact: 'positive', icon: '📊' },
-];
-
-const positiveFactors = [
-  { label: 'NDVI 0.74', note: 'Vegetation index indicates healthy crop canopy. +11% yield boost.' },
-  { label: 'Rainfall 1200mm', note: 'Annual rainfall is within optimal range (1200–1500mm).' },
-  { label: 'Soil N: 185 kg/ha', note: 'Nitrogen levels are excellent, supporting vigorous growth.' },
-  { label: 'Temperature 28°C', note: 'Average temperature is ideal for sucrose accumulation.' },
-];
-
-const negativeFactors = [
-  { label: 'Soil pH 6.8', note: 'Slightly above optimal. Minor impact on phosphorus availability.' },
-  { label: 'Irrigation 4×/mo', note: 'Could be increased to 5× during dry spells for better yield.' },
-  { label: 'Prev Yield 65 t/ha', note: 'Below potential maximum. Soil depletion may be a factor.' },
-];
-
-const models = [
-  { name: 'XGBoost',         pred: 72.4, weight: 0.35, color: '#2d7a3e' },
-  { name: 'Random Forest',   pred: 70.8, weight: 0.28, color: '#1a73e8' },
-  { name: 'Gradient Boost',  pred: 73.1, weight: 0.20, color: '#f59e0b' },
-  { name: 'Linear Reg.',     pred: 69.5, weight: 0.10, color: '#8b5cf6' },
-  { name: 'Ridge Reg.',      pred: 71.2, weight: 0.07, color: '#ef4444' },
-];
-
-const ensemblePred = models.reduce((sum, m) => sum + m.pred * m.weight, 0).toFixed(1);
+import { mlApi, predictionApi } from '../services/api';
 
 export default function InsightsPage() {
-  const [activeTab, setActiveTab] = useState('explanation');
+  const [perf, setPerf]       = useState(null);
+  const [explain, setExplain] = useState(null);
+  const [preds, setPreds]     = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [tab, setTab]         = useState('performance');
+
+  useEffect(() => {
+    Promise.all([mlApi.performance(), predictionApi.list()])
+      .then(([p, pr]) => {
+        setPerf(p.data);
+        const list = pr.data?.predictions || [];
+        setPreds(list);
+        if (list.length > 0) {
+          mlApi.explain({ ...JSON.parse(list[0].factors || '[]'), predicted_yield: list[0].predicted_yield,
+            rainfall_mm: list[0].rainfall, temperature_c: list[0].temperature, soil_ph: list[0].soil_ph,
+            soil_nitrogen: 150, soil_moisture: list[0].soil_moisture }).then(r => setExplain(r.data)).catch(() => {});
+        }
+      }).catch(e => console.error(e))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <AppLayout><div className="page-loading-center"><div className="loading-spinner" /><p>Loading AI insights…</p></div></AppLayout>;
+
+  const fiData = (perf?.feature_importance || []).map(f => ({
+    name: f.feature.replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase()),
+    importance: Number((f.importance * 100).toFixed(1))
+  }));
+
+  const modelColors = { xgboost: '#2d7a3e', random_forest: '#1a73e8', linear_regression: '#f59e0b' };
+
+  const actualVsPred = preds.slice(0, 15).map((p, i) => ({
+    index: i+1,
+    predicted: Number(Number(p.predicted_yield).toFixed(1)),
+  }));
 
   return (
     <AppLayout>
@@ -44,180 +45,187 @@ export default function InsightsPage() {
         <div className="page-header">
           <div>
             <p className="eyebrow">Explainable AI</p>
-            <h1 className="page-title">AI Prediction Insights</h1>
-            <p className="page-subtitle">Understand exactly why the model predicted a given yield — full transparency.</p>
+            <h1 className="page-title">AI Insights & Model Performance</h1>
+            <p className="page-subtitle">Understand how the model works, what drives predictions, and evaluate accuracy.</p>
           </div>
-          <span className="badge badge-purple">🤖 XGBoost + Ensemble</span>
+          {perf && <span className="badge badge-green">Best Model: {perf.best_model?.toUpperCase()}</span>}
         </div>
 
-        {/* Prediction Summary */}
-        <div className="insight-hero">
-          <div className="insight-main-pred">
-            <span className="imp-label">Ensemble Predicted Yield</span>
-            <span className="imp-value">{ensemblePred} <span className="imp-unit">t/ha</span></span>
-            <span className="imp-conf">89.1% confidence · Median aggregation</span>
-          </div>
-          <div className="insight-conf-bar-wrap">
-            <span className="icbw-label">Prediction Confidence</span>
-            <div className="insight-conf-bar">
-              <div className="icb-fill" style={{ width: '89.1%' }} />
-              <span className="icb-value">89.1%</span>
-            </div>
-            <div className="icbw-range">
-              <span>Uncertainty band: 68.1 – 76.7 t/ha</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Tabs */}
         <div className="tab-bar">
-          {[
-            { id: 'explanation', label: '🧠 Why This Prediction' },
-            { id: 'features',    label: '📊 Feature Importance' },
-            { id: 'models',      label: '🔬 Model Breakdown' },
-          ].map(t => (
-            <button
-              key={t.id}
-              className={`tab-btn ${activeTab === t.id ? 'tab-btn-active' : ''}`}
-              onClick={() => setActiveTab(t.id)}
-            >
-              {t.label}
-            </button>
+          {[{id:'performance',label:'Model Performance'},{id:'importance',label:'Feature Importance'},{id:'explain',label:'Prediction Explanation'},{id:'history',label:'Prediction History'}].map(t => (
+            <button key={t.id} className={`tab-btn ${tab===t.id?'tab-btn-active':''}`} onClick={() => setTab(t.id)}>{t.label}</button>
           ))}
         </div>
 
-        {activeTab === 'explanation' && (
-          <div>
-            <div className="dash-two-col">
-              <div className="dash-panel factors-panel">
-                <div className="dash-panel-header">
-                  <h3>✅ Positive Factors</h3>
-                  <span className="badge badge-green">Boosting Yield</span>
-                </div>
-                <div className="factors-list">
-                  {positiveFactors.map(f => (
-                    <div className="factor-item factor-pos" key={f.label}>
-                      <span className="fi-icon">✓</span>
-                      <div>
-                        <strong>{f.label}</strong>
-                        <p>{f.note}</p>
+        {tab === 'performance' && perf && (
+          <>
+            {/* Model cards */}
+            <div className="stats-grid-3">
+              {perf.models.map(m => (
+                <div key={m.name} className={`model-perf-card ${m.is_production ? 'model-perf-active' : ''}`}>
+                  {m.is_production && <span className="production-badge">★ Production</span>}
+                  <h3 style={{ color: modelColors[m.name] }}>{m.display_name}</h3>
+                  <div className="model-metrics">
+                    {[
+                      { label: 'R² (CV Median)', value: m.cv_median_r2?.toFixed(4) },
+                      { label: 'RMSE',           value: `${m.cv_median_rmse?.toFixed(2)} t/ha` },
+                      { label: 'MAE',            value: `${m.cv_median_mae?.toFixed(2)} t/ha` },
+                      { label: 'Test R²',        value: m.test_r2?.toFixed(4) },
+                      { label: 'Training Samples', value: m.n_train?.toLocaleString() },
+                      { label: 'Test Samples',   value: m.n_test?.toLocaleString() },
+                    ].map(met => (
+                      <div key={met.label} className="model-metric-row">
+                        <span>{met.label}</span>
+                        <strong>{met.value}</strong>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="dash-panel factors-panel">
-                <div className="dash-panel-header">
-                  <h3>⚠️ Limiting Factors</h3>
-                  <span className="badge badge-yellow">Reducing Yield</span>
-                </div>
-                <div className="factors-list">
-                  {negativeFactors.map(f => (
-                    <div className="factor-item factor-neg" key={f.label}>
-                      <span className="fi-icon">!</span>
-                      <div>
-                        <strong>{f.label}</strong>
-                        <p>{f.note}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="dash-panel">
-              <h3>Model Explanation Summary</h3>
-              <div className="explanation-text">
-                <p>The model predicted <strong>{ensemblePred} t/ha</strong> for <strong>Co 86032</strong> in <strong>Maharashtra (Kharif season)</strong> based on the following reasoning:</p>
-                <p>🌿 <strong>NDVI (0.74)</strong> was the most influential factor, indicating a healthy, dense crop canopy which is a strong predictor of high photosynthetic activity and sugar accumulation. This single factor contributed approximately <strong>+18% above baseline</strong> yield.</p>
-                <p>🌧️ <strong>Rainfall (1200mm)</strong> placed the crop in the optimal range for sugarcane. The temporal distribution of rainfall during the grand growth phase was particularly favorable.</p>
-                <p>🔬 <strong>Soil nitrogen at 185 kg/ha</strong> exceeded the minimum threshold of 150 kg/ha, indicating well-fertilized soils supporting tillering and stem elongation.</p>
-                <p>⚠️ The primary yield-limiting factor was <strong>irrigation frequency (4×/month)</strong>, which the model identified as slightly below the recommended 5× during the current summer phase.</p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'features' && (
-          <div className="dash-panel">
-            <div className="dash-panel-header">
-              <h3>Feature Importance — XGBoost Model</h3>
-              <span className="badge badge-green">SHAP Values</span>
-            </div>
-            <div className="feature-importance-chart">
-              {featureImportance.map((f, i) => (
-                <div key={f.feature} className="fi-row" style={{ animationDelay: `${i * 0.05}s` }}>
-                  <div className="fi-meta">
-                    <span className="fi-rank">#{i + 1}</span>
-                    <span>{f.icon}</span>
-                    <span className="fi-feature-name">{f.feature}</span>
+                    ))}
                   </div>
-                  <div className="fi-bar-track">
-                    <div
-                      className="fi-bar-fill"
-                      style={{ width: `${f.importance * 300}%`, background: `hsl(${130 - i * 12}, 60%, 45%)` }}
-                    />
-                  </div>
-                  <span className="fi-pct">{(f.importance * 100).toFixed(0)}%</span>
                 </div>
               ))}
             </div>
+
+            <div className="dash-panel">
+              <div className="dash-panel-header"><h3>R² Score Comparison (5-Fold CV)</h3><span className="badge badge-blue">Cross-Validation</span></div>
+              <ResponsiveContainer width="100%" height={240}>
+                <BarChart data={perf.models.map(m => ({ name: m.display_name, 'CV R²': m.cv_median_r2, 'Test R²': m.test_r2 }))} margin={{ top:4,right:8,bottom:0,left:-10 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                  <YAxis domain={[0, 1]} tick={{ fontSize: 11 }} />
+                  <Tooltip formatter={v => v.toFixed(4)} />
+                  <Legend />
+                  <Bar dataKey="CV R²"   fill="#2d7a3e" radius={[4,4,0,0]} />
+                  <Bar dataKey="Test R²" fill="#93c5fd" radius={[4,4,0,0]} />
+                </BarChart>
+              </ResponsiveContainer>
+              <div className="insight-note">
+                ℹ️ <strong>MEDIAN aggregation</strong> is used for cross-validation — more robust to outliers than mean. Trained on <strong>{perf.models[0]?.n_train?.toLocaleString()} samples</strong>, tested on <strong>{perf.models[0]?.n_test?.toLocaleString()} samples</strong>.
+              </div>
+            </div>
+          </>
+        )}
+
+        {tab === 'importance' && fiData.length > 0 && (
+          <div className="dash-panel">
+            <div className="dash-panel-header">
+              <h3>Feature Importance — {perf?.best_model?.toUpperCase()} Model</h3>
+              <span className="badge badge-green">From Training</span>
+            </div>
+            <ResponsiveContainer width="100%" height={320}>
+              <BarChart data={fiData} layout="vertical" margin={{ top:4, right:40, bottom:0, left:120 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
+                <XAxis type="number" unit="%" tick={{ fontSize: 11 }} />
+                <YAxis type="category" dataKey="name" tick={{ fontSize: 11 }} width={120} />
+                <Tooltip formatter={v => [`${v}%`, 'Importance']} />
+                <Bar dataKey="importance" fill="#2d7a3e" radius={[0,4,4,0]}
+                  label={{ position:'right', fontSize:11, formatter:v=>`${v}%` }} />
+              </BarChart>
+            </ResponsiveContainer>
+            <div className="insight-note">
+              ℹ️ Feature importance shows which input variables most strongly influence the yield prediction. Higher % = stronger influence on model output.
+            </div>
           </div>
         )}
 
-        {activeTab === 'models' && (
-          <div>
-            <div className="dash-panel">
-              <div className="dash-panel-header">
-                <h3>Individual Model Predictions</h3>
-                <span className="badge badge-blue">5-Model Ensemble</span>
+        {tab === 'explain' && (
+          <>
+            {!explain && preds.length === 0 && (
+              <div className="empty-page-state">
+                <div className="eps-icon">🤖</div>
+                <h2>No Predictions Yet</h2>
+                <p>Run a yield prediction first to see AI explanation here.</p>
               </div>
-              <div className="model-predictions">
-                {models.map(m => (
-                  <div className="model-pred-row" key={m.name}>
-                    <span className="mpr-name" style={{ color: m.color }}>{m.name}</span>
-                    <div className="mpr-bar-track">
-                      <div className="mpr-bar" style={{ width: `${(m.pred / 100) * 100}%`, background: m.color }} />
-                    </div>
-                    <span className="mpr-pred">{m.pred} t/ha</span>
-                    <span className="mpr-weight">weight: {(m.weight * 100).toFixed(0)}%</span>
+            )}
+            {explain && (
+              <>
+                <div className="insight-hero">
+                  <div className="ih-left">
+                    <span className="eyebrow">Latest Prediction Analysis</span>
+                    <div className="ih-yield">{explain.predicted_yield?.toFixed(1)} <span>t/ha</span></div>
+                    <p>{explain.summary}</p>
                   </div>
-                ))}
-              </div>
-              <div className="ensemble-result">
-                <span>📊 Weighted Median (MEDIAN aggregation)</span>
-                <strong>{ensemblePred} t/ha</strong>
-              </div>
-            </div>
-
-            <div className="dash-panel">
-              <h3>Model Performance Metrics</h3>
-              <div className="table-wrap">
-                <table className="data-table">
-                  <thead>
-                    <tr><th>Model</th><th>R² Score</th><th>RMSE (t/ha)</th><th>MAE</th><th>Weight</th></tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      { name: 'XGBoost',        r2: 0.876, rmse: 11.8, mae: 9.2,  w: 0.35 },
-                      { name: 'Random Forest',  r2: 0.862, rmse: 12.4, mae: 9.8,  w: 0.28 },
-                      { name: 'Gradient Boost', r2: 0.881, rmse: 11.5, mae: 8.9,  w: 0.20 },
-                      { name: 'Linear Reg.',    r2: 0.784, rmse: 15.1, mae: 12.3, w: 0.10 },
-                      { name: 'Ridge Reg.',     r2: 0.791, rmse: 14.8, mae: 11.9, w: 0.07 },
-                    ].map(m => (
-                      <tr key={m.name}>
-                        <td className="td-bold">{m.name}</td>
-                        <td className="td-green">{m.r2.toFixed(3)}</td>
-                        <td>{m.rmse}</td>
-                        <td>{m.mae}</td>
-                        <td>{(m.w * 100).toFixed(0)}%</td>
-                      </tr>
+                </div>
+                <div className="dash-two-col">
+                  <div className="dash-panel factors-panel factor-pos-panel">
+                    <div className="dash-panel-header"><h3>✅ Positive Factors</h3><span className="badge badge-green">Boosting Yield</span></div>
+                    <div className="factors-list">
+                      {(explain.positive_factors || []).map((f, i) => (
+                        <div key={i} className="factor-item factor-pos">
+                          <span className="fi-icon">✓</span>
+                          <div><strong>{f.factor}</strong><p>{f.note}</p></div>
+                        </div>
+                      ))}
+                      {!explain.positive_factors?.length && <p style={{color:'#9ca3af',fontSize:13}}>No significant positive factors detected.</p>}
+                    </div>
+                  </div>
+                  <div className="dash-panel factors-panel factor-neg-panel">
+                    <div className="dash-panel-header"><h3>⚠️ Limiting Factors</h3><span className="badge badge-yellow">Reducing Yield</span></div>
+                    <div className="factors-list">
+                      {(explain.negative_factors || []).map((f, i) => (
+                        <div key={i} className="factor-item factor-neg">
+                          <span className="fi-icon">!</span>
+                          <div><strong>{f.factor}</strong><p>{f.note}</p></div>
+                        </div>
+                      ))}
+                      {!explain.negative_factors?.length && <p style={{color:'#9ca3af',fontSize:13}}>No significant limiting factors detected.</p>}
+                    </div>
+                  </div>
+                </div>
+                {explain.feature_importance?.length > 0 && (
+                  <div className="dash-panel">
+                    <div className="dash-panel-header"><h3>Feature Contribution</h3></div>
+                    {explain.feature_importance.map(f => (
+                      <div key={f.feature} className="fi-row">
+                        <span className="fi-feature-name">{f.feature}</span>
+                        <div className="fi-bar-track"><div className="fi-bar-fill" style={{ width:`${Math.min(f.pct*3, 100)}%`, background:'#2d7a3e' }} /></div>
+                        <span className="fi-pct">{f.pct}%</span>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                  </div>
+                )}
+              </>
+            )}
+          </>
+        )}
+
+        {tab === 'history' && (
+          <div className="dash-panel">
+            <div className="dash-panel-header"><h3>Prediction History</h3><span className="badge badge-blue">{preds.length} Records</span></div>
+            {preds.length === 0 ? (
+              <div className="empty-state-sm"><p>No predictions yet.</p></div>
+            ) : (
+              <>
+                {preds.length >= 3 && (
+                  <ResponsiveContainer width="100%" height={200}>
+                    <LineChart data={preds.slice(0,15).reverse().map((p,i) => ({ index: i+1, yield: Number(Number(p.predicted_yield).toFixed(1)), confidence: Number(Number(p.confidence).toFixed(0)) }))} margin={{top:4,right:8,bottom:0,left:-10}}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis dataKey="index" tick={{fontSize:11}} />
+                      <YAxis tick={{fontSize:11}} />
+                      <Tooltip />
+                      <Legend />
+                      <Line type="monotone" dataKey="yield" stroke="#2d7a3e" strokeWidth={2} dot={{r:3}} name="Yield (t/ha)" />
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
+                <div className="table-wrap" style={{ marginTop: 16 }}>
+                  <table className="data-table">
+                    <thead><tr><th>Date</th><th>Variety</th><th>Location</th><th>Yield</th><th>Production</th><th>Confidence</th><th>Health</th></tr></thead>
+                    <tbody>
+                      {preds.map(p => (
+                        <tr key={p.id}>
+                          <td className="td-muted">{new Date(p.created_at).toLocaleDateString('en-IN')}</td>
+                          <td className="td-bold">{p.variety}</td>
+                          <td>{p.location}</td>
+                          <td className="td-green">{Number(p.predicted_yield).toFixed(1)} t/ha</td>
+                          <td>{Number(p.expected_production).toFixed(1)} t</td>
+                          <td>{Number(p.confidence).toFixed(0)}%</td>
+                          <td><span className={`status-badge status-${(p.crop_health||'').toLowerCase()}`}>{p.crop_health}</span></td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>

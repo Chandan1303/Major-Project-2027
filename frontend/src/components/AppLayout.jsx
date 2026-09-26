@@ -1,81 +1,152 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Brand from './Brand';
+import { alertApi } from '../services/api';
 
-const navItems = [
-  { label: 'Home',        path: '/home',       icon: '🏠' },
-  { label: 'Dashboard',   path: '/dashboard',  icon: '📊' },
-  { label: 'Predict',     path: '/prediction', icon: '🌾' },
-  { label: 'Crop Health', path: '/crop-health',icon: '🛰️' },
-  { label: 'Weather',     path: '/weather',    icon: '☁️' },
-  { label: 'Soil',        path: '/soil',       icon: '🪨' },
-  { label: 'Varieties',   path: '/varieties',  icon: '🔬' },
-  { label: 'Yield Loss',  path: '/yield-loss', icon: '📉' },
-  { label: 'AI Insights', path: '/insights',   icon: '🤖' },
-  { label: 'Farm Mgmt',   path: '/farms',      icon: '🏡' },
-  { label: 'Reports',     path: '/reports',    icon: '📄' },
-  { label: 'About',       path: '/about',      icon: 'ℹ️' },
+const NAV = [
+  { group: 'Main',        items: [
+    { label: 'Home',             path: '/home',        icon: '🏠' },
+    { label: 'Dashboard',        path: '/dashboard',   icon: '📊' },
+  ]},
+  { group: 'Farm',        items: [
+    { label: 'My Farm',          path: '/farms',       icon: '🏡' },
+    { label: 'Farm Map',         path: '/farm-map',    icon: '🗺️' },
+  ]},
+  { group: 'Intelligence', items: [
+    { label: 'AI Yield Predict', path: '/prediction',  icon: '🌾' },
+    { label: 'What-If Simulator',path: '/simulator',   icon: '🔮' },
+    { label: 'Crop Intelligence',path: '/crop-intel',  icon: '🌿' },
+    { label: 'AI Insights',      path: '/insights',    icon: '🤖' },
+  ]},
+  { group: 'Environment', items: [
+    { label: 'Environment',      path: '/environment', icon: '🌍' },
+    { label: 'Weather',          path: '/weather',     icon: '☁️' },
+    { label: 'Soil Analysis',    path: '/soil',        icon: '🪨' },
+  ]},
+  { group: 'Analytics',   items: [
+    { label: 'Variety Intel',    path: '/varieties',   icon: '🔬' },
+    { label: 'Loss & Risk',      path: '/yield-loss',  icon: '📉' },
+    { label: 'Analytics',        path: '/analytics',   icon: '📈' },
+  ]},
+  { group: 'Tools',       items: [
+    { label: 'Reports',          path: '/reports',     icon: '📄' },
+    { label: 'AI Chat',          path: '/chat',        icon: '💬' },
+    { label: 'Alerts',           path: '/alerts',      icon: '🔔' },
+  ]},
+  { group: 'Account',     items: [
+    { label: 'Profile',          path: '/profile',     icon: '👤' },
+    { label: 'About',            path: '/about',       icon: 'ℹ️'  },
+  ]},
 ];
 
 export default function AppLayout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+  const sidebarRef = useRef(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [unread, setUnread] = useState(0);
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    alertApi.list().then(r => setUnread(r.data?.unread_count || 0)).catch(() => {});
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const sidebar = sidebarRef.current;
+    if (!sidebar) return;
+
+    const savedScroll = Number(sidebar.dataset.scrollTop || 0);
+    if (!Number.isNaN(savedScroll)) {
+      sidebar.scrollTop = savedScroll;
+    }
+  }, [location.pathname]);
+
+  const handleNav = (path) => {
+    const sidebar = sidebarRef.current;
+    if (sidebar) {
+      sidebar.dataset.scrollTop = String(sidebar.scrollTop);
+    }
+    navigate(path);
+    setMobileOpen(false);
+  };
 
   const signout = async () => {
     await logout();
     navigate('/login');
   };
 
+  const isActive = (path) => location.pathname === path;
+
   return (
-    <div className="app-shell">
-      {/* Sidebar */}
-      <aside className={`sidebar ${mobileOpen ? 'sidebar-open' : ''}`}>
+    <div className={`app-shell ${collapsed ? 'sidebar-collapsed' : ''}`}>
+      {/* ── Sidebar ── */}
+      <aside ref={sidebarRef} className={`sidebar ${mobileOpen ? 'sidebar-open' : ''}`}>
         <div className="sidebar-brand">
           <Brand />
+          <button className="sidebar-collapse-btn" onClick={() => setCollapsed(c => !c)} title={collapsed ? 'Expand' : 'Collapse'}>
+            {collapsed ? '›' : '‹'}
+          </button>
         </div>
+
         <nav className="sidebar-nav">
-          {navItems.map(item => (
-            <button
-              key={item.path}
-              className={`sidebar-link ${location.pathname === item.path ? 'sidebar-link-active' : ''}`}
-              onClick={() => { navigate(item.path); setMobileOpen(false); }}
-            >
-              <span className="sidebar-icon">{item.icon}</span>
-              <span className="sidebar-label">{item.label}</span>
-            </button>
+          {NAV.map(group => (
+            <div key={group.group} className="nav-group">
+              {!collapsed && <span className="nav-group-label">{group.group}</span>}
+              {group.items.map(item => (
+                <button
+                  key={item.path}
+                  className={`sidebar-link ${isActive(item.path) ? 'sidebar-link-active' : ''}`}
+                  onClick={() => handleNav(item.path)}
+                  title={item.label}
+                >
+                  <span className="sidebar-icon">{item.icon}</span>
+                  {!collapsed && <span className="sidebar-label">{item.label}</span>}
+                  {item.path === '/alerts' && unread > 0 && (
+                    <span className="nav-badge">{unread}</span>
+                  )}
+                </button>
+              ))}
+            </div>
           ))}
         </nav>
+
         <div className="sidebar-footer">
-          <div className="sidebar-user">
-            <div className="sidebar-avatar">{user?.name?.[0]?.toUpperCase() || 'U'}</div>
-            <div className="sidebar-user-info">
-              <span className="sidebar-user-name">{user?.name || 'User'}</span>
-              <span className="sidebar-user-email">{user?.email || ''}</span>
+          {!collapsed && (
+            <div className="sidebar-user">
+              <div className="sidebar-avatar">{user?.name?.[0]?.toUpperCase() || 'U'}</div>
+              <div className="sidebar-user-info">
+                <span className="sidebar-user-name">{user?.name || 'User'}</span>
+                <span className="sidebar-user-role">{user?.role || 'user'}</span>
+              </div>
             </div>
-          </div>
-          <button className="sidebar-signout" onClick={signout}>Sign out</button>
+          )}
+          <button className="sidebar-signout" onClick={signout} title="Sign out">
+            {collapsed ? '⏏' : '⏏ Sign out'}
+          </button>
         </div>
       </aside>
 
-      {/* Mobile overlay */}
       {mobileOpen && <div className="sidebar-overlay" onClick={() => setMobileOpen(false)} />}
 
-      {/* Main area */}
+      {/* ── Main ── */}
       <div className="app-main">
-        {/* Top bar (mobile) */}
         <header className="app-topbar">
           <button className="topbar-menu-btn" onClick={() => setMobileOpen(true)} aria-label="Open menu">
             <span /><span /><span />
           </button>
-          <Brand />
-          <div className="topbar-user">{user?.name?.[0]?.toUpperCase() || 'U'}</div>
+          <div className="topbar-brand-mobile"><Brand /></div>
+          <div className="topbar-right">
+            <button className="topbar-alert-btn" onClick={() => navigate('/alerts')}>
+              🔔 {unread > 0 && <span className="topbar-badge">{unread}</span>}
+            </button>
+            <div className="topbar-user" onClick={() => navigate('/profile')}>
+              {user?.name?.[0]?.toUpperCase() || 'U'}
+            </div>
+          </div>
         </header>
-        <div className="app-content">
-          {children}
-        </div>
+        <div className="app-content">{children}</div>
       </div>
     </div>
   );

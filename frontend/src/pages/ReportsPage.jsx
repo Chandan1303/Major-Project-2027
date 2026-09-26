@@ -1,136 +1,90 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppLayout from '../components/AppLayout';
+import { reportApi } from '../services/api';
+import toast, { Toaster } from 'react-hot-toast';
 
-const reportTypes = [
-  { id: 'yield',  label: 'Yield Prediction Report',  icon: '🌾', desc: 'Full yield forecast with model details, confidence, and recommendations.' },
-  { id: 'health', label: 'Crop Health Report',        icon: '💚', desc: 'NDVI analysis, vegetation health, growth stage, and stress zones.' },
-  { id: 'weather',label: 'Weather Impact Report',     icon: '☁️', desc: 'Climate conditions, 7-day forecast, and weather impact on yield.' },
-  { id: 'soil',   label: 'Soil Analysis Report',      icon: '🪨', desc: 'Complete NPK, pH, moisture, and suitability analysis.' },
-  { id: 'loss',   label: 'Loss Analysis Report',      icon: '📉', desc: 'Predicted vs actual yield, loss factors, and risk assessment.' },
-];
-
-const pastReports = [
-  { id: 1, type: 'Yield Prediction', field: 'North Block',  date: 'Sep 24, 2026', format: 'PDF', size: '1.2 MB' },
-  { id: 2, type: 'Crop Health',      field: 'West Block',   date: 'Sep 22, 2026', format: 'PDF', size: '0.8 MB' },
-  { id: 3, type: 'Soil Analysis',    field: 'South Plot',   date: 'Sep 19, 2026', format: 'CSV', size: '42 KB' },
-  { id: 4, type: 'Weather Impact',   field: 'All Fields',   date: 'Sep 15, 2026', format: 'PDF', size: '1.5 MB' },
-  { id: 5, type: 'Yield Prediction', field: 'East Field',   date: 'Sep 10, 2026', format: 'PDF', size: '1.1 MB' },
+const REPORT_TYPES = [
+  { id:'farm_summary',   icon:'🏡', label:'Farm Summary Report',      desc:'All farms, fields, area and recent predictions in one report.' },
+  { id:'prediction',     icon:'🌾', label:'Yield Prediction Report',   desc:'Detailed prediction with soil, weather and AI confidence analysis.' },
+  { id:'crop_growth',    icon:'🌿', label:'Crop Growth Report',        desc:'Growth stage timeline, planting dates and harvest estimates.' },
+  { id:'soil',           icon:'🪨', label:'Soil Analysis Report',      desc:'pH, moisture, health score and suitability for each field.' },
+  { id:'weather',        icon:'☁️', label:'Weather Impact Report',     desc:'Temperature, rainfall, humidity and their impact on yield.' },
+  { id:'loss_analysis',  icon:'📉', label:'Yield Loss Analysis Report', desc:'Predicted vs reference yield, loss percentage and risk level.' },
 ];
 
 export default function ReportsPage() {
-  const [selected, setSelected] = useState('yield');
-  const [format, setFormat]     = useState('pdf');
-  const [dateRange, setDateRange] = useState('last30');
+  const [selected, setSelected]   = useState('farm_summary');
+  const [pastReports, setPastReports] = useState([]);
+  const [loading, setLoading]     = useState(true);
   const [generating, setGenerating] = useState(false);
-  const [generated, setGenerated]   = useState(false);
+  const [format, setFormat]       = useState('txt');
 
-  const handleGenerate = () => {
+  useEffect(() => {
+    reportApi.list()
+      .then(r => setPastReports(r.data?.reports || []))
+      .catch(e => console.error(e))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const generate = async () => {
     setGenerating(true);
-    setGenerated(false);
-    setTimeout(() => {
-      setGenerating(false);
-      setGenerated(true);
-
-      // Build text report content
-      const reportType = reportTypes.find(r => r.id === selected);
-      const content = [
-        '============================================',
-        `  SUGARYIELD AI — ${reportType.label.toUpperCase()}`,
-        '============================================',
-        `Generated: ${new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`,
-        `Date Range: ${dateRange === 'last30' ? 'Last 30 Days' : dateRange === 'last90' ? 'Last 90 Days' : 'This Season'}`,
-        '',
-        '--- INPUT PARAMETERS ---',
-        'Farm: Krishna Sugarcane Farm',
-        'Location: Kolhapur, Maharashtra',
-        'Variety: Co 86032',
-        'Season: Kharif 2025-26',
-        '',
-        '--- PREDICTION RESULTS ---',
-        'Predicted Yield: 72.4 t/ha',
-        'Confidence: 89.1%',
-        'Model: XGBoost + Ensemble',
-        'Risk Level: Low',
-        '',
-        '--- CROP HEALTH ---',
-        'NDVI: 0.74 — Healthy',
-        'Growth Stage: Grand Growth',
-        'Stressed Area: 12%',
-        '',
-        '--- WEATHER CONDITIONS ---',
-        'Avg Temperature: 29°C',
-        'Rainfall: 96mm/month',
-        'Humidity: 68%',
-        '',
-        '--- SOIL ANALYSIS ---',
-        'Soil Type: Black Cotton',
-        'pH: 6.8 (Optimal)',
-        'N: 185 kg/ha | P: 68 kg/ha | K: 90 kg/ha',
-        '',
-        '--- RECOMMENDATIONS ---',
-        '1. Maintain current irrigation schedule.',
-        '2. Monitor West Block — approaching harvest.',
-        '3. East Field NDVI is moderate — consider foliar application.',
-        '4. Next prediction recommended in 30 days.',
-        '',
-        '============================================',
-        'SUGARYIELD AI · Smart Agricultural Decision Support System',
-        'NIE · Agricultural Decision Support System 2026',
-        '============================================',
-      ].join('\n');
+    try {
+      const r = await reportApi.generate({ type: selected });
+      const content = r.data?.text_content || 'Report generated.';
+      const filename = r.data?.filename || `report_${Date.now()}.txt`;
 
       const blob = new Blob([content], { type: 'text/plain' });
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
-      a.href     = url;
-      a.download = `SugarYield_${reportType.label.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.txt`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }, 2000);
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a); URL.revokeObjectURL(url);
+      toast.success('Report downloaded!');
+    } catch (e) { toast.error(e.message); }
+    finally { setGenerating(false); }
   };
 
-  const handleDownloadPast = (r) => {
-    const content = `SUGARYIELD AI — ${r.type.toUpperCase()} REPORT\n\nField: ${r.field}\nDate: ${r.date}\nFormat: ${r.format}\n\nThis is a sample past report from ${r.date}.\n\nSUGARYIELD AI · Smart Agricultural Decision Support`;
-    const blob = new Blob([content], { type: 'text/plain' });
+  const downloadPast = (r) => {
+    const lines = [
+      'SUGARYIELD AI — REPORT',
+      '='.repeat(50),
+      `Type       : ${r.type}`,
+      `Field/Farm : ${r.field}`,
+      `Date       : ${new Date(r.date).toLocaleDateString('en-IN', { dateStyle:'full' })}`,
+      '',
+      ...(r.data ? Object.entries(r.data).map(([k,v]) => `${k.replace(/_/g,' ').toUpperCase()} : ${v}`) : []),
+      '', '='.repeat(50),
+      'SugarYield AI · Smart Agricultural Decision Support',
+    ];
+    const blob = new Blob([lines.join('\n')], { type:'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = `SugarYield_${r.type.replace(/\s/g, '_')}_${r.field.replace(/\s/g, '_')}.txt`;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    a.href = url; a.download = `SugarYield_${r.type}_${r.id}.txt`;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a); URL.revokeObjectURL(url);
   };
 
   return (
     <AppLayout>
+      <Toaster position="top-right" />
       <div className="page-container">
         <div className="page-header">
           <div>
             <p className="eyebrow">Data Export</p>
             <h1 className="page-title">Reports</h1>
-            <p className="page-subtitle">Generate and download detailed reports for yield, health, weather, soil, and loss analysis.</p>
+            <p className="page-subtitle">Generate and download comprehensive farm, yield, soil and weather reports.</p>
           </div>
         </div>
 
         <div className="dash-two-col">
-          {/* Report Builder */}
+          {/* Generator */}
           <div className="dash-panel">
-            <div className="dash-panel-header">
-              <h3>Generate Report</h3>
-            </div>
-
+            <div className="dash-panel-header"><h3>Generate Report</h3></div>
             <div className="report-type-grid">
-              {reportTypes.map(r => (
-                <div
-                  key={r.id}
-                  className={`report-type-card ${selected === r.id ? 'rtc-selected' : ''}`}
-                  onClick={() => { setSelected(r.id); setGenerated(false); }}
-                >
-                  <span className="rtc-icon">{r.icon}</span>
-                  <div>
-                    <span className="rtc-label">{r.label}</span>
-                    <span className="rtc-desc">{r.desc}</span>
-                  </div>
+              {REPORT_TYPES.map(rt => (
+                <div key={rt.id} className={`report-type-card ${selected===rt.id?'rtc-selected':''}`} onClick={() => setSelected(rt.id)}>
+                  <span className="rtc-icon">{rt.icon}</span>
+                  <div><span className="rtc-label">{rt.label}</span><span className="rtc-desc">{rt.desc}</span></div>
                 </div>
               ))}
             </div>
@@ -138,57 +92,69 @@ export default function ReportsPage() {
             <div className="report-options">
               <div className="form-group">
                 <label>Format</label>
-                <select value={format} onChange={e => { setFormat(e.target.value); setGenerated(false); }}>
-                  <option value="pdf">PDF Report</option>
-                  <option value="csv">CSV Data</option>
-                  <option value="txt">Text File</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Date Range</label>
-                <select value={dateRange} onChange={e => { setDateRange(e.target.value); setGenerated(false); }}>
-                  <option value="last30">Last 30 Days</option>
-                  <option value="last90">Last 90 Days</option>
-                  <option value="season">This Season</option>
+                <select value={format} onChange={e => setFormat(e.target.value)}>
+                  <option value="txt">Text File (.txt)</option>
+                  <option value="csv">CSV Data (.csv)</option>
                 </select>
               </div>
             </div>
 
-            <button
-              className={`btn-primary report-generate-btn ${generating ? 'generating' : ''}`}
-              onClick={handleGenerate}
-              disabled={generating}
-            >
-              {generating ? (
-                <><span className="spinner-white" />  Generating…</>
-              ) : generated ? (
-                '✓ Downloaded!'
-              ) : (
-                `⬇ Generate & Download ${format.toUpperCase()}`
-              )}
+            <button className={`btn-primary report-generate-btn ${generating?'generating':''}`} onClick={generate} disabled={generating}>
+              {generating ? <><span className="spinner-white" /> Generating…</> : `⬇ Download ${format.toUpperCase()} Report`}
             </button>
           </div>
 
-          {/* Past Reports */}
+          {/* Past reports */}
           <div className="dash-panel">
             <div className="dash-panel-header">
               <h3>Past Reports</h3>
-              <span className="badge badge-green">{pastReports.length} Reports</span>
+              <span className="badge badge-green">{pastReports.length} Available</span>
             </div>
-            <div className="past-reports-list">
-              {pastReports.map(r => (
-                <div className="past-report-row" key={r.id}>
-                  <div className="prr-info">
-                    <span className="prr-type">{reportTypes.find(t => t.label.includes(r.type.split(' ')[0]))?.icon || '📄'} {r.type}</span>
-                    <span className="prr-meta">{r.field} · {r.date}</span>
+            {loading ? (
+              <div className="empty-state-sm"><div className="loading-spinner-sm" /></div>
+            ) : pastReports.length === 0 ? (
+              <div className="empty-state-sm"><p>No past reports. Generate your first report above.</p></div>
+            ) : (
+              <div className="past-reports-list">
+                {pastReports.map(r => (
+                  <div key={r.id} className="past-report-row">
+                    <div className="prr-info">
+                      <span className="prr-type">
+                        {REPORT_TYPES.find(t=>t.label.toLowerCase().includes(r.type?.split('_')[0]))?.icon || '📄'} {r.title}
+                      </span>
+                      <span className="prr-meta">{r.field} · {new Date(r.date).toLocaleDateString('en-IN')}</span>
+                    </div>
+                    <button className="prr-download" onClick={() => downloadPast(r)}>⬇</button>
                   </div>
-                  <div className="prr-actions">
-                    <span className="prr-size">{r.format} · {r.size}</span>
-                    <button className="prr-download" onClick={() => handleDownloadPast(r)}>⬇</button>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Report contents preview */}
+        <div className="dash-panel">
+          <div className="dash-panel-header"><h3>Report Contents</h3></div>
+          <div className="report-contents-preview">
+            {(() => {
+              const rt = REPORT_TYPES.find(r => r.id === selected);
+              const contents = {
+                farm_summary:  ['Farm details (name, location, area, state)','All fields with soil and variety data','Recent prediction history','Total area and field count summary'],
+                prediction:    ['Input parameters (variety, area, soil, weather)','Predicted yield and expected production','Confidence % and expected range','Risk level and loss percentage','AI explanation summary'],
+                crop_growth:   ['Planting dates for all fields','Current growth stage per field','Days since planting and days to harvest','Estimated harvest dates','Stage-wise activity recommendations'],
+                soil:          ['Soil type and pH for each field','Soil moisture levels','Soil health score and breakdown','Sugarcane suitability rating','Nutrient guidance (if available)'],
+                weather:       ['Current temperature and rainfall','Humidity and wind conditions','7-day forecast summary','Weather impact on sugarcane yield','Seasonal history overview'],
+                loss_analysis: ['Predicted yield vs reference yield (85 t/ha)','Calculated yield loss in t/ha','Loss percentage','Risk classification','Top contributing factors'],
+              };
+              return (
+                <>
+                  <h4>{rt?.icon} {rt?.label}</h4>
+                  <ul className="report-contents-list">
+                    {(contents[selected] || []).map(item => <li key={item}>{item}</li>)}
+                  </ul>
+                </>
+              );
+            })()}
           </div>
         </div>
       </div>

@@ -11,9 +11,8 @@ export default function AuthLayout({ children, compact = false }) {
           <p className="eyebrow">Smart Agricultural Intelligence</p>
           <h1>AI-Powered <br /><em>Sugarcane Yield</em> Forecasting</h1>
           <p>
-            Predict sugarcane yield before harvest using Machine Learning, satellite NDVI data, 
-            climate analysis, and soil characteristics. Make smarter farming decisions with 
-            AI-driven insights and crop health monitoring.
+            Predict sugarcane yield before harvest using Machine Learning, real-time meteorological
+            forecasts, soil health profiling, and varietal intelligence. Make smarter, data-driven farming decisions.
           </p>
         </div>
         <div className="panel-footer">NIE · Agricultural Decision Support System 2024</div>

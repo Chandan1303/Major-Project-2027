@@ -20,6 +20,7 @@ const schema = z
   .object({
     name: z.string().min(2, 'Enter your full name.'),
     email: z.string().email('Enter a valid email address.'),
+    role: z.enum(['farmer', 'officer', 'admin']).default('farmer'),
     password: strong,
     confirmPassword: z.string(),
     terms: z.literal(true, {
@@ -103,8 +104,8 @@ export default function SignupPage() {
         <p className="eyebrow">Join the Platform</p>
         <h2>Create your account</h2>
         <p className="intro">
-          Start using AI-based sugarcane yield forecasting. Get accurate predictions 
-          using XGBoost, Random Forest, and real-time satellite NDVI data.
+          Join the AI-based sugarcane yield forecasting platform. Get accurate machine learning
+          predictions, crop phenology tracking, and soil-climate intelligence.
         </p>
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className="field">
@@ -129,6 +130,14 @@ export default function SignupPage() {
               {...register('email')}
             />
             {errors.email && <p className="field-error" role="alert">{errors.email.message}</p>}
+          </div>
+          <div className="field">
+            <label htmlFor="role">User Role</label>
+            <select id="role" {...register('role')} className="role-select">
+              <option value="farmer">Farmer / Agricultural Producer</option>
+              <option value="officer">Agricultural Officer / Extension Specialist</option>
+              <option value="admin">System Administrator</option>
+            </select>
           </div>
           <PasswordInput
             label="Password"

@@ -1,0 +1,39 @@
+{
+  "report_id": "AGR-REP-SAMPLE-01",
+  "generated_at": "2026-09-26 18:30:00",
+  "title": "Sugarcane Yield & Agricultural Decision Support Report — Krishna Farm",
+  "farm_overview": {
+    "farm_name": "Krishna Sugarcane Farm",
+    "location": "Kolhapur, Maharashtra",
+    "address": "Plot 42, Shirol Road, Kolhapur District, MH 416103",
+    "total_area_hectares": 12.5,
+    "fields_count": 3
+  },
+  "meteorological_profile": {
+    "temperature": "28.5°C",
+    "rainfall": "1250 mm/season",
+    "humidity": "74%",
+    "weather_risk": "Low",
+    "climate_suitability": "Optimal"
+  },
+  "soil_profile": {
+    "soil_type": "Black Cotton Soil",
+    "soil_ph": 6.8,
+    "soil_moisture": "64%",
+    "health_score": "96/100",
+    "suitability": "Highly Suitable"
+  },
+  "yield_forecast": {
+    "variety": "Co 86032",
+    "predicted_yield_tha": 118.5,
+    "expected_production_tonnes": 1481.25,
+    "confidence": "94.2%",
+    "risk_category": "Low",
+    "crop_health_status": "Excellent"
+  },
+  "key_recommendations": [
+    "Apply scheduled potassium top dressing to promote stalk density.",
+    "Monitor tillering density to ensure 9-11 millable stalks per clump.",
+    "Maintain uniform furrow irrigation at 10-day intervals."
+  ]
+}

@@ -8,5 +8,8 @@ export const User = sequelize.define('User', {
   password_hash: { type: DataTypes.STRING(255), allowNull: false },
   email_verified: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
   verification_token: { type: DataTypes.STRING(64), allowNull: true },
-  verification_token_expires: { type: DataTypes.DATE, allowNull: true }
+  verification_token_expires: { type: DataTypes.DATE, allowNull: true },
+  role: { type: DataTypes.ENUM('user','officer','admin'), defaultValue: 'user' },
+  phone: { type: DataTypes.STRING(20), allowNull: true },
+  location: { type: DataTypes.STRING(200), allowNull: true },
 }, { tableName: 'users', underscored: true, createdAt: 'created_at', updatedAt: 'updated_at' });

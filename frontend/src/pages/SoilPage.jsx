@@ -1,62 +1,63 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import AppLayout from '../components/AppLayout';
+import { soilApi } from '../services/api';
 
-const soilProfiles = [
-  {
-    id: 1, name: 'North Block', type: 'Black Cotton Soil', ph: 6.8, moisture: 62,
-    N: 185, P: 68, K: 90, organic: 1.8, suitability: 'Excellent',
-    notes: 'Deep, self-mulching black soil. Excellent water retention. Ideal for sugarcane.',
-  },
-  {
-    id: 2, name: 'South Plot', type: 'Red Laterite Soil', ph: 6.2, moisture: 48,
-    N: 142, P: 55, K: 75, organic: 1.2, suitability: 'Good',
-    notes: 'Moderate fertility. Good drainage. Needs regular NPK supplementation.',
-  },
-  {
-    id: 3, name: 'East Field', type: 'Alluvial Soil', ph: 7.1, moisture: 70,
-    N: 210, P: 80, K: 105, organic: 2.1, suitability: 'Excellent',
-    notes: 'Rich alluvial deposits. Very high fertility. Low irrigation need.',
-  },
-];
-
-const nutrients = [
-  { name: 'Nitrogen (N)',   symbol: 'N',  value: 185, optimal: [150, 250], unit: 'kg/ha', color: '#2d7a3e' },
-  { name: 'Phosphorus (P)', symbol: 'P',  value: 68,  optimal: [50, 100],  unit: 'kg/ha', color: '#3b82f6' },
-  { name: 'Potassium (K)',  symbol: 'K',  value: 90,  optimal: [75, 150],  unit: 'kg/ha', color: '#f59e0b' },
-  { name: 'Organic Matter', symbol: 'OM', value: 1.8, optimal: [1.5, 3],   unit: '%',     color: '#8b5cf6' },
-];
-
-function NutrientBar({ nutrient }) {
-  const [min, max] = nutrient.optimal;
-  const pct = Math.min((nutrient.value / max) * 80, 100);
-  const optMin = (min / max) * 80;
-  const optMax = 80;
-  const status = nutrient.value >= min && nutrient.value <= max ? 'Optimal' : nutrient.value < min ? 'Low' : 'High';
-  const statusColor = status === 'Optimal' ? '#16a34a' : status === 'Low' ? '#ca8a04' : '#dc2626';
-
+function ScoreRing({ score, label, color }) {
+  const r = 54, circ = 2 * Math.PI * r, dash = (score / 100) * circ;
   return (
-    <div className="nutrient-row">
-      <div className="nutrient-meta">
-        <span className="nutrient-symbol" style={{ background: `${nutrient.color}22`, color: nutrient.color }}>{nutrient.symbol}</span>
-        <div>
-          <span className="nutrient-name">{nutrient.name}</span>
-          <span className="nutrient-range">Optimal: {min}–{max} {nutrient.unit}</span>
-        </div>
-        <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
-          <span className="nutrient-value">{nutrient.value} {nutrient.unit}</span>
-          <span className="nutrient-status" style={{ color: statusColor }}>{status}</span>
-        </div>
-      </div>
-      <div className="nutrient-bar-track">
-        <div className="nutrient-opt-zone" style={{ left: `${optMin}%`, width: `${optMax - optMin}%` }} />
-        <div className="nutrient-bar-fill" style={{ width: `${pct}%`, background: nutrient.color }} />
-      </div>
-    </div>
+    <svg viewBox="0 0 120 120" width="120" height="120">
+      <circle cx="60" cy="60" r={r} fill="none" stroke="#e5e7eb" strokeWidth="10" />
+      <circle cx="60" cy="60" r={r} fill="none" stroke={color} strokeWidth="10"
+        strokeDasharray={`${dash} ${circ}`} strokeLinecap="round" transform="rotate(-90 60 60)"
+        style={{ transition: 'stroke-dasharray 1s ease' }} />
+      <text x="60" y="56" textAnchor="middle" fontSize="18" fontWeight="800" fill={color}>{score}</text>
+      <text x="60" y="72" textAnchor="middle" fontSize="8" fill="#9ca3af">{label}</text>
+    </svg>
   );
 }
 
 export default function SoilPage() {
-  const [selected, setSelected] = useState(soilProfiles[0]);
+  const [data, setData]     = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [loading, setLoading]   = useState(true);
+  const [error, setError]       = useState(null);
+
+  useEffect(() => {
+    soilApi.getAll().then(r => {
+      const d = r.data;
+      setData(d);
+      if (d?.fields?.length) setSelected(d.fields[0]);
+    }).catch(e => setError(e.message)).finally(() => setLoading(false));
+  }, []);
+
+  if (loading) return <AppLayout><div className="page-loading-center"><div className="loading-spinner" /><p>Loading soil analysis…</p></div></AppLayout>;
+
+  if (error || !data?.fields?.length) return (
+    <AppLayout>
+      <div className="page-container">
+        <div className="page-header">
+          <div><p className="eyebrow">Soil Intelligence</p><h1 className="page-title">Soil Analysis</h1></div>
+        </div>
+        <div className="empty-page-state">
+          <div className="eps-icon">🪨</div>
+          <h2>No Field Data Found</h2>
+          <p>Add fields with soil data to see analysis here.</p>
+        </div>
+      </div>
+    </AppLayout>
+  );
+
+  const f = selected;
+  const healthColor = f?.health_score >= 80 ? '#16a34a' : f?.health_score >= 65 ? '#f59e0b' : '#ef4444';
+
+  const radarData = f ? [
+    { subject: 'pH',       value: f.health_score >= 80 ? 90 : 60 },
+    { subject: 'Moisture', value: Math.min(100, Number(f.soil_moisture) + 10) },
+    { subject: 'Suitability', value: f.suitability==='Highly Suitable'?95:f.suitability==='Suitable'?75:50 },
+    { subject: 'Health',   value: f.health_score },
+    { subject: 'pH Range', value: f.ph_status==='Optimal' ? 90 : 55 },
+  ] : [];
 
   return (
     <AppLayout>
@@ -65,125 +66,121 @@ export default function SoilPage() {
           <div>
             <p className="eyebrow">Soil Intelligence</p>
             <h1 className="page-title">Soil Analysis</h1>
-            <p className="page-subtitle">Comprehensive soil health, nutrient levels, and sugarcane suitability assessment.</p>
+            <p className="page-subtitle">Field-level soil health, pH, moisture, and sugarcane suitability assessment.</p>
           </div>
         </div>
 
-        {/* Profile selector */}
+        {/* Summary */}
+        {data.summary && (
+          <div className="stats-grid-4">
+            {[
+              { icon: '📊', label: 'Avg Health Score', value: data.summary.avg_health_score, color: '#2d7a3e' },
+              { icon: '✅', label: 'Health Status',     value: data.summary.health_label,     color: '#16a34a' },
+              { icon: '🌿', label: 'Excellent Fields',  value: data.summary.excellent_count,  color: '#065f46' },
+              { icon: '⚠️', label: 'Needs Attention',  value: data.summary.needs_attention,   color: '#ef4444' },
+            ].map(s => (
+              <div key={s.label} className="stat-card" style={{ '--card-accent': s.color }}>
+                <div className="sc-icon">{s.icon}</div>
+                <div className="sc-body"><span className="sc-label">{s.label}</span><span className="sc-value">{s.value}</span></div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Field selector */}
         <div className="profile-selector">
-          {soilProfiles.map(p => (
-            <button
-              key={p.id}
-              className={`profile-btn ${selected.id === p.id ? 'profile-btn-active' : ''}`}
-              onClick={() => setSelected(p)}
-            >
-              <span>🪨</span> {p.name}
+          {data.fields.map(field => (
+            <button key={field.id} className={`profile-btn ${selected?.id === field.id ? 'profile-btn-active' : ''}`} onClick={() => setSelected(field)}>
+              🪨 {field.name} <span className="profile-btn-sub">{field.farm_name}</span>
             </button>
           ))}
         </div>
 
-        <div className="dash-two-col">
-          {/* Soil Overview */}
-          <div className="dash-panel">
-            <div className="dash-panel-header">
-              <h3>{selected.name} — Soil Profile</h3>
-              <span className={`status-badge status-${selected.suitability === 'Excellent' ? 'good' : 'moderate'}`}>
-                {selected.suitability}
-              </span>
-            </div>
-            <div className="soil-overview">
-              <div className="soil-type-card">
-                <span className="soil-emoji">🪨</span>
-                <div>
-                  <span className="soil-type-name">{selected.type}</span>
-                  <span className="soil-notes">{selected.notes}</span>
-                </div>
+        {f && (
+          <div className="dash-two-col">
+            {/* Soil profile */}
+            <div className="dash-panel">
+              <div className="dash-panel-header">
+                <h3>{f.name} — Soil Profile</h3>
+                <span className={`status-badge status-${f.health_label?.toLowerCase() === 'excellent' ? 'good' : 'moderate'}`}>{f.health_label}</span>
               </div>
-              <div className="soil-metrics-grid">
-                {[
-                  { label: 'Soil pH',     value: selected.ph,       unit: '',   icon: '⚗️', color: selected.ph >= 6 && selected.ph <= 7.5 ? '#16a34a' : '#ca8a04' },
-                  { label: 'Moisture',    value: `${selected.moisture}%`, unit: '', icon: '💧', color: '#3b82f6' },
-                  { label: 'Organic',     value: `${selected.organic}%`,  unit: '', icon: '🌿', color: '#16a34a' },
-                  { label: 'N (kg/ha)',   value: selected.N,        unit: '',   icon: '🔬', color: '#2d7a3e' },
-                  { label: 'P (kg/ha)',   value: selected.P,        unit: '',   icon: '🔬', color: '#3b82f6' },
-                  { label: 'K (kg/ha)',   value: selected.K,        unit: '',   icon: '🔬', color: '#f59e0b' },
-                ].map(m => (
-                  <div className="soil-metric" key={m.label}>
-                    <span>{m.icon}</span>
-                    <span className="sm-value" style={{ color: m.color }}>{m.value}</span>
-                    <span className="sm-label">{m.label}</span>
+              <div className="soil-overview">
+                <div className="soil-type-card">
+                  <span className="soil-emoji">🪨</span>
+                  <div>
+                    <span className="soil-type-name">{f.soil_type}</span>
+                    <span className="soil-notes">Suitability: <strong>{f.suitability}</strong></span>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* pH Gauge */}
-          <div className="dash-panel">
-            <div className="dash-panel-header">
-              <h3>pH Level Analysis</h3>
-            </div>
-            <div className="ph-gauge-wrap">
-              <div className="ph-scale">
-                {[4,5,6,7,8,9,10].map(v => (
-                  <span key={v} className="ph-mark">{v}</span>
-                ))}
-              </div>
-              <div className="ph-bar-track">
-                <div className="ph-gradient" />
-                <div className="ph-optimal-zone" />
-                <div className="ph-needle" style={{ left: `${((selected.ph - 4) / 6) * 100}%` }} />
-              </div>
-              <div className="ph-labels">
-                <span>Acidic</span><span>Neutral</span><span>Alkaline</span>
-              </div>
-              <div className="ph-summary">
-                <div className="ph-value-big">{selected.ph}</div>
-                <div>
-                  <strong>{selected.ph >= 6 && selected.ph <= 7.5 ? 'Optimal for Sugarcane' : 'Outside Optimal Range'}</strong>
-                  <p>Sugarcane grows best at pH 6.0–7.5. Current pH is {selected.ph >= 6 && selected.ph <= 7.5 ? 'within' : 'outside'} the optimal range.</p>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Nutrient Analysis */}
-        <div className="dash-panel">
-          <div className="dash-panel-header">
-            <h3>Nutrient Profile</h3>
-            <span className="badge badge-green">NPK Analysis</span>
-          </div>
-          <div className="nutrients-list">
-            {nutrients.map(n => <NutrientBar key={n.name} nutrient={{ ...n, value: selected[n.symbol] || n.value }} />)}
-          </div>
-        </div>
-
-        {/* Suitability */}
-        <div className="dash-panel suitability-panel">
-          <h3>Sugarcane Suitability Assessment</h3>
-          <div className="suitability-grid">
-            {[
-              { factor: 'Soil Type',        rating: 5, note: `${selected.type} is highly suitable` },
-              { factor: 'pH Level',         rating: selected.ph >= 6 && selected.ph <= 7.5 ? 5 : 3, note: `pH ${selected.ph} — ${selected.ph >= 6 && selected.ph <= 7.5 ? 'Optimal' : 'Needs adjustment'}` },
-              { factor: 'Moisture',         rating: selected.moisture >= 50 ? 4 : 3, note: `${selected.moisture}% — ${selected.moisture >= 50 ? 'Good' : 'May need irrigation'}` },
-              { factor: 'Nutrient Level',   rating: 4, note: 'NPK levels are adequate' },
-              { factor: 'Organic Matter',   rating: selected.organic >= 1.5 ? 4 : 3, note: `${selected.organic}% organic matter` },
-            ].map(s => (
-              <div className="suitability-item" key={s.factor}>
-                <span className="suit-factor">{s.factor}</span>
-                <div className="suit-stars">
-                  {[1,2,3,4,5].map(i => (
-                    <span key={i} style={{ color: i <= s.rating ? '#f59e0b' : '#e5e7eb', fontSize: 18 }}>★</span>
+                <div className="soil-metrics-grid">
+                  {[
+                    { label: 'Soil pH',    value: Number(f.soil_ph).toFixed(1),      icon: '⚗️', color: f.ph_status==='Optimal'?'#16a34a':'#f59e0b' },
+                    { label: 'Moisture',   value: `${Number(f.soil_moisture).toFixed(0)}%`, icon: '💧', color: '#3b82f6' },
+                    { label: 'Health',     value: `${f.health_score}/100`,           icon: '💚', color: healthColor },
+                    { label: 'pH Status',  value: f.ph_status,                       icon: '✓',  color: f.ph_status==='Optimal'?'#16a34a':'#f59e0b' },
+                    { label: 'Moisture Status', value: f.moisture_status,            icon: '📊', color: '#3b82f6' },
+                    { label: 'Suitability',value: f.suitability,                     icon: '🌾', color: '#2d7a3e' },
+                  ].map(m => (
+                    <div key={m.label} className="soil-metric">
+                      <span>{m.icon}</span>
+                      <span className="sm-value" style={{ color: m.color }}>{m.value}</span>
+                      <span className="sm-label">{m.label}</span>
+                    </div>
                   ))}
                 </div>
-                <span className="suit-note">{s.note}</span>
+              </div>
+
+              {/* Score breakdown */}
+              {f.score_breakdown && (
+                <div style={{ marginTop: 20 }}>
+                  <h4 style={{ fontSize: 13, fontWeight: 700, color: '#374151', marginBottom: 12 }}>Score Breakdown</h4>
+                  {Object.entries(f.score_breakdown).map(([k, v]) => (
+                    <div key={k} className="score-breakdown-row">
+                      <span>{k.charAt(0).toUpperCase()+k.slice(1)}</span>
+                      <div className="sbr-track"><div className="sbr-fill" style={{ width: `${(v/25)*100}%`, background: '#2d7a3e' }} /></div>
+                      <span>{v}/25</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Radar + Score ring */}
+            <div className="dash-panel">
+              <div className="dash-panel-header"><h3>Soil Health Overview</h3></div>
+              <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:24 }}>
+                <ScoreRing score={f.health_score} label="HEALTH SCORE" color={healthColor} />
+                <ResponsiveContainer width="100%" height={220}>
+                  <RadarChart data={radarData}>
+                    <PolarGrid stroke="#e5e7eb" />
+                    <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11 }} />
+                    <PolarRadiusAxis domain={[0,100]} tick={{ fontSize: 9 }} />
+                    <Radar name="Soil" dataKey="value" stroke="#2d7a3e" fill="#2d7a3e" fillOpacity={0.25} />
+                    <Tooltip />
+                  </RadarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* pH Guide */}
+        <div className="dash-panel">
+          <div className="dash-panel-header"><h3>pH Level Reference for Sugarcane</h3></div>
+          <div className="ph-guide-row">
+            {[
+              { range: '< 5.5',   label: 'Strongly Acidic', note: 'Lime required — Al/Mn toxicity risk', color: '#dc2626' },
+              { range: '5.5–6.0', label: 'Acidic',          note: 'Apply lime — moderate impact',         color: '#f59e0b' },
+              { range: '6.0–7.5', label: 'Optimal',         note: 'Best range for sugarcane growth',      color: '#16a34a' },
+              { range: '7.5–8.0', label: 'Slightly Alkaline',note: 'Minor impact — monitor pH',           color: '#f59e0b' },
+              { range: '> 8.0',   label: 'Alkaline',         note: 'Gypsum / sulfur required',            color: '#dc2626' },
+            ].map(p => (
+              <div key={p.range} className="ph-guide-item" style={{ borderTop: `3px solid ${p.color}` }}>
+                <span className="ph-guide-range" style={{ color: p.color }}>{p.range}</span>
+                <span className="ph-guide-label">{p.label}</span>
+                <span className="ph-guide-note">{p.note}</span>
               </div>
             ))}
-          </div>
-          <div className="suit-impact">
-            <h4>Impact on Expected Yield</h4>
-            <p>Based on current soil conditions at <strong>{selected.name}</strong>, soil factors contribute a <strong>+8–12% yield improvement</strong> compared to suboptimal soil conditions. The {selected.type} profile with pH {selected.ph} is particularly well-suited for sugarcane cultivation.</p>
           </div>
         </div>
       </div>
