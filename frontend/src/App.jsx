@@ -12,9 +12,23 @@ import TermsOfUsePage from './pages/TermsOfUsePage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import ProtectedRoute from './routes/ProtectedRoute';
 
+// New pages
+import HomePage from './pages/HomePage';
+import NewDashboardPage from './pages/NewDashboardPage';
+import CropHealthPage from './pages/CropHealthPage';
+import WeatherPage from './pages/WeatherPage';
+import SoilPage from './pages/SoilPage';
+import VarietiesPage from './pages/VarietiesPage';
+import YieldLossPage from './pages/YieldLossPage';
+import InsightsPage from './pages/InsightsPage';
+import FarmsPage from './pages/FarmsPage';
+import ReportsPage from './pages/ReportsPage';
+import AboutPage from './pages/AboutPage';
+
 export default function App() {
   return (
     <Routes>
+      {/* Auth routes (existing) */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -23,8 +37,26 @@ export default function App() {
       <Route path="/resend-verification" element={<ResendVerificationPage />} />
       <Route path="/terms-of-use" element={<TermsOfUsePage />} />
       <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-      <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
-      <Route path="/prediction" element={<ProtectedRoute><PredictionPage /></ProtectedRoute>} />
+
+      {/* Existing routes (kept for compatibility) */}
+      <Route path="/dashboard-old" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+
+      {/* New main app routes */}
+      <Route path="/home"        element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+      <Route path="/dashboard"   element={<ProtectedRoute><NewDashboardPage /></ProtectedRoute>} />
+      <Route path="/prediction"  element={<ProtectedRoute><PredictionPage /></ProtectedRoute>} />
+      <Route path="/crop-health" element={<ProtectedRoute><CropHealthPage /></ProtectedRoute>} />
+      <Route path="/weather"     element={<ProtectedRoute><WeatherPage /></ProtectedRoute>} />
+      <Route path="/soil"        element={<ProtectedRoute><SoilPage /></ProtectedRoute>} />
+      <Route path="/varieties"   element={<ProtectedRoute><VarietiesPage /></ProtectedRoute>} />
+      <Route path="/yield-loss"  element={<ProtectedRoute><YieldLossPage /></ProtectedRoute>} />
+      <Route path="/insights"    element={<ProtectedRoute><InsightsPage /></ProtectedRoute>} />
+      <Route path="/farms"       element={<ProtectedRoute><FarmsPage /></ProtectedRoute>} />
+      <Route path="/reports"     element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
+      <Route path="/about"       element={<ProtectedRoute><AboutPage /></ProtectedRoute>} />
+
+      {/* Default redirect */}
+      <Route path="/" element={<Navigate to="/home" replace />} />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
