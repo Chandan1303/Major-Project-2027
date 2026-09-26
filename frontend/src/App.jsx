@@ -1,7 +1,6 @@
 import React from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './routes/ProtectedRoute';
-import LandingPage from './pages/LandingPage';
 
 // Auth pages
 import LoginPage               from './pages/LoginPage';
@@ -41,9 +40,8 @@ function Protected({ children }) {
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
-
       {/* Public auth */}
+      <Route path="/"                    element={<LoginPage />} />
       <Route path="/login"               element={<LoginPage />} />
       <Route path="/signup"              element={<SignupPage />} />
       <Route path="/forgot-password"     element={<ForgotPasswordPage />} />
@@ -74,7 +72,7 @@ export default function App() {
       <Route path="/profile"     element={<Protected><ProfilePage /></Protected>} />
       <Route path="/about"       element={<Protected><AboutPage /></Protected>} />
 
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }
