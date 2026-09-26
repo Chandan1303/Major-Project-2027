@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import AppLayout from '../components/AppLayout';
 import { useAuth } from '../context/AuthContext';
+import WorkspaceLayout from '../layouts/WorkspaceLayout';
 
 /* ── data ─────────────────────────────────────────────────────── */
 const defaultVarieties = ['Co 86032', 'Co 0238', 'Co 0118'];
@@ -286,7 +285,7 @@ SugarYield AI · Smart Agricultural Decision Support
     : '#2d7a3e';
 
   return (
-    <AppLayout>
+    <WorkspaceLayout active="prediction">
       {loading && <LoadingDots />}
 
       <div className="pp-page">
@@ -832,6 +831,6 @@ SugarYield AI · Smart Agricultural Decision Support
           )}
         </div>
       </div>
-    </AppLayout>
+    </WorkspaceLayout>
   );
 }

@@ -11,6 +11,7 @@ import PredictionPage from './pages/PredictionPage';
 import TermsOfUsePage from './pages/TermsOfUsePage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import ProtectedRoute from './routes/ProtectedRoute';
+import LandingPage from './pages/LandingPage';
 
 // New pages
 import HomePage from './pages/HomePage';
@@ -28,7 +29,7 @@ import AboutPage from './pages/AboutPage';
 export default function App() {
   return (
     <Routes>
-      {/* Auth routes (existing) */}
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignupPage />} />
       <Route path="/forgot-password" element={<ForgotPasswordPage />} />
@@ -37,7 +38,6 @@ export default function App() {
       <Route path="/resend-verification" element={<ResendVerificationPage />} />
       <Route path="/terms-of-use" element={<TermsOfUsePage />} />
       <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-
       {/* Existing routes (kept for compatibility) */}
       <Route path="/dashboard-old" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
 
@@ -55,9 +55,7 @@ export default function App() {
       <Route path="/reports"     element={<ProtectedRoute><ReportsPage /></ProtectedRoute>} />
       <Route path="/about"       element={<ProtectedRoute><AboutPage /></ProtectedRoute>} />
 
-      {/* Default redirect */}
-      <Route path="/" element={<Navigate to="/home" replace />} />
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
