@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import AppLayout from '../components/AppLayout';
 import { farmApi } from '../services/api';
+import { useField } from '../context/FieldContext';
 
 const STAGES = ['Planting','Germination','Tillering','Grand Growth','Maturity','Harvest'];
 const STAGE_DAYS  = [0, 30, 60, 120, 270, 360];
@@ -16,6 +17,7 @@ const STAGE_INFO = {
 };
 
 export default function CropIntelPage() {
+  const { selectedField: ctxField, selectField } = useField();
   const [farms, setFarms]     = useState([]);
   const [fields, setFields]   = useState([]);
   const [selected, setSelected] = useState(null);
@@ -27,9 +29,12 @@ export default function CropIntelPage() {
       setFarms(all);
       const allFields = all.flatMap(f => (f.fields||[]).map(fld => ({ ...fld, farm_name: f.name })));
       setFields(allFields);
-      if (allFields.length) setSelected(allFields[0]);
+      if (allFields.length) {
+        const matched = ctxField ? allFields.find(f => f.id === ctxField.id) : null;
+        setSelected(matched || allFields[0]);
+      }
     }).catch(e => console.error(e)).finally(() => setLoading(false));
-  }, []);
+  }, [ctxField]);
 
   function getStageInfo(plantingDate, moisture = 65) {
     if (!plantingDate) return { stageIdx: 0, daysIn: 0, daysToHarvest: 360, pct: 0, condition: 'Good', stage: STAGES[0] };
@@ -85,7 +90,7 @@ export default function CropIntelPage() {
         {/* Field selector */}
         <div className="profile-selector">
           {fields.map(f => (
-            <button key={f.id} className={`profile-btn ${selected?.id===f.id?'profile-btn-active':''}`} onClick={() => setSelected(f)}>
+            <button key={f.id} className={`profile-btn ${selected?.id===f.id?'profile-btn-active':''}`} onClick={() => { setSelected(f); selectField(f.id); }}>
               🌿 {f.name} <span className="profile-btn-sub">{f.farm_name}</span>
             </button>
           ))}

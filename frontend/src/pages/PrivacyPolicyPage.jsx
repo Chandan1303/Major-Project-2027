@@ -63,9 +63,9 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h3>5. Satellite and Climate Data</h3>
+            <h3>5. Ground Soil and Regional Agro-Climate Data</h3>
             <p>
-              Our system uses satellite NDVI data and climate information from third-party sources. This data is processed in accordance with the respective provider's terms of service and is used solely for generating agricultural insights for your benefit.
+              Our system uses ground soil testing readings and meteorological climate information from verified public agro-meteorological sources. This data is processed in accordance with open agricultural standards and is used solely for generating agronomic decision support and yield forecasts for your benefit.
             </p>
           </section>
 

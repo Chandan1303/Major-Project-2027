@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
+import { FieldProvider } from './context/FieldContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import './styles.css';
 
@@ -10,7 +11,9 @@ createRoot(document.getElementById('root')).render(
   <ErrorBoundary>
     <BrowserRouter>
       <AuthProvider>
-        <App />
+        <FieldProvider>
+          <App />
+        </FieldProvider>
       </AuthProvider>
     </BrowserRouter>
   </ErrorBoundary>

@@ -34,9 +34,29 @@ import ProfilePage     from './pages/ProfilePage';
 import AboutPage       from './pages/AboutPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
 import OfficerDashboardPage from './pages/OfficerDashboardPage';
+import { useAuth } from './context/AuthContext';
 
 function Protected({ children }) {
   return <ProtectedRoute>{children}</ProtectedRoute>;
+}
+
+function UserRoute({ children }) {
+  const { user } = useAuth();
+  if (user?.role === 'admin') {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return <Protected>{children}</Protected>;
+}
+
+function DashboardRouter() {
+  const { user } = useAuth();
+  if (user?.role === 'admin') {
+    return <AdminDashboardPage />;
+  }
+  if (user?.role === 'officer') {
+    return <OfficerDashboardPage />;
+  }
+  return <NewDashboardPage />;
 }
 
 export default function App() {
@@ -53,28 +73,33 @@ export default function App() {
       <Route path="/terms-of-use"        element={<TermsOfUsePage />} />
       <Route path="/privacy-policy"      element={<PrivacyPolicyPage />} />
 
-      {/* Protected app */}
-      <Route path="/home"        element={<Protected><HomePage /></Protected>} />
-      <Route path="/dashboard"   element={<Protected><NewDashboardPage /></Protected>} />
-      <Route path="/farms"       element={<Protected><FarmsPage /></Protected>} />
-      <Route path="/farm-map"    element={<Protected><FarmMapPage /></Protected>} />
-      <Route path="/prediction"  element={<Protected><PredictionPage /></Protected>} />
-      <Route path="/simulator"   element={<Protected><SimulatorPage /></Protected>} />
-      <Route path="/crop-intel"  element={<Protected><CropIntelPage /></Protected>} />
-      <Route path="/insights"    element={<Protected><InsightsPage /></Protected>} />
-      <Route path="/environment" element={<Protected><EnvironmentPage /></Protected>} />
-      <Route path="/weather"     element={<Protected><WeatherPage /></Protected>} />
-      <Route path="/soil"        element={<Protected><SoilPage /></Protected>} />
-      <Route path="/varieties"   element={<Protected><VarietiesPage /></Protected>} />
-      <Route path="/yield-loss"  element={<Protected><YieldLossPage /></Protected>} />
-      <Route path="/analytics"   element={<Protected><AnalyticsPage /></Protected>} />
-      <Route path="/reports"     element={<Protected><ReportsPage /></Protected>} />
-      <Route path="/chat"        element={<Protected><ChatPage /></Protected>} />
-      <Route path="/alerts"      element={<Protected><AlertsPage /></Protected>} />
-      <Route path="/profile"     element={<Protected><ProfilePage /></Protected>} />
-      <Route path="/about"       element={<Protected><AboutPage /></Protected>} />
+      {/* Main Dashboard (renders Admin Dashboard for Admin, Officer Dashboard for Officer, User Dashboard for Farmer) */}
+      <Route path="/dashboard"   element={<Protected><DashboardRouter /></Protected>} />
       <Route path="/admin"       element={<Protected><AdminDashboardPage /></Protected>} />
       <Route path="/officer"     element={<Protected><OfficerDashboardPage /></Protected>} />
+
+      {/* User & Agro Intelligence Pages */}
+      <Route path="/home"        element={<UserRoute><HomePage /></UserRoute>} />
+      <Route path="/farms"       element={<UserRoute><FarmsPage /></UserRoute>} />
+      <Route path="/farm-map"    element={<UserRoute><FarmMapPage /></UserRoute>} />
+      <Route path="/prediction"  element={<UserRoute><PredictionPage /></UserRoute>} />
+      <Route path="/simulator"   element={<UserRoute><SimulatorPage /></UserRoute>} />
+      <Route path="/crop-intel"  element={<UserRoute><CropIntelPage /></UserRoute>} />
+      <Route path="/insights"    element={<UserRoute><InsightsPage defaultTab="explain" /></UserRoute>} />
+      <Route path="/ml-performance" element={<UserRoute><InsightsPage defaultTab="performance" /></UserRoute>} />
+      <Route path="/environment" element={<UserRoute><EnvironmentPage /></UserRoute>} />
+      <Route path="/weather"     element={<UserRoute><WeatherPage /></UserRoute>} />
+      <Route path="/soil"        element={<UserRoute><SoilPage /></UserRoute>} />
+      <Route path="/varieties"   element={<UserRoute><VarietiesPage /></UserRoute>} />
+      <Route path="/yield-loss"  element={<UserRoute><YieldLossPage /></UserRoute>} />
+      <Route path="/analytics"   element={<UserRoute><AnalyticsPage /></UserRoute>} />
+      <Route path="/reports"     element={<UserRoute><ReportsPage /></UserRoute>} />
+      <Route path="/chat"        element={<UserRoute><ChatPage /></UserRoute>} />
+      <Route path="/alerts"      element={<UserRoute><AlertsPage /></UserRoute>} />
+
+      {/* Shared Account Pages */}
+      <Route path="/profile"     element={<Protected><ProfilePage /></Protected>} />
+      <Route path="/about"       element={<Protected><AboutPage /></Protected>} />
 
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>

@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import AppLayout from '../components/AppLayout';
 
-const ndviHistory = [
-  { month: 'Apr 26', ndvi: 0.41, health: 'Moderate' },
-  { month: 'May 26', ndvi: 0.55, health: 'Good' },
-  { month: 'Jun 26', ndvi: 0.63, health: 'Good' },
-  { month: 'Jul 26', ndvi: 0.70, health: 'Healthy' },
-  { month: 'Aug 26', ndvi: 0.76, health: 'Healthy' },
-  { month: 'Sep 26', ndvi: 0.74, health: 'Healthy' },
+const vigorHistory = [
+  { month: 'Apr 26', vigor: 62, health: 'Moderate', stage: 'Germination' },
+  { month: 'May 26', vigor: 74, health: 'Good', stage: 'Tillering' },
+  { month: 'Jun 26', vigor: 82, health: 'Good', stage: 'Tillering' },
+  { month: 'Jul 26', vigor: 89, health: 'Healthy', stage: 'Grand Growth' },
+  { month: 'Aug 26', vigor: 94, health: 'Healthy', stage: 'Grand Growth' },
+  { month: 'Sep 26', vigor: 91, health: 'Healthy', stage: 'Grand Growth' },
 ];
 
 const zones = [
-  { id: 'Z1', name: 'North Block',  area: '4.5 ha', ndvi: 0.78, health: 'Healthy',  pct: 78 },
-  { id: 'Z2', name: 'South Plot',   area: '2.8 ha', ndvi: 0.65, health: 'Good',     pct: 65 },
-  { id: 'Z3', name: 'East Field',   area: '6.1 ha', ndvi: 0.48, health: 'Moderate', pct: 48 },
-  { id: 'Z4', name: 'West Block',   area: '3.3 ha', ndvi: 0.82, health: 'Healthy',  pct: 82 },
+  { id: 'Z1', name: 'North Block',  area: '4.5 ha', vigor: 92, health: 'Healthy',  soilMoisture: 65, ph: 7.2 },
+  { id: 'Z2', name: 'South Plot',   area: '2.8 ha', vigor: 84, health: 'Good',     soilMoisture: 58, ph: 6.8 },
+  { id: 'Z3', name: 'East Field',   area: '6.1 ha', vigor: 68, health: 'Moderate', soilMoisture: 48, ph: 6.5 },
+  { id: 'Z4', name: 'West Block',   area: '3.3 ha', vigor: 95, health: 'Healthy',  soilMoisture: 68, ph: 7.4 },
 ];
 
 function healthColor(h) {
@@ -33,21 +33,21 @@ export default function CropHealthPage() {
       <div className="page-container">
         <div className="page-header">
           <div>
-            <p className="eyebrow">Satellite Monitoring</p>
-            <h1 className="page-title">Crop Health & NDVI</h1>
-            <p className="page-subtitle">Vegetation health via Sentinel-2 satellite imagery and NDVI analysis.</p>
+            <p className="eyebrow">Agronomic Telemetry</p>
+            <h1 className="page-title">Crop Health & Canopy Vigor</h1>
+            <p className="page-subtitle">Field parcel health via ground sensors, soil moisture telemetry, and phenology staging.</p>
           </div>
-          <span className="badge badge-green">🛰️ Live Satellite Data</span>
+          <span className="badge badge-green">🌿 Ground Sensor Telemetry</span>
         </div>
 
-        {/* Current NDVI Overview */}
+        {/* Current Overview */}
         <div className="summary-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(180px,1fr))' }}>
           {[
-            { label: 'Current NDVI',   value: '0.74',     icon: '🌿', color: '#16a34a' },
-            { label: 'Health Status',  value: 'Healthy',  icon: '💚', color: '#16a34a' },
-            { label: 'Growth Stage',   value: 'Grand Growth', icon: '📈', color: '#2d7a3e' },
-            { label: 'Stressed Area',  value: '12%',      icon: '⚠️', color: '#ca8a04' },
-            { label: 'Last Updated',   value: '6h ago',   icon: '🔄', color: '#6366f1' },
+            { label: 'Canopy Vigor Index', value: '91/100', icon: '🌿', color: '#16a34a' },
+            { label: 'Crop Health Status', value: 'Healthy', icon: '💚', color: '#16a34a' },
+            { label: 'Growth Stage',       value: 'Grand Growth', icon: '📈', color: '#2d7a3e' },
+            { label: 'Moisture Stress',    value: 'Low (8%)', icon: '💧', color: '#3b82f6' },
+            { label: 'Last Evaluated',     value: 'Today', icon: '🔄', color: '#6366f1' },
           ].map(c => (
             <div className="summary-card" key={c.label} style={{ '--card-accent': c.color }}>
               <div className="sc-icon">{c.icon}</div>
@@ -60,13 +60,13 @@ export default function CropHealthPage() {
         </div>
 
         <div className="dash-two-col">
-          {/* NDVI Map Placeholder */}
+          {/* Parcel Vigor Map */}
           <div className="dash-panel">
             <div className="dash-panel-header">
-              <h3>NDVI Satellite Map</h3>
+              <h3>Field Parcel Health Matrix</h3>
               <div style={{ display: 'flex', gap: 8 }}>
-                <span className="badge badge-blue">Sentinel-2</span>
-                <span className="badge badge-green">Sep 2026</span>
+                <span className="badge badge-blue">Ground Sensors</span>
+                <span className="badge badge-green">Season 2026</span>
               </div>
             </div>
             <div className="ndvi-map-visual">
@@ -79,16 +79,16 @@ export default function CropHealthPage() {
                     onClick={() => setActiveZone(z.id)}
                   >
                     <span className="map-zone-label">{z.name}</span>
-                    <span className="map-zone-ndvi" style={{ color: healthColor(z.health) }}>NDVI {z.ndvi}</span>
+                    <span className="map-zone-ndvi" style={{ color: healthColor(z.health) }}>Vigor {z.vigor}%</span>
                     <span className={`status-badge status-${z.health.toLowerCase()}`}>{z.health}</span>
                   </div>
                 ))}
               </div>
               <div className="ndvi-map-legend">
-                <span style={{ color: '#16a34a' }}>■</span> Healthy (0.7+)
-                <span style={{ color: '#65a30d', marginLeft: 12 }}>■</span> Good (0.6–0.7)
-                <span style={{ color: '#ca8a04', marginLeft: 12 }}>■</span> Moderate (0.4–0.6)
-                <span style={{ color: '#dc2626', marginLeft: 12 }}>■</span> Stressed (&lt;0.4)
+                <span style={{ color: '#16a34a' }}>■</span> Excellent (&gt;85%)
+                <span style={{ color: '#65a30d', marginLeft: 12 }}>■</span> Good (75–85%)
+                <span style={{ color: '#ca8a04', marginLeft: 12 }}>■</span> Moderate (60–75%)
+                <span style={{ color: '#dc2626', marginLeft: 12 }}>■</span> Stressed (&lt;60%)
               </div>
             </div>
           </div>
@@ -98,89 +98,35 @@ export default function CropHealthPage() {
             <div className="dash-panel-header">
               <h3>Zone Detail — {zone.name}</h3>
             </div>
-            <div className="zone-detail">
-              <div className="zone-ndvi-ring">
-                <svg viewBox="0 0 120 120" width="120" height="120">
-                  <circle cx="60" cy="60" r="50" fill="none" stroke="#e5e7eb" strokeWidth="12" />
-                  <circle
-                    cx="60" cy="60" r="50" fill="none"
-                    stroke={healthColor(zone.health)} strokeWidth="12"
-                    strokeDasharray={`${zone.pct * 3.14} 314`}
-                    strokeLinecap="round"
-                    transform="rotate(-90 60 60)"
-                    style={{ transition: 'stroke-dasharray 0.8s ease' }}
-                  />
-                  <text x="60" y="55" textAnchor="middle" fontSize="20" fontWeight="700" fill={healthColor(zone.health)}>{zone.ndvi}</text>
-                  <text x="60" y="72" textAnchor="middle" fontSize="9" fill="#6b7280">NDVI</text>
-                </svg>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+              <div style={{ padding: 12, background: '#f8fafc', borderRadius: 8 }}>
+                <small style={{ color: '#64748b' }}>Area</small>
+                <div style={{ fontSize: 18, fontWeight: 700 }}>{zone.area}</div>
               </div>
-              <div className="zone-stats">
-                <div className="zone-stat"><span>Area</span><strong>{zone.area}</strong></div>
-                <div className="zone-stat"><span>Health</span><strong style={{ color: healthColor(zone.health) }}>{zone.health}</strong></div>
-                <div className="zone-stat"><span>NDVI Value</span><strong>{zone.ndvi}</strong></div>
-                <div className="zone-stat"><span>Crop Stage</span><strong>Grand Growth</strong></div>
-                <div className="zone-stat"><span>Stress Risk</span><strong>Low</strong></div>
+              <div style={{ padding: 12, background: '#f8fafc', borderRadius: 8 }}>
+                <small style={{ color: '#64748b' }}>Health Evaluation</small>
+                <div style={{ fontSize: 18, fontWeight: 700, color: healthColor(zone.health) }}>{zone.health}</div>
+              </div>
+              <div style={{ padding: 12, background: '#f8fafc', borderRadius: 8 }}>
+                <small style={{ color: '#64748b' }}>Soil Moisture</small>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#2563eb' }}>{zone.soilMoisture}%</div>
+              </div>
+              <div style={{ padding: 12, background: '#f8fafc', borderRadius: 8 }}>
+                <small style={{ color: '#64748b' }}>Soil pH</small>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#16a34a' }}>{zone.ph}</div>
               </div>
             </div>
 
-            {/* Zone selector */}
-            <div className="zone-selector">
-              {zones.map(z => (
-                <button
-                  key={z.id}
-                  className={`zone-btn ${activeZone === z.id ? 'zone-btn-active' : ''}`}
-                  style={activeZone === z.id ? { background: healthColor(z.health), borderColor: healthColor(z.health) } : {}}
-                  onClick={() => setActiveZone(z.id)}
-                >
-                  {z.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Historical NDVI */}
-        <div className="dash-panel">
-          <div className="dash-panel-header">
-            <h3>Historical NDVI Trend</h3>
-            <span className="badge badge-green">6 Month View</span>
-          </div>
-          <div className="ndvi-line-chart">
-            <div className="line-chart-area">
-              <svg viewBox="0 0 600 160" style={{ width: '100%', height: 160 }}>
-                <defs>
-                  <linearGradient id="ndviGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#2d7a3e" stopOpacity="0.3" />
-                    <stop offset="100%" stopColor="#2d7a3e" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                {/* Grid lines */}
-                {[0.3, 0.5, 0.7, 0.9].map((v, i) => (
-                  <line key={i} x1="0" y1={160 - v * 160} x2="600" y2={160 - v * 160}
-                    stroke="#e5e7eb" strokeWidth="1" strokeDasharray="4 4" />
-                ))}
-                {/* Fill */}
-                <path
-                  d={`M ${ndviHistory.map((d, i) => `${i * 100 + 50},${160 - d.ndvi * 160}`).join(' L ')} L ${(ndviHistory.length - 1) * 100 + 50},160 L 50,160 Z`}
-                  fill="url(#ndviGrad)"
-                />
-                {/* Line */}
-                <polyline
-                  points={ndviHistory.map((d, i) => `${i * 100 + 50},${160 - d.ndvi * 160}`).join(' ')}
-                  fill="none" stroke="#2d7a3e" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"
-                />
-                {/* Dots */}
-                {ndviHistory.map((d, i) => (
-                  <circle key={i} cx={i * 100 + 50} cy={160 - d.ndvi * 160} r="5"
-                    fill="white" stroke="#2d7a3e" strokeWidth="2.5" />
-                ))}
-              </svg>
-            </div>
-            <div className="line-chart-labels">
-              {ndviHistory.map(d => (
-                <div key={d.month} className="lc-label">
-                  <span>{d.month}</span>
-                  <span className="lc-val">{d.ndvi}</span>
+            <h4 style={{ marginTop: 20, marginBottom: 10 }}>Vigor Progression Across Growth Stages</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {vigorHistory.map(v => (
+                <div key={v.month} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 13 }}>
+                  <span style={{ minWidth: 60 }}>{v.month}</span>
+                  <span style={{ color: '#64748b', fontSize: 12 }}>{v.stage}</span>
+                  <div style={{ flex: 1, margin: '0 12px', height: 8, background: '#e2e8f0', borderRadius: 4, overflow: 'hidden' }}>
+                    <div style={{ width: `${v.vigor}%`, height: '100%', background: healthColor(v.health) }} />
+                  </div>
+                  <span style={{ fontWeight: 600, minWidth: 40, textAlign: 'right' }}>{v.vigor}%</span>
                 </div>
               ))}
             </div>

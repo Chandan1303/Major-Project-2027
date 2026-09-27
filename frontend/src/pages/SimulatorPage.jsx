@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Legend, Cell } from 'recharts';
 import AppLayout from '../components/AppLayout';
 import { mlApi, predictionApi } from '../services/api';
+import { useField } from '../context/FieldContext';
 import toast, { Toaster } from 'react-hot-toast';
 
 const PRESET_SCENARIOS = [
@@ -17,13 +19,16 @@ const PRESET_SCENARIOS = [
 const VARIETIES = ['Co 86032', 'Co 0238', 'CoC 671', 'Co 99004', 'CoM 0265'];
 
 export default function SimulatorPage() {
+  const navigate = useNavigate();
+  const { selectedField, activeWeather } = useField();
+
   const [base, setBase] = useState({
     rainfall_mm: 1200,
-    temperature_c: 28,
-    humidity: 68,
+    temperature_c: 29.5,
+    humidity: 70,
     soil_moisture: 60,
-    soil_ph: 6.8,
-    area_hectare: 5.0,
+    soil_ph: 7.0,
+    area_hectare: 2.5,
     variety: 'Co 86032',
     growth_stage: 'Grand Growth',
     soil_type: 'Black Soil',
@@ -40,26 +45,36 @@ export default function SimulatorPage() {
   // Custom scenario overrides
   const [custom, setCustom] = useState({});
 
+  // Auto-populate from selected field and latest prediction
   useEffect(() => {
+    if (selectedField) {
+      setBase(b => ({
+        ...b,
+        variety: selectedField.sugarcane_variety || b.variety,
+        area_hectare: Number(selectedField.area) || b.area_hectare,
+        soil_type: selectedField.soil_type || b.soil_type,
+        soil_ph: Number(selectedField.soil_ph) || b.soil_ph,
+        soil_moisture: Number(selectedField.soil_moisture) || b.soil_moisture,
+      }));
+    }
+
+    if (activeWeather) {
+      setBase(b => ({
+        ...b,
+        temperature_c: activeWeather.temperature || b.temperature_c,
+        humidity: activeWeather.humidity || b.humidity,
+        rainfall_mm: activeWeather.rainfall ? Math.max(activeWeather.rainfall, 800) : b.rainfall_mm,
+      }));
+    }
+
     predictionApi.list().then(r => {
       const p = r.data?.predictions?.[0];
       if (p) {
         setLastPred(p);
         setCurrentPred(Number(p.predicted_yield) || 88.5);
-        setBase(b => ({
-          ...b,
-          rainfall_mm: Number(p.rainfall) || 1200,
-          temperature_c: Number(p.temperature) || 28,
-          humidity: Number(p.humidity) || 68,
-          soil_moisture: Number(p.soil_moisture) || 60,
-          soil_ph: Number(p.soil_ph) || 6.8,
-          variety: p.variety || 'Co 86032',
-          area_hectare: Number(p.area) || 5.0,
-          historical_yield: Number(p.historical_yield) || 85.0
-        }));
       }
     }).catch(() => {});
-  }, []);
+  }, [selectedField, activeWeather]);
 
   const runSingle = async (scenarioOverride = null) => {
     const scToRun = scenarioOverride || custom;
@@ -126,9 +141,9 @@ export default function SimulatorPage() {
           </button>
         </div>
 
-        {/* Disclaimer Banner */}
-        <div className="info-banner" style={{ borderLeft: '4px solid #f59e0b', background: '#fffbeb', color: '#92400e' }}>
-          ⚠️ <strong>Model-Based Scenario Estimates Only:</strong> Results represent simulated machine learning projections under hypothetical inputs. They serve as agro-decision support and do not guarantee actual field yields.
+        {/* Mandatory Agronomic Disclaimer Banner */}
+        <div className="info-banner" style={{ borderLeft: '4px solid #f59e0b', background: '#fffbeb', color: '#92400e', fontWeight: 600 }}>
+          ⚠️ Model-based scenario estimate — not a guaranteed outcome.
         </div>
 
         {/* Preset quick buttons */}
@@ -301,9 +316,29 @@ export default function SimulatorPage() {
                   ({result.percentage_change >= 0 ? '+' : ''}{Number(result.percentage_change || 0).toFixed(1)}%)
                 </div>
 
-                <div style={{ marginTop: '12px', fontSize: '11px', color: '#6b7280' }}>
-                  Model-based scenario estimate using trained Random Forest & XGBoost sensitivity matrices.
+                <div style={{ marginTop: '12px', padding: '8px 10px', background: '#fef3c7', borderRadius: '6px', fontSize: '11px', color: '#92400e', fontWeight: 600 }}>
+                  ⚠️ Model-based scenario estimate — not a guaranteed outcome.
                 </div>
+
+                <button
+                  type="button"
+                  className="btn-sm btn-primary"
+                  style={{ marginTop: '12px', width: '100%', padding: '8px 12px', fontSize: '12px' }}
+                  onClick={() => {
+                    const params = new URLSearchParams({
+                      variety: custom.variety ?? base.variety,
+                      area: String(custom.area_hectare ?? base.area_hectare),
+                      rainfall: String(custom.rainfall_mm ?? base.rainfall_mm),
+                      temperature: String(custom.temperature_c ?? base.temperature_c),
+                      humidity: String(custom.humidity ?? base.humidity),
+                      soil_moisture: String(custom.soil_moisture ?? base.soil_moisture),
+                      soil_ph: String(custom.soil_ph ?? base.soil_ph),
+                    });
+                    navigate(`/prediction?${params.toString()}`);
+                  }}
+                >
+                  🌾 Forecast with this Scenario in AI Prediction →
+                </button>
               </div>
             )}
           </div>

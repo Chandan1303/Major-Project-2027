@@ -48,10 +48,10 @@ export default function DashboardPage() {
               <h2>Conditions in context</h2>
               <p className="panel-description">The platform brings multiple agricultural signals into view.</p>
               <ul className="source-list">
-                <li><span className="source-symbol source-satellite">S</span><span>Satellite imagery</span><span className="source-label">NDVI</span></li>
+                <li><span className="source-symbol source-crop">P</span><span>Crop Phenology</span><span className="source-label">GROWTH</span></li>
                 <li><span className="source-symbol source-weather">W</span><span>Weather data</span><span className="source-label">CLIMATE</span></li>
-                <li><span className="source-symbol source-soil">N</span><span>Soil analysis</span><span className="source-label">NPK</span></li>
-                <li><span className="source-symbol source-field">B</span><span>Regional inputs</span><span className="source-label">BHUVAN</span></li>
+                <li><span className="source-symbol source-soil">S</span><span>Soil analysis</span><span className="source-label">HEALTH</span></li>
+                <li><span className="source-symbol source-field">V</span><span>Variety intel</span><span className="source-label">GENETICS</span></li>
               </ul>
             </article>
           </section>

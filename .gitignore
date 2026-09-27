@@ -39,3 +39,6 @@ Thumbs.db
 !cleaned_data/
 !*.md
 !*.py
+
+# Generated reports
+reports/AGR-*

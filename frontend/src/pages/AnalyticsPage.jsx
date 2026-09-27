@@ -42,10 +42,12 @@ export default function AnalyticsPage() {
   };
 
   const farmNames = [...new Set(preds.map(p => p.farm_name).filter(Boolean))];
+  const availableFields = farms.find(f => f.name === selectedFarm)?.fields || farms.flatMap(f => f.fields || []);
 
   const filteredPreds = preds.filter(p =>
     (selectedVariety === 'all' || p.variety === selectedVariety) &&
     (selectedFarm === 'all' || p.farm_name === selectedFarm) &&
+    (selectedField === 'all' || p.field_name === selectedField) &&
     (selectedYear === 'all' || (p.created_at || '').startsWith(selectedYear))
   );
 
@@ -106,10 +108,23 @@ export default function AnalyticsPage() {
               <label>Filter by Farm</label>
               <select
                 value={selectedFarm}
-                onChange={e => setSelectedFarm(e.target.value)}
+                onChange={e => { setSelectedFarm(e.target.value); setSelectedField('all'); }}
               >
                 <option value="all">All Regional Farms</option>
                 {farmNames.map(f => <option key={f} value={f}>{f}</option>)}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Filter by Field</label>
+              <select
+                value={selectedField}
+                onChange={e => setSelectedField(e.target.value)}
+              >
+                <option value="all">All Fields</option>
+                {availableFields.map(fld => (
+                  <option key={fld.id || fld.name} value={fld.name}>{fld.name}</option>
+                ))}
               </select>
             </div>
 

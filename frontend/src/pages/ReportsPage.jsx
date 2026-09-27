@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import AppLayout from '../components/AppLayout';
 import { reportApi, farmApi } from '../services/api';
+import { useField } from '../context/FieldContext';
 import toast, { Toaster } from 'react-hot-toast';
 
 const REPORT_TYPES = [
@@ -14,6 +15,7 @@ const REPORT_TYPES = [
 ];
 
 export default function ReportsPage() {
+  const { selectedFarm: ctxFarm, selectedField: ctxField } = useField();
   const [selectedType, setSelectedType] = useState(REPORT_TYPES[0].id);
   const [farms, setFarms] = useState([]);
   const [selectedFarm, setSelectedFarm] = useState(null);
@@ -33,9 +35,11 @@ export default function ReportsPage() {
         const fList = fRes.value.data?.farms || [];
         setFarms(fList);
         if (fList.length > 0) {
-          setSelectedFarm(fList[0]);
-          if (fList[0].fields?.length > 0) {
-            setSelectedField(fList[0].fields[0]);
+          const matchedF = (ctxFarm && fList.find(f => f.id === ctxFarm.id)) || fList[0];
+          setSelectedFarm(matchedF);
+          if (matchedF.fields?.length > 0) {
+            const matchedFld = (ctxField && matchedF.fields.find(fld => fld.id === ctxField.id)) || matchedF.fields[0];
+            setSelectedField(matchedFld);
           }
         }
       }

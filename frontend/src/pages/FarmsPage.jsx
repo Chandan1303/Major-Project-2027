@@ -391,9 +391,9 @@ export default function FarmsPage() {
                       {/* Action Shortcuts */}
                       <div className="field-card-actions">
                         <button className="btn-xs" onClick={() => openViewDetails(field)}>🔍 View Details</button>
-                        <button className="btn-xs" onClick={() => navigate('/prediction')}>🌾 Predict Yield</button>
-                        <button className="btn-xs" onClick={() => navigate('/crop-intel')}>🌿 Phenology</button>
-                        <button className="btn-xs" onClick={() => navigate('/soil')}>🪨 Soil Health</button>
+                        <button className="btn-xs" onClick={() => navigate(`/prediction?farm_id=${activeFarm.id}&field_id=${field.id}`)}>🌾 Predict Yield</button>
+                        <button className="btn-xs" onClick={() => navigate(`/crop-intel?field_id=${field.id}`)}>🌿 Phenology</button>
+                        <button className="btn-xs" onClick={() => navigate(`/soil?field_id=${field.id}`)}>🪨 Soil Health</button>
                       </div>
                     </div>
                   );

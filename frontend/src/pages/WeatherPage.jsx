@@ -1,17 +1,30 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import AppLayout from '../components/AppLayout';
+import { useField } from '../context/FieldContext';
 import { weatherApi } from '../services/api';
 
 export default function WeatherPage() {
-  const [location, setLocation] = useState('Kolhapur');
-  const [input, setInput]       = useState('Kolhapur');
+  const navigate = useNavigate();
+  const { selectedFarm } = useField();
+  const farmLoc = selectedFarm ? (selectedFarm.district || selectedFarm.location?.split(',')[0]?.trim() || 'Kolhapur') : 'Kolhapur';
+  const [location, setLocation] = useState(farmLoc);
+  const [input, setInput]       = useState(farmLoc);
   const [current, setCurrent]   = useState(null);
   const [forecast, setForecast] = useState([]);
   const [history, setHistory]   = useState([]);
   const [impact, setImpact]     = useState(null);
   const [loading, setLoading]   = useState(true);
   const [tab, setTab]           = useState('forecast');
+
+  useEffect(() => {
+    if (selectedFarm) {
+      const loc = selectedFarm.district || selectedFarm.location?.split(',')[0]?.trim() || 'Kolhapur';
+      setLocation(loc);
+      setInput(loc);
+    }
+  }, [selectedFarm]);
 
   const load = async (loc) => {
     setLoading(true);
@@ -55,7 +68,16 @@ export default function WeatherPage() {
             <h1 className="page-title">Weather Dashboard</h1>
             <p className="page-subtitle">Live conditions, 7-day forecast, seasonal history and crop impact.</p>
           </div>
-          {c?.is_demo && <span className="badge badge-yellow">⚠️ Demo Data</span>}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            {c?.is_demo && <span className="badge badge-yellow">⚠️ Demo Data</span>}
+            <button
+              className="btn-primary"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, padding: '8px 16px' }}
+              onClick={() => navigate(`/prediction?location=${encodeURIComponent(location)}`)}
+            >
+              <span>🌾</span> Predict Yield with this Weather →
+            </button>
+          </div>
         </div>
 
         {/* Location search */}

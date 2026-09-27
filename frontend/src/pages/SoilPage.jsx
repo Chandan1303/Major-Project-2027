@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import AppLayout from '../components/AppLayout';
+import { useField } from '../context/FieldContext';
 import { soilApi } from '../services/api';
 
 function ScoreRing({ score, label, color }) {
@@ -18,7 +20,10 @@ function ScoreRing({ score, label, color }) {
 }
 
 export default function SoilPage() {
-  const [data, setData]     = useState(null);
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { selectedField: ctxField, selectField } = useField();
+  const [data, setData]         = useState(null);
   const [selected, setSelected] = useState(null);
   const [loading, setLoading]   = useState(true);
   const [error, setError]       = useState(null);
@@ -27,9 +32,17 @@ export default function SoilPage() {
     soilApi.getAll().then(r => {
       const d = r.data;
       setData(d);
-      if (d?.fields?.length) setSelected(d.fields[0]);
+      if (d?.fields?.length) {
+        const queryFieldId = searchParams.get('field_id');
+        const matched = queryFieldId
+          ? d.fields.find(fld => String(fld.id) === String(queryFieldId))
+          : ctxField
+          ? d.fields.find(fld => fld.id === ctxField.id)
+          : null;
+        setSelected(matched || d.fields[0]);
+      }
     }).catch(e => setError(e.message)).finally(() => setLoading(false));
-  }, []);
+  }, [searchParams, ctxField]);
 
   if (loading) return <AppLayout><div className="page-loading-center"><div className="loading-spinner" /><p>Loading soil analysis…</p></div></AppLayout>;
 
@@ -90,7 +103,7 @@ export default function SoilPage() {
         {/* Field selector */}
         <div className="profile-selector">
           {data.fields.map(field => (
-            <button key={field.id} className={`profile-btn ${selected?.id === field.id ? 'profile-btn-active' : ''}`} onClick={() => setSelected(field)}>
+            <button key={field.id} className={`profile-btn ${selected?.id === field.id ? 'profile-btn-active' : ''}`} onClick={() => { setSelected(field); selectField(field.id); }}>
               🪨 {field.name} <span className="profile-btn-sub">{field.farm_name}</span>
             </button>
           ))}
@@ -143,6 +156,16 @@ export default function SoilPage() {
                   ))}
                 </div>
               )}
+
+              <div style={{ marginTop: 24, paddingTop: 16, borderTop: '1px solid #e5e7eb', display: 'flex', gap: 12 }}>
+                <button
+                  className="btn-primary"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 18px', fontSize: 13 }}
+                  onClick={() => navigate(`/prediction?farm_id=${f.farm_id}&field_id=${f.id}`)}
+                >
+                  <span>🌾</span> Proceed to AI Yield Prediction with {f.name} →
+                </button>
+              </div>
             </div>
 
             {/* Radar + Score ring */}

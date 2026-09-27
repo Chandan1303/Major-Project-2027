@@ -75,6 +75,7 @@ export const predictionApi = {
   getDetails:   (id)     => request('get', `/predictions/${id}`),
   save:         (d)      => request('post', '/predictions', d),
   remove:       (id)     => request('delete', `/predictions/${id}`),
+  delete:       (id)     => request('delete', `/predictions/${id}`),
   historyGraph: ()       => request('get', '/predictions/history-graph'),
 };
 
@@ -95,7 +96,16 @@ export const historicalYieldApi = {
 };
 
 export const advisorApi = {
-  suggestions: () => request('get', '/advisor/suggestions'),
+  suggestions: (params) => {
+    let q = '';
+    if (typeof params === 'number' || (typeof params === 'string' && params)) {
+      q = `?field_id=${encodeURIComponent(params)}`;
+    } else if (params && typeof params === 'object') {
+      const sp = new URLSearchParams(params).toString();
+      q = sp ? `?${sp}` : '';
+    }
+    return request('get', `/advisor/suggestions${q}`);
+  },
 };
 
 // ─── Weather ───────────────────────────────────────────────────────────
@@ -138,7 +148,7 @@ export const reportApi = {
 
 // ─── Chat ──────────────────────────────────────────────────────────────
 export const chatApi = {
-  send: (message) => request('post', '/chat/message', { message }),
+  send: (message, extra = {}) => request('post', '/chat/message', { message, ...extra }),
 };
 
 // ─── Profile ───────────────────────────────────────────────────────────

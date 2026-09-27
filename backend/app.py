@@ -149,7 +149,7 @@ def auth_register():
     name = (data.get("name") or "").strip()
     email = (data.get("email") or "").strip().lower()
     password = data.get("password") or ""
-    role_requested = (data.get("role") or "farmer").lower().strip()
+    role_requested = (data.get("role") or "user").lower().strip()
 
     if not name or not email or not password:
         return jsonify({"success": False, "message": "Name, email, and password are required."}), 400
@@ -160,10 +160,13 @@ def auth_register():
     if User.query.filter_by(email=email).first():
         return jsonify({"success": False, "message": "An account with this email already exists."}), 409
 
-    # Role validation
-    valid_roles = {"farmer": 1, "user": 1, "officer": 2, "admin": 3}
-    user_role = role_requested if role_requested in valid_roles else "farmer"
-    role_id = valid_roles.get(user_role, 1)
+    # Two-tier role validation: user and admin (backward compatible for farmer)
+    if role_requested == "admin":
+        user_role = "admin"
+        role_id = 3
+    else:
+        user_role = "user"
+        role_id = 1
 
     hashed_pw = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
@@ -312,7 +315,6 @@ def dashboard_summary(user):
     if latest_pred:
         expected_yield = float(latest_pred.predicted_yield)
         crop_health_status = latest_pred.crop_health
-        ndvi_status = float(getattr(latest_pred, 'ndvi', 0.76) or 0.76)
         pred_weather = {
             "temperature": float(latest_pred.temperature),
             "rainfall": float(latest_pred.rainfall),
@@ -331,7 +333,6 @@ def dashboard_summary(user):
     else:
         expected_yield = 84.5 if total_farms > 0 else 0.0
         crop_health_status = "Healthy" if total_farms > 0 else "Pending Telemetry"
-        ndvi_status = 0.76 if total_farms > 0 else 0.0
         loc = farms[0].location if farms else "Kolhapur"
         cur_w = weather_service.get_current(loc)
         pred_weather = {
@@ -437,13 +438,13 @@ def dashboard_summary(user):
     unread_alerts = Alert.query.filter_by(user_id=user.id, is_read=False).count()
     avg_yield = round(sum(float(p.predicted_yield) for p in predictions) / len(predictions), 1) if predictions else 76.5
 
+    rf_r2 = prediction_engine.metadata.get("metrics", {}).get("random_forest", {}).get("R2", 0.7866)
     stats = {
         "totalFarms": total_farms,
         "totalFields": total_fields,
         "totalCultivatedArea": round(total_cultivated_area, 2),
         "expectedYield": round(expected_yield, 1),
         "cropHealthStatus": crop_health_status,
-        "ndviStatus": round(ndvi_status, 2),
         "weather": pred_weather,
         "soilCondition": pred_soil,
         "predictionConfidence": round(pred_conf, 1),
@@ -452,11 +453,12 @@ def dashboard_summary(user):
 
     statistics = {
         "total_farms": total_farms,
+        "totalFields": total_fields,
         "total_fields": total_fields,
         "total_area_ha": round(total_cultivated_area, 2),
         "tracked_varieties": varieties_count,
         "average_yield_tha": avg_yield,
-        "model_accuracy_r2": "86.2%",
+        "model_accuracy_r2": f"{rf_r2 * 100:.1f}%",
         "unread_alerts": unread_alerts,
         "is_demo_stat": total_farms == 0
     }
@@ -783,11 +785,17 @@ def weather_history():
     return jsonify({"success": True, "data": {"monthly": monthly, "location": location}})
 
 
-@app.route("/api/weather/impact", methods=["GET"])
+@app.route("/api/weather/impact", methods=["GET", "POST"])
 def weather_impact():
-    temp = float(request.args.get("temperature", 29.0))
-    rain = float(request.args.get("rainfall", 1200.0))
-    humid = float(request.args.get("humidity", 72.0))
+    if request.method == "POST":
+        data = request.get_json(silent=True) or {}
+        temp = float(data.get("temperature", request.args.get("temperature", 29.0)))
+        rain = float(data.get("rainfall", request.args.get("rainfall", 1200.0)))
+        humid = float(data.get("humidity", request.args.get("humidity", 72.0)))
+    else:
+        temp = float(request.args.get("temperature", 29.0))
+        rain = float(request.args.get("rainfall", 1200.0))
+        humid = float(request.args.get("humidity", 72.0))
     impact = WeatherService.evaluate_weather_impact(temp, rain, humid)
     return jsonify({"success": True, "data": impact})
 
@@ -912,25 +920,127 @@ def compare_varieties():
 def recommend_varieties():
     data = request.get_json(force=True) or {}
     varieties = VarietyIntelligenceEngine.list_varieties()
-    # Score each variety based on climate and soil matching
-    scored = []
-    soil = data.get("soil_type", "Black Cotton Soil")
-    state = data.get("state", "Maharashtra")
 
+    # Inputs: Soil type, Soil pH, Rainfall, Temperature, Humidity, Soil moisture, Farm location
+    soil_type = str(data.get("soil_type", "Black Soil")).strip().lower()
+    soil_ph = float(data.get("soil_ph", 7.0))
+    rainfall = float(data.get("rainfall", data.get("rainfall_mm", 1200.0)))
+    temp = float(data.get("temperature", data.get("temperature_c", 29.5)))
+    humidity = float(data.get("humidity", data.get("humidity_pct", 68.0)))
+    moisture = float(data.get("soil_moisture", 60.0))
+    location = str(data.get("farm_location", data.get("location", data.get("state", "Maharashtra")))).strip().lower()
+
+    scored = []
     for v in varieties:
-        pred_yield = v.get("expected_yield", 110.0)
-        suitability = "High" if soil in v.get("soil_suitability", "") or state in v.get("recommended_states", []) else "Medium"
+        code = v["code"]
+        score = 70.0
+        reasons = []
+
+        # 1. Location / Regional adaptation
+        states = [s.lower() for s in v.get("recommended_states", [])]
+        loc_matched = any(s in location for s in states)
+        if loc_matched:
+            score += 12.0
+            reasons.append(f"Highly adapted to regional sugarcane climate in {location.title()}.")
+        else:
+            score += 4.0
+
+        # 2. Soil type suitability
+        soil_suit = v.get("soil_suitability", "").lower()
+        if any(term in soil_suit for term in [soil_type, soil_type.replace(" soil", ""), soil_type.replace("cotton", "")]):
+            score += 10.0
+            reasons.append(f"Strongly compatible with {data.get('soil_type', 'Black Soil')}.")
+        else:
+            score += 3.0
+
+        # 3. Soil pH compatibility
+        if code == "CoM 0265":
+            if 6.0 <= soil_ph <= 8.5:
+                score += 8.0
+                reasons.append(f"Superb tolerance to pH {soil_ph:.1f} including saline-sodic tendencies.")
+        elif code == "Co 86032":
+            if 6.2 <= soil_ph <= 7.8:
+                score += 8.0
+                reasons.append(f"Optimal root absorption at pH {soil_ph:.1f}.")
+        elif code == "Co 0238":
+            if 6.4 <= soil_ph <= 7.6:
+                score += 8.0
+                reasons.append(f"Balanced nutrient uptake at pH {soil_ph:.1f}.")
+        elif code == "CoC 671":
+            if 6.5 <= soil_ph <= 7.5:
+                score += 8.0
+                reasons.append(f"Good performance in neutral pH {soil_ph:.1f}.")
+        elif code == "Co 99004":
+            if 6.0 <= soil_ph <= 8.0:
+                score += 8.0
+                reasons.append(f"Broad pH adaptability at {soil_ph:.1f}.")
+
+        # 4. Moisture & Rainfall
+        if rainfall < 950 or moisture < 48:
+            if v.get("drought_tolerance") == "High":
+                score += 10.0
+                reasons.append("High drought resilience cushions against low precipitation or deficit soil moisture.")
+            else:
+                score -= 6.0
+        elif rainfall > 1400:
+            if "waterlogging" in v.get("soil_suitability", "").lower() or v.get("crop_condition") == "Excellent":
+                score += 6.0
+                reasons.append("Tolerates elevated monsoon precipitation without root rot.")
+
+        # 5. Temperature
+        if temp > 36.0:
+            if code in ["CoM 0265", "Co 86032", "Co 99004"]:
+                score += 8.0
+                reasons.append(f"Excellent heat hardiness during summer temperatures ({temp:.1f}°C).")
+            else:
+                score -= 4.0
+
+        final_score = round(min(98.5, max(55.0, score)), 1)
+        suitability_label = "Highly Recommended" if final_score >= 88.0 else "Suitable" if final_score >= 75.0 else "Moderately Suitable"
+
+        # Construct explanation
+        why_recommended = " ".join(reasons) if reasons else f"Standard commercial compatibility for {data.get('soil_type', 'local soil')} under prevailing weather."
+
         scored.append({
-            "name": v["code"],
+            "code": code,
+            "name": code,
             "title": v["name"],
-            "predicted_yield": pred_yield,
-            "avg_yield": pred_yield,
-            "suitability": suitability,
+            "expected_yield": v["expected_yield"],
+            "avg_yield": v["expected_yield"],
+            "expected_yield_range": v.get("expected_yield_range", "90-140 t/ha"),
+            "compatibility_score": final_score,
+            "suitability": suitability_label,
+            "soil_suitability": v.get("soil_suitability", ""),
+            "weather_suitability": v.get("weather_suitability", ""),
+            "growth_characteristics": v.get("growth_characteristics", ""),
+            "crop_condition": v.get("crop_condition", "Good"),
             "risk": v["risk"],
+            "risk_level": v["risk"],
+            "drought_tolerance": v.get("drought_tolerance", "Medium"),
+            "disease_resistance": v.get("disease_resistance", "Moderate"),
+            "why_recommended": why_recommended,
             "description": v["description"]
         })
-    scored.sort(key=lambda x: x["predicted_yield"], reverse=True)
-    return jsonify({"success": True, "data": {"recommendations": scored}})
+
+    scored.sort(key=lambda x: (x["compatibility_score"], x["expected_yield"]), reverse=True)
+
+    return jsonify({
+        "success": True,
+        "data": {
+            "recommendations": scored,
+            "top_pick": scored[0] if scored else None,
+            "field_parameters_evaluated": {
+                "soil_type": data.get("soil_type", "Black Soil"),
+                "soil_ph": soil_ph,
+                "rainfall": rainfall,
+                "temperature": temp,
+                "humidity": humidity,
+                "soil_moisture": moisture,
+                "farm_location": location.title()
+            },
+            "disclaimer": "These variety recommendations are model-based decision support estimates derived from regional agronomic characteristics and historical trial performances — not guaranteed agricultural advice."
+        }
+    })
 
 
 # -----------------------------------------------------------------------------
@@ -1185,6 +1295,7 @@ def ml_explain():
 # Actual vs Predicted, Residuals, Feature Importances
 # -----------------------------------------------------------------------------
 @app.route("/api/ml/performance", methods=["GET"])
+@app.route("/api/ml/metrics", methods=["GET"])
 def ml_performance():
     metrics = prediction_engine.get_model_metrics()
     db_records = ModelPerformance.query.filter_by(is_active=True).all()
@@ -1320,9 +1431,11 @@ def ml_data_quality():
 # 14. PREDICTION HISTORY APIS (Table, Search, Filter, Date Filter, Details, Delete, Graph)
 # Columns: Date, Farm, Field, Variety, Yield, Production, Confidence, Risk, Loss %
 # -----------------------------------------------------------------------------
-@app.route("/api/predictions", methods=["GET"])
+@app.route("/api/predictions", methods=["GET", "POST"])
 @require_auth
 def list_predictions(user):
+    if request.method == "POST":
+        return ml_predict()
     search = request.args.get("search", "").strip().lower()
     variety = request.args.get("variety", "").strip()
     risk = request.args.get("risk", "").strip()
@@ -1442,6 +1555,36 @@ def prediction_history_graph(user):
         for r in records
     ]
     return jsonify({"success": True, "data": graph_data})
+
+
+@app.route("/api/predictions/stats", methods=["GET"])
+@require_auth
+def prediction_stats(user):
+    query = YieldPrediction.query
+    if user.role not in ["admin", "officer"]:
+        query = query.filter(YieldPrediction.user_id == user.id)
+    records = query.all()
+    if not records:
+        return jsonify({"success": True, "data": {"count": 0, "avg_yield": 0, "avg_confidence": 0, "avg_loss": 0, "risk_distribution": {"Low": 0, "Medium": 0, "High": 0, "Critical": 0}}})
+    count = len(records)
+    avg_yield = round(sum(float(r.predicted_yield or 0) for r in records) / count, 2)
+    avg_confidence = round(sum(float(r.confidence or 0) for r in records) / count, 1)
+    avg_loss = round(sum(float(r.loss_percentage or 0) for r in records) / count, 2)
+    return jsonify({
+        "success": True,
+        "data": {
+            "count": count,
+            "avg_yield": avg_yield,
+            "avg_confidence": avg_confidence,
+            "avg_loss": avg_loss,
+            "risk_distribution": {
+                "Low": sum(1 for r in records if r.risk_level == "Low"),
+                "Medium": sum(1 for r in records if r.risk_level == "Medium"),
+                "High": sum(1 for r in records if r.risk_level == "High"),
+                "Critical": sum(1 for r in records if r.risk_level == "Critical"),
+            }
+        }
+    })
 
 
 # -----------------------------------------------------------------------------
@@ -1570,6 +1713,7 @@ def crop_field_tracker(user, field_id):
 # Outputs: Normal, Monitor, Attention Required + Agronomic guidance
 # -----------------------------------------------------------------------------
 @app.route("/api/irrigation/decision-support", methods=["GET"])
+@app.route("/api/irrigation/schedule", methods=["GET"])
 @require_auth
 def irrigation_decision_support(user):
     field_id = request.args.get("field_id", type=int)
@@ -1612,6 +1756,7 @@ def irrigation_decision_support(user):
 # Filters: Farm, Field, Variety, Year
 # -----------------------------------------------------------------------------
 @app.route("/api/analytics/historical-yield", methods=["GET"])
+@app.route("/api/analytics/historical", methods=["GET"])
 @require_auth
 def historical_yield_analytics(user):
     variety_filter = request.args.get("variety", "").strip()
@@ -1710,6 +1855,7 @@ def multi_farm_dashboard(user):
 # 20. INTERACTIVE FARM MAP DATA (Leaflet + OpenStreetMap ONLY — NO Satellite)
 # -----------------------------------------------------------------------------
 @app.route("/api/farms/map-data", methods=["GET"])
+@app.route("/api/farms/map", methods=["GET"])
 @require_auth
 def farms_map_data(user):
     farms = Farm.query.filter_by(user_id=user.id).all() if user.role != "admin" else Farm.query.all()
@@ -1767,15 +1913,187 @@ def farms_map_data(user):
 @app.route("/api/recommendations", methods=["GET"])
 @require_auth
 def get_advisor_suggestions(user):
-    recs = Recommendation.query.filter_by(user_id=user.id).order_by(Recommendation.created_at.desc()).all()
-    if not recs:
-        recs = Recommendation.query.order_by(Recommendation.created_at.desc()).limit(10).all()
+    field_id = request.args.get("field_id", type=int)
+    field = None
+    if field_id:
+        field = Field.query.get(field_id)
+    if not field:
+        user_farm = Farm.query.filter_by(user_id=user.id).first()
+        if user_farm and user_farm.fields:
+            field = user_farm.fields[0]
+        else:
+            field = Field.query.first()
+
+    suggestions = []
+    farm = None
+    if field:
+        farm = Farm.query.get(field.farm_id) if field.farm_id else None
+        latest_pred = YieldPrediction.query.filter_by(field_id=field.id).order_by(YieldPrediction.id.desc()).first()
+        pred_yield = float(latest_pred.predicted_yield) if latest_pred else 92.4
+        risk_lvl = latest_pred.risk_level if latest_pred else "Low"
+
+        weather = WeatherData.query.first()
+        temp = float(weather.temperature) if weather else 29.5
+        rf = float(weather.rainfall) if weather else 1220.0
+
+        days_in = 120
+        if field.planting_date:
+            try:
+                days_in = max(0, (datetime.utcnow() - field.planting_date).days)
+            except Exception:
+                days_in = 120
+
+        if days_in < 30:
+            stage = "Planting / Sett Establishment"
+        elif days_in < 60:
+            stage = "Germination"
+        elif days_in < 120:
+            stage = "Tillering"
+        elif days_in < 270:
+            stage = "Grand Growth"
+        elif days_in < 360:
+            stage = "Maturity"
+        else:
+            stage = "Harvest"
+
+        sm = float(field.soil_moisture or 62.0)
+        sph = float(field.soil_ph or 7.0)
+        stype = field.soil_type or "Black Soil"
+        variety = field.sugarcane_variety or "Co 86032"
+
+        # 1. Irrigation Decision Suggestion
+        moisture_urgency = "High" if sm < 45 else "Medium" if sm < 55 else "Low"
+        moist_act = (
+            "Initiate immediate scheduled furrow irrigation to mitigate moisture stress."
+            if sm < 45
+            else "Plan irrigation within the next 3 to 5 days; inspect soil at 15cm depth."
+            if sm < 55
+            else "Maintain current scheduled irrigation cycle; monitor furrow drainage."
+        )
+        moist_why = (
+            f"Grounded in real soil moisture measurement of {sm}% for field '{field.name}'. "
+            f"In the {stage} phenological stage, sugarcane requires adequate moisture to sustain internode elongation."
+        )
+        suggestions.append({
+            "id": 101,
+            "category": "irrigation",
+            "title": "Irrigation Scheduling & Soil Moisture Management",
+            "current_situation": f"Field '{field.name}' ({variety}) is currently in {stage} (Day {days_in}) with soil moisture at {sm}% and ambient temperature at {temp}°C.",
+            "suggested_monitoring_actions": moist_act,
+            "message": f"Moisture is {sm}%. {moist_act}",
+            "why_generated": moist_why,
+            "explanation": moist_why,
+            "urgency": moisture_urgency,
+            "priority": moisture_urgency.lower(),
+            "field_name": field.name,
+            "farm_name": farm.name if farm else "Sugarcane Estate"
+        })
+
+        # 2. Soil pH & Nutrient Guidance
+        ph_urgency = "High" if (sph < 6.0 or sph > 8.2) else "Medium" if (sph < 6.5 or sph > 7.8) else "Low"
+        ph_act = (
+            "Apply agricultural lime at 2.5 t/ha to correct acidity and alleviate aluminum toxicity."
+            if sph < 6.0
+            else "Incorporate agricultural gypsum to counter alkalinity and improve nutrient solubility."
+            if sph > 8.0
+            else "Continue balanced N-P-K fertigation; soil pH is optimal for macronutrient absorption."
+        )
+        ph_why = (
+            f"Measured soil pH for {field.name} is {sph} in {stype}. "
+            f"Sugarcane achieves optimal sucrose synthesis and nutrient uptake between pH 6.5 and 7.8."
+        )
+        suggestions.append({
+            "id": 102,
+            "category": "soil",
+            "title": "Soil Reaction (pH) & Nutrient Availability Guidance",
+            "current_situation": f"Soil classification is {stype} with measured pH of {sph}. Sugarcane variety '{variety}' has specific root-zone responsiveness in this soil medium.",
+            "suggested_monitoring_actions": ph_act,
+            "message": f"Soil pH is {sph}. {ph_act}",
+            "why_generated": ph_why,
+            "explanation": ph_why,
+            "urgency": ph_urgency,
+            "priority": ph_urgency.lower(),
+            "field_name": field.name,
+            "farm_name": farm.name if farm else "Sugarcane Estate"
+        })
+
+        # 3. Crop Growth Phenology
+        stage_act = (
+            "Inspect setts for uniform sprout emergence; perform gap filling if mortality exceeds 15%."
+            if stage in ["Planting / Sett Establishment", "Germination"]
+            else "Execute earthing-up operation to encourage sturdy tillers and apply recommended nitrogen dose."
+            if stage == "Tillering"
+            else "Monitor canopy leaf area; scout internodes for stem borer and maintain pest trapping."
+            if stage == "Grand Growth"
+            else "Taper excess irrigation 25 days prior to harvest to promote sucrose accumulation."
+            if stage == "Maturity"
+            else "Coordinate harvest schedule with sugar mill; cut stalks flush with ground level."
+        )
+        stage_why = (
+            f"Calculated from planting date ({field.planting_date or 'standard cycle'}). "
+            f"Crop has completed {days_in} days in ground, requiring phenology-specific interventions."
+        )
+        suggestions.append({
+            "id": 103,
+            "category": "phenology",
+            "title": f"Phenology Directives: {stage} Stage",
+            "current_situation": f"Field '{field.name}' has reached {stage} ({days_in} days since planting). Target variety {variety} is actively progressing along its 360-day lifecycle.",
+            "suggested_monitoring_actions": stage_act,
+            "message": f"Stage {stage} (Day {days_in}). {stage_act}",
+            "why_generated": stage_why,
+            "explanation": stage_why,
+            "urgency": "Medium",
+            "priority": "medium",
+            "field_name": field.name,
+            "farm_name": farm.name if farm else "Sugarcane Estate"
+        })
+
+        # 4. Yield Protection
+        risk_urgency = "High" if risk_lvl in ["High", "Critical"] else "Medium" if risk_lvl == "Medium" else "Low"
+        risk_act = f"Review limiting agro-climatic factors in Explainable AI. Current predicted yield is {pred_yield} t/ha with {risk_lvl} risk classification."
+        risk_why = f"Based on latest AI yield prediction of {pred_yield} t/ha (Risk: {risk_lvl}) for {variety} in {stype} under local weather parameters ({rf}mm rainfall, {temp}°C)."
+        suggestions.append({
+            "id": 104,
+            "category": "yield_risk",
+            "title": f"Yield Protection & Risk Mitigation ({risk_lvl} Risk)",
+            "current_situation": f"AI model forecasted yield is {pred_yield} t/ha with risk rating '{risk_lvl}'. Reference regional baseline is 95.0 t/ha.",
+            "suggested_monitoring_actions": risk_act,
+            "message": f"Predicted yield {pred_yield} t/ha ({risk_lvl} risk). {risk_act}",
+            "why_generated": risk_why,
+            "explanation": risk_why,
+            "urgency": risk_urgency,
+            "priority": risk_urgency.lower(),
+            "field_name": field.name,
+            "farm_name": farm.name if farm else "Sugarcane Estate"
+        })
+
+    # Also append existing DB recommendations if any
+    db_recs = Recommendation.query.filter_by(user_id=user.id).order_by(Recommendation.created_at.desc()).all()
+    if not db_recs:
+        db_recs = Recommendation.query.order_by(Recommendation.created_at.desc()).limit(3).all()
+    for r in db_recs:
+        suggestions.append({
+            "id": r.id,
+            "category": r.category,
+            "title": r.title,
+            "current_situation": r.content,
+            "suggested_monitoring_actions": r.action_required or r.content,
+            "message": r.content,
+            "why_generated": r.explanation or "Generated by system agronomic rules engine.",
+            "explanation": r.explanation or "Generated by system agronomic rules engine.",
+            "urgency": r.priority.capitalize() if r.priority else "Medium",
+            "priority": r.priority or "medium",
+            "field_name": field.name if field else "Field Parcel",
+            "farm_name": farm.name if (field and farm) else "Farm"
+        })
 
     return jsonify({
         "success": True,
         "data": {
-            "suggestions": [r.to_dict() for r in recs],
-            "count": len(recs)
+            "suggestions": suggestions,
+            "count": len(suggestions),
+            "field_id": field.id if field else None,
+            "field_name": field.name if field else None
         }
     })
 
@@ -1797,7 +2115,7 @@ def list_agronomic_reports(user):
 @require_auth
 def generate_agronomic_report(user):
     data = request.get_json(force=True) or {}
-    report_type = data.get("report_type", "Complete Farm Intelligence Report")
+    report_type = data.get("report_type") or data.get("type") or "Complete Farm Intelligence Report"
     farm_id = data.get("farm_id")
     field_id = data.get("field_id")
 
@@ -2096,6 +2414,7 @@ def _build_chat_response(intent: str, farm_data: dict, last_pred: dict) -> str:
 
 
 @app.route("/api/chat/message", methods=["POST"])
+@app.route("/api/chat", methods=["POST"])
 @require_auth
 def chat_message(user):
     data = request.get_json(force=True) or {}
@@ -2104,13 +2423,32 @@ def chat_message(user):
         return jsonify({"success": False, "message": "Message is required."}), 400
 
     farms = Farm.query.filter_by(user_id=user.id).all()
-    last_pred = YieldPrediction.query.filter_by(user_id=user.id).order_by(YieldPrediction.created_at.desc()).first()
+    all_fields = [fld for f in farms for fld in (f.fields or [])]
+
+    field_id = data.get("field_id")
+    active_field = None
+    if field_id:
+        active_field = next((f for f in all_fields if str(f.id) == str(field_id)), None)
+
+    last_pred = None
+    if active_field:
+        last_pred = YieldPrediction.query.filter_by(field_id=active_field.id).order_by(YieldPrediction.created_at.desc()).first()
+
+    if not last_pred:
+        last_pred = YieldPrediction.query.filter_by(user_id=user.id).order_by(YieldPrediction.created_at.desc()).first()
     if not last_pred:
         last_pred = Prediction.query.filter_by(user_id=user.id).order_by(Prediction.created_at.desc()).first()
 
-    all_fields = [fld for f in farms for fld in (f.fields or [])]
-    avg_moisture = f"{sum(float(f.soil_moisture or 0) for f in all_fields) / len(all_fields):.1f}" if all_fields else "60.0"
-    farm_data = {"total_farms": len(farms), "total_fields": len(all_fields), "avg_moisture": avg_moisture}
+    avg_moisture = f"{float(active_field.soil_moisture):.1f}" if active_field and active_field.soil_moisture else (
+        f"{sum(float(f.soil_moisture or 0) for f in all_fields) / len(all_fields):.1f}" if all_fields else "60.0"
+    )
+    farm_data = {
+        "total_farms": len(farms),
+        "total_fields": len(all_fields),
+        "avg_moisture": avg_moisture,
+        "active_field_name": active_field.name if active_field else None,
+        "active_variety": active_field.sugarcane_variety if active_field else None
+    }
 
     intent = _match_chat_intent(message)
     reply = _build_chat_response(intent, farm_data, last_pred.to_dict() if last_pred else None)
@@ -2168,18 +2506,42 @@ def officer_analytics(user):
     return jsonify({"success": True, "data": {"variety_analytics": summary}})
 
 
+@app.route("/api/officer/stats", methods=["GET"])
+@require_auth
+def officer_stats(user):
+    total_farms = Farm.query.count()
+    total_fields = Field.query.count()
+    total_farmers = User.query.filter_by(role="farmer").count()
+    high_risk_count = YieldPrediction.query.filter(YieldPrediction.risk_level.in_(["High", "Critical"])).count()
+    return jsonify({
+        "success": True,
+        "data": {
+            "total_farms": total_farms,
+            "total_fields": total_fields,
+            "total_farmers": total_farmers,
+            "high_risk_fields": high_risk_count,
+            "active_region": "Maharashtra & Karnataka Sugarcane Belt"
+        }
+    })
+
+
 # -----------------------------------------------------------------------------
 # 26. ADMIN DASHBOARD APIS
 # -----------------------------------------------------------------------------
 @app.route("/api/admin/stats", methods=["GET"])
 @require_auth
 def admin_stats(user):
+    total_users = User.query.count()
+    total_admins = User.query.filter_by(role="admin").count()
+    total_standard_users = total_users - total_admins
     return jsonify({
         "success": True,
         "data": {
-            "total_users": User.query.count(),
-            "total_farmers": User.query.filter_by(role="farmer").count(),
-            "total_officers": User.query.filter_by(role="officer").count(),
+            "total_users": total_users,
+            "total_standard_users": total_standard_users,
+            "total_admins": total_admins,
+            "total_farmers": total_standard_users,
+            "total_officers": 0,
             "total_farms": Farm.query.count(),
             "total_fields": Field.query.count(),
             "total_predictions": YieldPrediction.query.count(),
@@ -2209,6 +2571,13 @@ def admin_update_user_status(user, user_id):
 
     data = request.get_json(force=True) or {}
     new_status = data.get("status")
+    if isinstance(new_status, bool):
+        new_status = "active" if new_status else "inactive"
+    elif str(new_status).lower() in ["true", "1"]:
+        new_status = "active"
+    elif str(new_status).lower() in ["false", "0"]:
+        new_status = "inactive"
+
     if new_status in ["active", "inactive", "suspended"]:
         target_user.status = new_status
         db.session.commit()
@@ -2228,6 +2597,30 @@ def admin_varieties(user):
 def admin_ml_perf(user):
     metrics = prediction_engine.get_model_metrics()
     return jsonify({"success": True, "data": metrics})
+
+
+@app.route("/api/admin/logs", methods=["GET"])
+@require_auth
+def admin_logs(user):
+    recent_preds = YieldPrediction.query.order_by(YieldPrediction.created_at.desc()).limit(20).all()
+    recent_alerts = Alert.query.order_by(Alert.created_at.desc()).limit(20).all()
+    logs = []
+    for p in recent_preds:
+        logs.append({
+            "timestamp": p.created_at.strftime("%Y-%m-%d %H:%M:%S") if p.created_at else "Just now",
+            "level": "INFO",
+            "service": "ML_PREDICTION_ENGINE",
+            "message": f"Yield prediction evaluated for variety {p.variety}: {p.predicted_yield} t/ha (Confidence: {p.confidence}%)"
+        })
+    for a in recent_alerts:
+        logs.append({
+            "timestamp": a.created_at.strftime("%Y-%m-%d %H:%M:%S") if a.created_at else "Just now",
+            "level": a.severity.upper() if a.severity else "WARNING",
+            "service": "EARLY_WARNING_MONITOR",
+            "message": f"[{a.type.upper()}] {a.title}: {a.message}"
+        })
+    logs.sort(key=lambda x: x["timestamp"], reverse=True)
+    return jsonify({"success": True, "data": {"logs": logs, "total": len(logs)}})
 
 
 # -----------------------------------------------------------------------------
