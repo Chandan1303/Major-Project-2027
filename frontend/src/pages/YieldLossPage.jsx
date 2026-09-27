@@ -4,9 +4,17 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   Cell, PieChart, Pie, Legend
 } from 'recharts';
+import {
+  TrendingDown, Target, Sparkles, AlertTriangle, CheckCircle2,
+  BarChart3, PieChart as PieIcon, FileText, Layers, ShieldAlert,
+  ArrowRight, CloudRain, Droplets, Sprout, TrendingUp
+} from 'lucide-react';
 import AppLayout from '../components/AppLayout';
 import { predictionApi, yieldLossApi } from '../services/api';
 import { useField } from '../context/FieldContext';
+import StatCard from '../components/ui/StatCard';
+import Badge from '../components/ui/Badge';
+import EmptyState from '../components/ui/EmptyState';
 import toast, { Toaster } from 'react-hot-toast';
 
 const VARIETY_POTENTIALS = {
@@ -22,10 +30,10 @@ export default function YieldLossPage() {
   const navigate = useNavigate();
   const { selectedPrediction, setSelectedPrediction } = useField();
 
-  const [preds, setPreds] = useState([]);
-  const [selected, setSelected] = useState(null);
-  const [analysis, setAnalysis] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [preds, setPreds]         = useState([]);
+  const [selected, setSelected]   = useState(null);
+  const [analysis, setAnalysis]   = useState(null);
+  const [loading, setLoading]     = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
 
   useEffect(() => {
@@ -76,7 +84,7 @@ export default function YieldLossPage() {
       <AppLayout>
         <div className="page-loading-center">
           <div className="loading-spinner" />
-          <p>Loading Agro-Economic Yield Loss & Risk Analysis…</p>
+          <p>Auditing varietal genetic potential & yield loss deficit models…</p>
         </div>
       </AppLayout>
     );
@@ -90,13 +98,23 @@ export default function YieldLossPage() {
   const riskLevel = analysis?.risk_category || selected?.risk_level || (lossPct < 12 ? 'Low' : lossPct < 26 ? 'Medium' : lossPct < 42 ? 'High' : 'Critical');
 
   const riskColors = {
-    Low: '#16a34a',
+    Low: '#10b981',
     Medium: '#f59e0b',
     High: '#ef4444',
     Critical: '#dc2626'
   };
 
-  // Real factors from backend
+  const riskBadgeVariants = {
+    Low: 'success',
+    Medium: 'warning',
+    High: 'critical',
+    Critical: 'critical'
+  };
+
+  function roundVal(n) {
+    return Number((n || 0).toFixed(1));
+  }
+
   const lossFactors = analysis?.analyzed_factors || [
     {
       category: 'Weather Impact',
@@ -120,169 +138,200 @@ export default function YieldLossPage() {
     }
   ];
 
-  function roundVal(n) {
-    return Number((n || 0).toFixed(1));
-  }
-
   const factorPieData = lossFactors.map((f, i) => ({
     name: f.category,
     value: f.loss_contribution_pct || 1,
-    color: ['#0284c7', '#d97706', '#16a34a', '#7c3aed'][i % 4]
+    color: ['#0ea5e9', '#f59e0b', '#10b981', '#8b5cf6'][i % 4]
   }));
 
   const comparisonBarData = [
     { name: 'Reference Potential', yield: refYield, fill: '#6366f1' },
-    { name: 'Predicted Yield', yield: predYield, fill: '#2d7a3e' },
-    { name: 'Yield Deficit', yield: estimatedLoss, fill: riskColors[riskLevel] || '#ef4444' }
+    { name: 'Predicted Yield', yield: predYield, fill: '#10b981' },
+    { name: 'Yield Deficit Gap', yield: estimatedLoss, fill: riskColors[riskLevel] || '#ef4444' }
   ];
 
   return (
     <AppLayout>
       <Toaster position="top-right" />
       <div className="page-container">
-        {/* Header */}
-        <div className="page-header">
+        
+        {/* Page Header */}
+        <div className="page-header" style={{ marginBottom: 20 }}>
           <div>
-            <p className="eyebrow">Agro-Economic Risk Engine</p>
-            <h1 className="page-title">Yield Loss & Risk Analysis</h1>
-            <p className="page-subtitle">
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 20, background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
+              <TrendingDown size={13} /> Agro-Economic Risk & Gap Diagnostic Engine
+            </div>
+            <h1 className="page-title" style={{ margin: '0 0 6px' }}>Yield Loss & Gap Diagnostic Analysis</h1>
+            <p className="page-subtitle" style={{ margin: 0, color: 'var(--text-secondary)' }}>
               Quantify tonnage deficits against verified genetic varietal potential and diagnose multi-factor root causes.
             </p>
           </div>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-            <span
-              className="status-badge"
-              style={{
-                background: `${riskColors[riskLevel]}18`,
-                color: riskColors[riskLevel],
-                border: `1px solid ${riskColors[riskLevel]}40`,
-                fontSize: 13,
-                fontWeight: 700
-              }}
-            >
+            <Badge variant={riskBadgeVariants[riskLevel] || 'warning'}>
               Risk Assessment: {riskLevel}
-            </span>
+            </Badge>
           </div>
         </div>
 
         {preds.length === 0 ? (
-          <div className="empty-page-state">
-            <div className="eps-icon">📉</div>
-            <h2>No Predictions Found</h2>
-            <p>Run a yield prediction first to diagnose yield gaps and loss factors.</p>
-            <button className="btn-primary" onClick={() => navigate('/prediction')}>
-              🌾 Forecast First Field
-            </button>
-          </div>
+          <EmptyState
+            icon={TrendingDown}
+            title="No Field Predictions Found"
+            description="Run an AI yield forecast first to quantify genetic potential gaps and loss factors."
+            actionText="Launch Prediction Engine"
+            onAction={() => navigate('/prediction')}
+          />
         ) : (
           <>
-            {/* Prediction selector pills */}
-            <div style={{ marginBottom: 16 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 8 }}>
-                Select Field Prediction to Analyze:
+            {/* Prediction Selector Ribbon */}
+            <div style={{ marginBottom: 20 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: 8 }}>
+                SELECT FIELD FORECAST TO AUDIT:
               </span>
-              <div className="profile-selector" style={{ margin: 0 }}>
-                {preds.slice(0, 6).map(p => (
-                  <button
-                    key={p.id}
-                    className={`profile-btn ${selected?.id === p.id ? 'profile-btn-active' : ''}`}
-                    onClick={() => handleSelectPrediction(p)}
-                  >
-                    🌾 {p.variety} — {Number(p.predicted_yield).toFixed(1)} t/ha ({new Date(p.created_at).toLocaleDateString('en-IN')})
-                  </button>
-                ))}
+              <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 6 }}>
+                {preds.slice(0, 6).map(p => {
+                  const isSel = selected?.id === p.id;
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => handleSelectPrediction(p)}
+                      style={{
+                        padding: '7px 14px',
+                        borderRadius: 10,
+                        fontSize: 12,
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        border: isSel ? '1px solid var(--primary)' : '1px solid var(--border-color)',
+                        background: isSel ? 'var(--primary-glow)' : 'var(--card-bg)',
+                        color: isSel ? 'var(--primary)' : 'var(--text-secondary)',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      {p.variety} · {Number(p.predicted_yield).toFixed(1)} t/ha ({new Date(p.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })})
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Summary Cards */}
-            <div className="stats-grid-4" style={{ marginBottom: 20 }}>
-              <div className="stat-card" style={{ '--card-accent': '#6366f1' }}>
-                <div className="sc-icon">🎯</div>
-                <div className="sc-body">
-                  <span className="sc-label">Reference Yield ({variety})</span>
-                  <span className="sc-value">{refYield.toFixed(1)} t/ha</span>
-                </div>
-              </div>
-
-              <div className="stat-card" style={{ '--card-accent': '#2d7a3e' }}>
-                <div className="sc-icon">🌾</div>
-                <div className="sc-body">
-                  <span className="sc-label">Predicted Yield</span>
-                  <span className="sc-value">{predYield.toFixed(1)} t/ha</span>
-                </div>
-              </div>
-
-              <div className="stat-card" style={{ '--card-accent': riskColors[riskLevel] }}>
-                <div className="sc-icon">📉</div>
-                <div className="sc-body">
-                  <span className="sc-label">Estimated Loss</span>
-                  <span className="sc-value">{estimatedLoss.toFixed(1)} t/ha</span>
-                </div>
-              </div>
-
-              <div className="stat-card" style={{ '--card-accent': riskColors[riskLevel] }}>
-                <div className="sc-icon">📊</div>
-                <div className="sc-body">
-                  <span className="sc-label">Loss Percentage</span>
-                  <span className="sc-value">{lossPct.toFixed(1)}%</span>
-                </div>
-              </div>
+            {/* Aggregated KPI Cards */}
+            <div className="dashboard-stats" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', marginBottom: 24 }}>
+              <StatCard
+                label={`Reference Potential (${variety})`}
+                value={refYield.toFixed(1)}
+                unit="t/ha"
+                icon={Target}
+                color="purple"
+                subtitle="Theoretical genetic benchmark"
+              />
+              <StatCard
+                label="Predicted Field Yield"
+                value={predYield.toFixed(1)}
+                unit="t/ha"
+                icon={Sparkles}
+                color="emerald"
+                subtitle="Dual-model forecast"
+              />
+              <StatCard
+                label="Estimated Yield Deficit"
+                value={estimatedLoss.toFixed(1)}
+                unit="t/ha"
+                icon={TrendingDown}
+                color={estimatedLoss > 15 ? 'red' : 'green'}
+                trend={estimatedLoss > 0 ? `-${estimatedLoss.toFixed(1)} t/ha gap` : 'Optimal'}
+                subtitle="Potential vs predicted loss"
+              />
+              <StatCard
+                label="Yield Realization Gap"
+                value={lossPct.toFixed(1)}
+                unit="%"
+                icon={ShieldAlert}
+                color={lossPct > 20 ? 'amber' : 'green'}
+                subtitle="Loss relative to genetic max"
+              />
             </div>
 
-            {/* Risk Assessment Diagnostic Callout */}
+            {/* Diagnostic Alert Callout */}
             <div
-              className="risk-display-card"
+              className="card"
               style={{
-                background: `${riskColors[riskLevel]}12`,
-                borderColor: `${riskColors[riskLevel]}40`,
-                color: riskColors[riskLevel],
-                marginBottom: 24,
-                padding: '16px 20px',
-                borderRadius: 10,
+                padding: 20,
+                borderRadius: 14,
+                border: `1px solid ${riskColors[riskLevel]}40`,
+                background: `${riskColors[riskLevel]}0d`,
                 display: 'flex',
                 alignItems: 'center',
-                gap: 16
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: 16,
+                marginBottom: 24
               }}
             >
-              <span style={{ fontSize: 32 }}>
-                {riskLevel === 'Low' ? '🟢' : riskLevel === 'Medium' ? '🟡' : riskLevel === 'High' ? '🟠' : '🔴'}
-              </span>
-              <div style={{ flex: 1 }}>
-                <strong style={{ fontSize: 16, display: 'block', marginBottom: 4 }}>
-                  Agronomic Risk Status: {riskLevel} Loss Expectation ({lossPct.toFixed(1)}%)
-                </strong>
-                <p style={{ margin: 0, fontSize: 13, lineHeight: 1.5, opacity: 0.9 }}>
-                  {riskLevel === 'Low'
-                    ? `Field yield closely approaches the ${refYield} t/ha varietal benchmark. Standard scheduled maintenance advised.`
-                    : riskLevel === 'Medium'
-                    ? `Moderate yield gap of ${estimatedLoss.toFixed(1)} t/ha detected. Supplemental irrigation and nutrient top-dressing recommended to arrest deficit.`
-                    : `Significant yield depression of ${estimatedLoss.toFixed(1)} t/ha detected. Immediate agronomic intervention required to prevent permanent stalk stunting.`}
-                </p>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+                <div
+                  style={{
+                    width: 44,
+                    height: 44,
+                    borderRadius: 12,
+                    background: `${riskColors[riskLevel]}20`,
+                    color: riskColors[riskLevel],
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0
+                  }}
+                >
+                  <ShieldAlert size={22} />
+                </div>
+                <div>
+                  <h4 style={{ margin: '0 0 4px', fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+                    Agronomic Risk Assessment: {riskLevel} Loss Expectation ({lossPct.toFixed(1)}%)
+                  </h4>
+                  <p style={{ margin: 0, fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5, maxWidth: 680 }}>
+                    {riskLevel === 'Low'
+                      ? `Field yield closely approaches the ${refYield} t/ha varietal benchmark. Standard scheduled maintenance advised.`
+                      : riskLevel === 'Medium'
+                      ? `Moderate yield gap of ${estimatedLoss.toFixed(1)} t/ha detected. Supplemental irrigation and nutrient top-dressing recommended to arrest deficit.`
+                      : `Significant yield depression of ${estimatedLoss.toFixed(1)} t/ha detected. Immediate agronomic intervention required to prevent permanent stalk stunting.`}
+                  </p>
+                </div>
               </div>
+
               <button
-                className="btn-sm btn-primary"
-                style={{ background: riskColors[riskLevel], border: 'none', whiteSpace: 'nowrap' }}
+                className="btn-primary"
                 onClick={() => navigate(`/reports?tab=loss&pred_id=${selected?.id}`)}
+                style={{ fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}
               >
-                Generate Loss Audit Dossier →
+                <FileText size={14} />
+                <span>Generate Loss Audit Dossier</span>
               </button>
             </div>
 
             {/* Charts: Benchmark Gap and Factor Distribution */}
-            <div className="dash-two-col" style={{ marginBottom: 24 }}>
-              {/* Benchmark comparison bar */}
-              <div className="dash-panel">
-                <div className="dash-panel-header">
-                  <h3>Yield Gap Analysis vs Potential Benchmark</h3>
-                  <span className="badge badge-green">{variety} Genetics</span>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 20, marginBottom: 24 }}>
+              
+              {/* Benchmark Bar Chart */}
+              <div className="card" style={{ padding: 22, borderRadius: 16, border: '1px solid var(--border-color)', background: 'var(--card-bg)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>
+                      Yield Gap vs Genetic Benchmark
+                    </h3>
+                    <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{variety} Varietal Genetics</span>
+                  </div>
+                  <Badge variant="purple">{variety}</Badge>
                 </div>
+
                 <ResponsiveContainer width="100%" height={260}>
                   <BarChart data={comparisonBarData} margin={{ top: 12, right: 12, bottom: 0, left: -10 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 600 }} />
-                    <YAxis tick={{ fontSize: 11 }} unit=" t/ha" />
-                    <Tooltip formatter={v => [`${v} t/ha`, 'Yield Metric']} />
-                    <Bar dataKey="yield" radius={[4, 4, 0, 0]}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
+                    <XAxis dataKey="name" tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
+                    <YAxis tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} unit=" t/ha" />
+                    <Tooltip
+                      formatter={v => [`${v} t/ha`, 'Yield Metric']}
+                      contentStyle={{ background: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 8 }}
+                    />
+                    <Bar dataKey="yield" radius={[6, 6, 0, 0]}>
                       {comparisonBarData.map((entry, idx) => (
                         <Cell key={`cell-${idx}`} fill={entry.fill} />
                       ))}
@@ -291,12 +340,18 @@ export default function YieldLossPage() {
                 </ResponsiveContainer>
               </div>
 
-              {/* Loss factor proportion pie chart */}
-              <div className="dash-panel">
-                <div className="dash-panel-header">
-                  <h3>Yield Loss Contribution by Factor Group</h3>
-                  <span className="badge badge-blue">Model-Derived Attribution</span>
+              {/* Loss Factor Pie Chart */}
+              <div className="card" style={{ padding: 22, borderRadius: 16, border: '1px solid var(--border-color)', background: 'var(--card-bg)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>
+                      Yield Loss Attribution by Group
+                    </h3>
+                    <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Model-derived deficit breakdown</span>
+                  </div>
+                  <Badge variant="primary">Factor Shares</Badge>
                 </div>
+
                 <ResponsiveContainer width="100%" height={260}>
                   <PieChart>
                     <Pie
@@ -306,7 +361,7 @@ export default function YieldLossPage() {
                       cx="50%"
                       cy="50%"
                       outerRadius={85}
-                      innerRadius={45}
+                      innerRadius={48}
                       paddingAngle={4}
                       label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}
                     >
@@ -314,26 +369,31 @@ export default function YieldLossPage() {
                         <Cell key={`cell-${idx}`} fill={entry.color} />
                       ))}
                     </Pie>
-                    <Tooltip formatter={v => [`${v}%`, 'Attribution']} />
+                    <Tooltip
+                      formatter={v => [`${v}%`, 'Attribution']}
+                      contentStyle={{ background: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 8 }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            {/* Detailed Factor Diagnostics Table with Model Evidence */}
-            <div className="dash-panel" style={{ marginBottom: 24 }}>
-              <div className="dash-panel-header">
+            {/* Detailed Factor Diagnostics Table */}
+            <div className="card" style={{ padding: 24, borderRadius: 16, border: '1px solid var(--border-color)', background: 'var(--card-bg)', marginBottom: 24 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
                 <div>
-                  <h3>Agronomic Root Cause Factor Analysis</h3>
-                  <p className="text-xs text-gray-500">
-                    Quantified multi-factor evidence generated by Random Forest & XGBoost sensitivity calculations.
-                  </p>
+                  <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+                    Agronomic Root Cause Factor Analysis
+                  </h3>
+                  <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                    Quantified multi-factor evidence generated by Random Forest & XGBoost sensitivity calculations
+                  </span>
                 </div>
-                <span className="badge badge-purple">Evidence-Based</span>
+                <Badge variant="success">Evidence-Based</Badge>
               </div>
 
-              <div className="table-wrap">
-                <table className="data-table">
+              <div style={{ overflowX: 'auto' }}>
+                <table className="data-table" style={{ width: '100%' }}>
                   <thead>
                     <tr>
                       <th style={{ width: '22%' }}>Loss Factor Category</th>
@@ -348,19 +408,16 @@ export default function YieldLossPage() {
                       const factorLossT = Number(((sharePct / 100) * estimatedLoss).toFixed(1));
                       return (
                         <tr key={idx}>
-                          <td className="td-bold">
-                            <span style={{ marginRight: 6 }}>
-                              {idx === 0 ? '☁️' : idx === 1 ? '🪨' : idx === 2 ? '🌿' : '📈'}
-                            </span>
+                          <td style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
                             {f.category}
                           </td>
-                          <td style={{ fontWeight: 700, color: '#0f766e' }}>
+                          <td style={{ fontWeight: 700, color: 'var(--primary)' }}>
                             {sharePct}%
                           </td>
-                          <td style={{ color: '#ef4444', fontWeight: 600 }}>
+                          <td style={{ color: '#ef4444', fontWeight: 700 }}>
                             -{factorLossT} t/ha
                           </td>
-                          <td style={{ fontSize: 13, lineHeight: 1.5, color: '#334155' }}>
+                          <td style={{ fontSize: 13, lineHeight: 1.5, color: 'var(--text-secondary)' }}>
                             {f.evidence}
                           </td>
                         </tr>
@@ -371,11 +428,11 @@ export default function YieldLossPage() {
               </div>
 
               {analysis?.mitigation_summary && (
-                <div style={{ marginTop: 16, padding: '14px 18px', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8 }}>
-                  <strong style={{ color: '#166534', display: 'block', marginBottom: 4 }}>
-                    💡 Actionable Agronomic Recovery Directives:
-                  </strong>
-                  <p style={{ margin: 0, fontSize: 13, color: '#374151', lineHeight: 1.5 }}>
+                <div style={{ marginTop: 18, padding: 16, borderRadius: 12, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, fontWeight: 700, color: 'var(--primary)', marginBottom: 6 }}>
+                    <Sprout size={15} /> Actionable Agronomic Recovery Directives
+                  </div>
+                  <p style={{ margin: 0, fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                     {analysis.mitigation_summary}
                   </p>
                 </div>
@@ -383,6 +440,7 @@ export default function YieldLossPage() {
             </div>
           </>
         )}
+
       </div>
     </AppLayout>
   );

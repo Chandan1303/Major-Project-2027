@@ -1,33 +1,51 @@
 import React, { useEffect, useState, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import {
+  Map,
+  MapPin,
+  Warehouse,
+  Sprout,
+  TrendingUp,
+  ShieldCheck,
+  AlertTriangle,
+  Layers,
+  Activity,
+  ArrowRight,
+  Thermometer,
+  CloudRain,
+  Droplets
+} from 'lucide-react';
 import AppLayout from '../components/AppLayout';
+import Badge from '../components/ui/Badge';
 import { farmApi, weatherApi } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 
-function createCustomPin(color = '#16a34a', label = '🏡') {
+function createCustomPin(color = '#10b981', label = '🌾') {
   return L.divIcon({
     className: 'custom-map-marker',
     html: `
       <div style="
         background: ${color};
         color: white;
-        width: 34px;
-        height: 34px;
+        width: 36px;
+        height: 36px;
         border-radius: 50% 50% 50% 0;
         transform: rotate(-45deg);
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.35);
-        border: 2px solid #ffffff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+        border: 2.5px solid #ffffff;
+        cursor: pointer;
+        transition: transform 0.2s ease;
       ">
-        <span style="transform: rotate(45deg); font-size: 15px;">${label}</span>
+        <span style="transform: rotate(45deg); font-size: 16px;">${label}</span>
       </div>
     `,
-    iconSize: [34, 34],
-    iconAnchor: [17, 34],
-    popupAnchor: [0, -32],
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -34],
   });
 }
 
@@ -59,7 +77,6 @@ export default function FarmMapPage() {
         farmList = mapRes.value.data.data?.farms || mapRes.value.data.farms || [];
       }
 
-      // If backend list is empty, supply default regional sugarcane farms
       if (!farmList.length) {
         farmList = [
           {
@@ -110,11 +127,10 @@ export default function FarmMapPage() {
     };
   }, []);
 
-  // 2. Initialize Leaflet Map (Safe, Clean, Zero "Already Initialized" Crash)
+  // 2. Initialize Leaflet Map (Safe, Clean OpenStreetMap Only)
   useEffect(() => {
     if (loading || !mapContainerRef.current) return;
 
-    // Destroy any existing map instance on re-render
     if (mapInstanceRef.current) {
       mapInstanceRef.current.remove();
       mapInstanceRef.current = null;
@@ -130,42 +146,40 @@ export default function FarmMapPage() {
         scrollWheelZoom: true,
       });
 
-      // STRICTLY OpenStreetMap Layer Only - ZERO Satellite
+      // Strictly OpenStreetMap Layer Only - ZERO Satellite
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
 
-      // Create a layer group for markers
       const markersLayer = L.layerGroup().addTo(map);
       markersLayerRef.current = markersLayer;
       mapInstanceRef.current = map;
 
-      // Add markers for all farms
       farms.forEach(farm => {
         const lat = Number(farm.latitude) || 16.7050;
         const lng = Number(farm.longitude) || 74.2433;
 
         const hasHighRisk = farm.fields?.some(f => f.risk_level === 'High' || f.risk_level === 'Critical');
-        const color = hasHighRisk ? '#dc2626' : '#16a34a';
+        const color = hasHighRisk ? '#ef4444' : '#10b981';
 
         const marker = L.marker([lat, lng], {
           icon: createCustomPin(color, '🌾')
         });
 
         const popupContent = `
-          <div style="font-family: inherit; min-width: 220px; padding: 2px;">
-            <strong style="font-size: 14px; color: #166534; display: block; margin-bottom: 2px;">${farm.name}</strong>
-            <span style="font-size: 11px; color: #6b7280; display: block; margin-bottom: 6px;">📍 ${farm.location || 'Sugarcane Region'}</span>
-            <div style="font-size: 12px; margin-bottom: 6px;">
+          <div style="font-family: inherit; min-width: 220px; padding: 4px;">
+            <strong style="font-size: 14px; color: #10b981; display: block; margin-bottom: 2px;">${farm.name}</strong>
+            <span style="font-size: 11.5px; color: #64748b; display: block; margin-bottom: 8px;">📍 ${farm.location || 'Sugarcane Region'}</span>
+            <div style="font-size: 12.5px; margin-bottom: 6px;">
               📐 Area: <strong>${farm.total_area || 10} ha</strong> (${farm.fields?.length || 0} fields)
             </div>
-            <div style="border-top: 1px solid #e5e7eb; padding-top: 6px;">
-              <strong style="font-size: 11px; color: #374151;">Fields:</strong>
+            <div style="border-top: 1px solid #e2e8f0; padding-top: 6px;">
+              <strong style="font-size: 11px; color: #475569; text-transform: uppercase;">Parcels:</strong>
               ${(farm.fields || []).map(fld => `
-                <div style="font-size: 11px; margin-top: 2px; display: flex; justify-content: space-between;">
+                <div style="font-size: 11.5px; margin-top: 3px; display: flex; justify-content: space-between;">
                   <span>${fld.field_name || fld.name} (${fld.variety || 'Co 86032'})</span>
-                  <strong style="color: #16a34a;">${fld.predicted_yield || 90} t/ha</strong>
+                  <strong style="color: #10b981;">${fld.predicted_yield || 90} t/ha</strong>
                 </div>
               `).join('')}
             </div>
@@ -183,7 +197,6 @@ export default function FarmMapPage() {
         markersLayer.addLayer(marker);
       });
 
-      // Fit bounds if multiple farms
       if (farms.length > 1) {
         const bounds = L.latLngBounds(farms.map(f => [f.latitude, f.longitude]));
         map.fitBounds(bounds, { padding: [50, 50], maxZoom: 10 });
@@ -200,7 +213,6 @@ export default function FarmMapPage() {
     };
   }, [loading, farms]);
 
-  // Smooth fly to active farm
   const handleSelectFarm = (farm) => {
     setActiveFarm(farm);
     if (farm.fields?.length > 0) {
@@ -215,145 +227,193 @@ export default function FarmMapPage() {
     <AppLayout>
       <div className="page-container">
         {/* Header */}
-        <div className="page-header">
+        <div className="page-header" style={{ marginBottom: 24 }}>
           <div>
-            <p className="eyebrow">Geospatial Farm Intelligence</p>
+            <span className="eyebrow">
+              <Map size={13} />
+              Geospatial Farm Telemetry
+            </span>
             <h1 className="page-title">Interactive Farm & Field Map</h1>
             <p className="page-subtitle">
               Inspect farm boundaries, field yields, risk assessments, and soil health with OpenStreetMap navigation (zero satellite layers).
             </p>
           </div>
-          <div className="header-actions">
-            <span className="badge badge-green">Standard OpenStreetMap Layer</span>
-            <button className="btn-primary" onClick={() => navigate('/farms')}>+ Manage Farms</button>
+          <div className="header-actions" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            <Badge variant="success" dot>OpenStreetMap Standard Layer</Badge>
+            <button className="btn-primary" onClick={() => navigate('/farms')}>
+              <Warehouse size={16} />
+              <span>Manage Farm Holdings</span>
+            </button>
           </div>
         </div>
 
         {loading ? (
-          <div className="page-loading-center">
-            <div className="loading-spinner" />
-            <p>Loading interactive farm map…</p>
+          <div className="card" style={{ padding: 48, textAlign: 'center' }}>
+            <div className="loading-spinner" style={{ margin: '0 auto 16px' }} />
+            <p style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Loading interactive farm telemetry map…</p>
           </div>
         ) : (
-          <div className="map-layout">
+          <div className="map-layout" style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: 20 }}>
             {/* Sidebar List */}
-            <div className="map-sidebar">
-              <h3>Farms Monitored ({farms.length})</h3>
-              {farms.map(f => (
-                <div
-                  key={f.farm_id || f.id}
-                  className={`map-farm-row ${activeFarm?.farm_id === f.farm_id || activeFarm?.id === f.id ? 'map-farm-active' : ''}`}
-                  onClick={() => handleSelectFarm(f)}
-                >
-                  <div className="mfr-icon">🏡</div>
-                  <div className="mfr-body">
-                    <span className="mfr-name">{f.name}</span>
-                    <span className="mfr-loc">📍 {f.location || f.address}</span>
-                    <div className="mfr-stats">
-                      <span>{Number(f.total_area || 0).toFixed(1)} ha</span>
-                      <span>{f.fields?.length || 0} fields</span>
-                    </div>
-                  </div>
+            <div className="map-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div className="card" style={{ padding: '16px 18px' }}>
+                <h3 style={{ margin: '0 0 12px', fontSize: 15, fontWeight: 700 }}>Monitored Farms ({farms.length})</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {farms.map(f => {
+                    const active = activeFarm?.farm_id === f.farm_id || activeFarm?.id === f.id;
+                    return (
+                      <div
+                        key={f.farm_id || f.id}
+                        className={`card ${active ? 'active-farm-card' : ''}`}
+                        onClick={() => handleSelectFarm(f)}
+                        style={{
+                          padding: '12px 14px',
+                          cursor: 'pointer',
+                          borderRadius: 12,
+                          border: active ? '1.5px solid #10b981' : '1px solid var(--border)',
+                          background: active ? 'rgba(16, 185, 129, 0.08)' : 'var(--bg-panel)',
+                          transition: 'all 0.2s ease'
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                          <Warehouse size={18} style={{ color: active ? '#10b981' : 'var(--text-muted)' }} />
+                          <div style={{ flex: 1 }}>
+                            <strong style={{ fontSize: 13.5, color: 'var(--text-primary)', display: 'block' }}>{f.name}</strong>
+                            <span style={{ fontSize: 11.5, color: 'var(--text-muted)' }}>📍 {f.location || f.address}</span>
+                          </div>
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11.5, color: 'var(--text-muted)', marginTop: 8, paddingTop: 6, borderTop: '1px solid var(--border-subtle)' }}>
+                          <span>{Number(f.total_area || 0).toFixed(1)} ha</span>
+                          <span style={{ color: 'var(--primary)', fontWeight: 600 }}>{f.fields?.length || 0} fields</span>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
+              </div>
 
               {/* Weather Info Card */}
-              <div style={{ marginTop: '16px', padding: '12px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                <h4 style={{ fontSize: '12px', textTransform: 'uppercase', color: '#64748b', marginBottom: '8px' }}>
-                  Regional Agro-Weather
+              <div className="card" style={{ padding: '16px 18px' }}>
+                <h4 style={{ fontSize: 12, textTransform: 'uppercase', color: 'var(--text-muted)', margin: '0 0 10px', letterSpacing: 0.5 }}>
+                  Regional Climate Window
                 </h4>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '12px' }}>
-                  <div>🌡️ Temp: <strong>{weatherInfo.temperature || 28.5}°C</strong></div>
-                  <div>🌧️ Rain: <strong>{weatherInfo.rainfall || 1220} mm</strong></div>
-                  <div>💧 Humidity: <strong>{weatherInfo.humidity || 68}%</strong></div>
-                  <div>☀️ Sky: <strong>Clear / Optimal</strong></div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, fontSize: 12.5 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Thermometer size={14} className="text-amber-500" />
+                    <span>{weatherInfo.temperature || 28.5}°C</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <CloudRain size={14} className="text-sky-500" />
+                    <span>{weatherInfo.rainfall || 1220} mm</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Droplets size={14} className="text-cyan-500" />
+                    <span>{weatherInfo.humidity || 68}%</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <Badge variant="success" size="sm">Optimal</Badge>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Main Map */}
-            <div className="map-main">
-              {/* Native Leaflet Map Container DIV */}
+            <div className="map-main" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* Native Leaflet Map Container */}
               <div
                 ref={mapContainerRef}
                 style={{
-                  height: '480px',
+                  height: 480,
                   width: '100%',
-                  borderRadius: '12px',
-                  border: '1px solid #e2e8f0',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
+                  borderRadius: 16,
+                  border: '1px solid var(--border)',
+                  boxShadow: 'var(--shadow-card)',
                   position: 'relative',
-                  zIndex: 1
+                  zIndex: 1,
+                  overflow: 'hidden'
                 }}
               />
 
               {/* Active Farm & Field Details Card */}
               {activeFarm && (
-                <div className="map-info-card" style={{ marginTop: '16px' }}>
-                  <div className="mic-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span className="mic-icon" style={{ fontSize: '24px' }}>🏡</span>
+                <div className="card" style={{ padding: 22 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(16, 185, 129, 0.12)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Warehouse size={20} />
+                      </div>
                       <div>
-                        <span className="mic-name" style={{ fontSize: '16px', fontWeight: 'bold' }}>{activeFarm.name}</span>
-                        <span className="mic-loc" style={{ display: 'block', fontSize: '12px', color: '#6b7280' }}>
-                          📍 {activeFarm.location || activeFarm.address}
-                        </span>
+                        <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700 }}>{activeFarm.name}</h3>
+                        <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>📍 {activeFarm.location || activeFarm.address}</span>
                       </div>
                     </div>
-                    <span className="badge badge-green">OpenStreetMap Verified</span>
+                    <Badge variant="success" dot>OpenStreetMap Verified</Badge>
                   </div>
 
                   {/* Field Selector Tabs */}
                   {activeFarm.fields?.length > 0 && (
-                    <div style={{ marginTop: '12px' }}>
-                      <label style={{ fontSize: '12px', color: '#4b5563', fontWeight: '600' }}>Select Field:</label>
-                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
-                        {activeFarm.fields.map(fld => (
-                          <button
-                            key={fld.field_id || fld.name}
-                            onClick={() => setSelectedField(fld)}
-                            className={`btn-sm ${selectedField?.field_id === fld.field_id ? 'btn-primary' : 'btn-outline'}`}
-                            style={{ fontSize: '11px' }}
-                          >
-                            {fld.field_name || fld.name} ({fld.variety || 'Co 86032'})
-                          </button>
-                        ))}
+                    <div style={{ marginBottom: 14 }}>
+                      <label style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 600, display: 'block', marginBottom: 6 }}>Select Field Parcel:</label>
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                        {activeFarm.fields.map(fld => {
+                          const isFldActive = selectedField?.field_id === fld.field_id || selectedField?.id === fld.id;
+                          return (
+                            <button
+                              key={fld.field_id || fld.name}
+                              onClick={() => setSelectedField(fld)}
+                              className={`btn ${isFldActive ? 'btn-primary' : 'btn-outline'}`}
+                              style={{ padding: '6px 12px', fontSize: 12 }}
+                            >
+                              <Sprout size={13} />
+                              <span>{fld.field_name || fld.name} ({fld.variety || 'Co 86032'})</span>
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
 
                   {/* Selected Field Specifics */}
                   {selectedField && (
-                    <div className="mic-stats" style={{ marginTop: '12px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px' }}>
-                      <div className="mic-stat">
-                        <span>{selectedField.variety || 'Co 86032'}</span>
-                        <span>Sugarcane Variety</span>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 10, background: 'var(--border-subtle)', padding: 14, borderRadius: 12, marginBottom: 16 }}>
+                      <div>
+                        <span style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Cultivar</span>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)' }}>{selectedField.variety || 'Co 86032'}</div>
                       </div>
-                      <div className="mic-stat">
-                        <span>{selectedField.predicted_yield ? `${selectedField.predicted_yield} t/ha` : '92.4 t/ha'}</span>
-                        <span>Predicted Yield</span>
+                      <div>
+                        <span style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Forecasted Yield</span>
+                        <div style={{ fontSize: 14, fontWeight: 700, color: '#10b981' }}>{selectedField.predicted_yield ? `${selectedField.predicted_yield} t/ha` : '92.4 t/ha'}</div>
                       </div>
-                      <div className="mic-stat">
-                        <span style={{ color: selectedField.risk_level === 'High' ? '#ef4444' : '#16a34a' }}>
-                          {selectedField.risk_level || 'Low'}
-                        </span>
-                        <span>Risk Level</span>
+                      <div>
+                        <span style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Risk Level</span>
+                        <div>
+                          <Badge variant={selectedField.risk_level?.toLowerCase() === 'high' ? 'critical' : 'success'} size="sm">
+                            {selectedField.risk_level || 'Low'}
+                          </Badge>
+                        </div>
                       </div>
-                      <div className="mic-stat">
-                        <span>{selectedField.soil_type || 'Black Soil'} (pH {selectedField.soil_ph || 7.2})</span>
-                        <span>Soil Classification</span>
+                      <div>
+                        <span style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Soil & pH</span>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-primary)' }}>{selectedField.soil_type || 'Black Soil'} (pH {selectedField.soil_ph || 7.2})</div>
                       </div>
-                      <div className="mic-stat">
-                        <span>{selectedField.soil_moisture ? `${selectedField.soil_moisture}%` : '62%'}</span>
-                        <span>Soil Moisture</span>
+                      <div>
+                        <span style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Soil Moisture</span>
+                        <div style={{ fontSize: 13, fontWeight: 600, color: '#0ea5e9' }}>{selectedField.soil_moisture ? `${selectedField.soil_moisture}%` : '62%'}</div>
                       </div>
                     </div>
                   )}
 
-                  <div className="mic-actions" style={{ marginTop: '14px', display: 'flex', gap: '8px' }}>
-                    <button className="btn-primary" onClick={() => navigate('/farms')}>Manage Farm Data →</button>
-                    <button className="btn-outline" onClick={() => navigate('/prediction')}>Predict Field Yield →</button>
-                    <button className="btn-outline" onClick={() => navigate('/soil')}>View Soil Analysis →</button>
+                  <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                    <button className="btn-primary" onClick={() => navigate('/farms')}>
+                      <span>Manage Farm Holdings</span>
+                      <ArrowRight size={14} />
+                    </button>
+                    <button className="btn-outline" onClick={() => navigate('/prediction')}>
+                      <span>Forecast Parcel Yield</span>
+                    </button>
+                    <button className="btn-outline" onClick={() => navigate('/soil')}>
+                      <span>View Soil Health</span>
+                    </button>
                   </div>
                 </div>
               )}

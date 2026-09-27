@@ -4,17 +4,21 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { AuthProvider } from './context/AuthContext';
 import { FieldProvider } from './context/FieldContext';
+import { ThemeProvider } from './context/ThemeContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import './styles.css';
 
 createRoot(document.getElementById('root')).render(
   <ErrorBoundary>
     <BrowserRouter>
-      <AuthProvider>
-        <FieldProvider>
-          <App />
-        </FieldProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <FieldProvider>
+            <App />
+          </FieldProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </BrowserRouter>
   </ErrorBoundary>
 );
+

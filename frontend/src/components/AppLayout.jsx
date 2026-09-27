@@ -1,83 +1,118 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import {
+  Home,
+  LayoutDashboard,
+  MapPin,
+  Map,
+  Sparkles,
+  Brain,
+  Sliders,
+  Sprout,
+  Cpu,
+  Globe,
+  CloudSun,
+  Layers,
+  Dna,
+  TrendingDown,
+  LineChart,
+  FileText,
+  MessageSquare,
+  Bell,
+  User,
+  Info,
+  Shield,
+  Landmark,
+  AlertTriangle,
+  Users,
+  Activity,
+  LogOut,
+  ChevronLeft,
+  ChevronRight,
+  Sun,
+  Moon,
+  Menu,
+  X
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useField } from '../context/FieldContext';
+import { useTheme } from '../context/ThemeContext';
 import Brand from './Brand';
 import { alertApi } from '../services/api';
 
 // Navigation for Standard Farmers / Users
 const USER_NAV = [
   { group: 'Main', items: [
-    { label: 'Home',             path: '/home',        icon: '🏠' },
-    { label: 'Dashboard',        path: '/dashboard',   icon: '📊' },
+    { label: 'Home',             path: '/home',        icon: Home },
+    { label: 'Dashboard',        path: '/dashboard',   icon: LayoutDashboard },
   ]},
   { group: 'Farm Management', items: [
-    { label: 'My Farm & Fields', path: '/farms',       icon: '🏡' },
-    { label: 'Interactive Map',  path: '/farm-map',    icon: '🗺️' },
+    { label: 'My Farm & Fields', path: '/farms',       icon: MapPin },
+    { label: 'Interactive Map',  path: '/farm-map',    icon: Map },
   ]},
   { group: 'AI & Intelligence', items: [
-    { label: 'AI Yield Predict', path: '/prediction',  icon: '🌾' },
-    { label: 'Explainable AI',   path: '/insights',    icon: '🤖' },
-    { label: 'What-If Simulator',path: '/simulator',   icon: '🔮' },
-    { label: 'Crop Intelligence',path: '/crop-intel',  icon: '🌿' },
-    { label: 'ML Performance',   path: '/ml-performance', icon: '🧠' },
+    { label: 'AI Yield Predict', path: '/prediction',  icon: Sparkles, highlight: true },
+    { label: 'Explainable AI',   path: '/insights',    icon: Brain },
+    { label: 'What-If Simulator',path: '/simulator',   icon: Sliders },
+    { label: 'Crop Intelligence',path: '/crop-intel',  icon: Sprout },
+    { label: 'ML Performance',   path: '/ml-performance', icon: Cpu },
   ]},
   { group: 'Environment', items: [
-    { label: 'Environment Hub',  path: '/environment', icon: '🌍' },
-    { label: 'Weather Forecast', path: '/weather',     icon: '☁️' },
-    { label: 'Soil Analysis',    path: '/soil',        icon: '🪨' },
+    { label: 'Environment Hub',  path: '/environment', icon: Globe },
+    { label: 'Weather Forecast', path: '/weather',     icon: CloudSun },
+    { label: 'Soil Analysis',    path: '/soil',        icon: Layers },
   ]},
   { group: 'Analytics & Risk', items: [
-    { label: 'Variety Intel',    path: '/varieties',   icon: '🔬' },
-    { label: 'Loss & Risk',      path: '/yield-loss',  icon: '📉' },
-    { label: 'Yield Analytics',  path: '/analytics',   icon: '📈' },
+    { label: 'Variety Intel',    path: '/varieties',   icon: Dna },
+    { label: 'Loss & Risk',      path: '/yield-loss',  icon: TrendingDown },
+    { label: 'Yield Analytics',  path: '/analytics',   icon: LineChart },
   ]},
   { group: 'Advisory & Tools', items: [
-    { label: 'Agri Reports',     path: '/reports',     icon: '📄' },
-    { label: 'AI Chat Assistant',path: '/chat',        icon: '💬' },
-    { label: 'Early Warnings',   path: '/alerts',      icon: '🔔' },
+    { label: 'Agri Reports',     path: '/reports',     icon: FileText },
+    { label: 'AI Chat Assistant',path: '/chat',        icon: MessageSquare },
+    { label: 'Early Warnings',   path: '/alerts',      icon: Bell },
   ]},
   { group: 'Account', items: [
-    { label: 'Profile Settings', path: '/profile',     icon: '👤' },
-    { label: 'System About',     path: '/about',       icon: 'ℹ️'  },
+    { label: 'Profile Settings', path: '/profile',     icon: User },
+    { label: 'System About',     path: '/about',       icon: Info },
   ]},
 ];
 
 // Navigation for Agricultural Extension Officers
 const OFFICER_NAV = [
   { group: 'Extension Oversight', items: [
-    { label: 'Officer Dashboard', path: '/officer',                    icon: '🏛️' },
-    { label: 'High-Risk Fields',  path: '/officer?tab=high_risk',      icon: '⚠️' },
-    { label: 'Regional Farms',    path: '/farms',                      icon: '🏡' },
-    { label: 'Interactive Map',   path: '/farm-map',                   icon: '🗺️' },
+    { label: 'Officer Dashboard', path: '/officer',                    icon: Landmark },
+    { label: 'High-Risk Fields',  path: '/officer?tab=high_risk',      icon: AlertTriangle },
+    { label: 'Regional Farms',    path: '/farms',                      icon: MapPin },
+    { label: 'Interactive Map',   path: '/farm-map',                   icon: Map },
   ]},
   { group: 'Agronomic Analytics', items: [
-    { label: 'Yield Predictions', path: '/prediction',                 icon: '🌾' },
-    { label: 'Loss & Risk Audit', path: '/yield-loss',                 icon: '📉' },
-    { label: 'Variety Intel',     path: '/varieties',                  icon: '🔬' },
-    { label: 'ML Benchmarks',     path: '/ml-performance',             icon: '🧠' },
-    { label: 'Territory Trends',  path: '/analytics',                  icon: '📈' },
-    { label: 'Field Dossiers',    path: '/reports',                    icon: '📄' },
+    { label: 'Yield Predictions', path: '/prediction',                 icon: Sparkles },
+    { label: 'Loss & Risk Audit', path: '/yield-loss',                 icon: TrendingDown },
+    { label: 'Variety Intel',     path: '/varieties',                  icon: Dna },
+    { label: 'ML Benchmarks',     path: '/ml-performance',             icon: Cpu },
+    { label: 'Territory Trends',  path: '/analytics',                  icon: LineChart },
+    { label: 'Field Dossiers',    path: '/reports',                    icon: FileText },
   ]},
   { group: 'Account', items: [
-    { label: 'Officer Profile',   path: '/profile',                    icon: '👤' },
-    { label: 'System Info',       path: '/about',                      icon: 'ℹ️'  },
+    { label: 'Officer Profile',   path: '/profile',                    icon: User },
+    { label: 'System Info',       path: '/about',                      icon: Info },
   ]},
 ];
 
 // Navigation for Administrators
 const ADMIN_NAV = [
   { group: 'Administration', items: [
-    { label: 'Admin Dashboard',   path: '/dashboard',                   icon: '📊', tab: 'overview' },
-    { label: 'User Management',   path: '/dashboard?tab=users',         icon: '👥', tab: 'users' },
-    { label: 'ML Benchmarks',     path: '/dashboard?tab=ml',            icon: '🧠', tab: 'ml' },
-    { label: 'Varieties Registry',path: '/dashboard?tab=varieties',     icon: '🌾', tab: 'varieties' },
-    { label: 'Predictions Audit', path: '/dashboard?tab=predictions',   icon: '📈', tab: 'predictions' },
-    { label: 'System Alerts',     path: '/dashboard?tab=alerts',        icon: '🔔', tab: 'alerts' },
+    { label: 'Admin Dashboard',   path: '/dashboard',                   icon: LayoutDashboard, tab: 'overview' },
+    { label: 'User Management',   path: '/dashboard?tab=users',         icon: Users, tab: 'users' },
+    { label: 'ML Benchmarks',     path: '/dashboard?tab=ml',            icon: Cpu, tab: 'ml' },
+    { label: 'Varieties Registry',path: '/dashboard?tab=varieties',     icon: Dna, tab: 'varieties' },
+    { label: 'Predictions Audit', path: '/dashboard?tab=predictions',   icon: Activity, tab: 'predictions' },
+    { label: 'System Alerts',     path: '/dashboard?tab=alerts',        icon: Bell, tab: 'alerts' },
   ]},
   { group: 'Account', items: [
-    { label: 'Admin Profile',     path: '/profile',                     icon: '👤' },
-    { label: 'System Info',       path: '/about',                       icon: 'ℹ️'  },
+    { label: 'Admin Profile',     path: '/profile',                     icon: User },
+    { label: 'System Info',       path: '/about',                       icon: Info },
   ]},
 ];
 
@@ -86,6 +121,7 @@ export default function AppLayout({ children }) {
   const location = useLocation();
   const { user, logout } = useAuth();
   const { allFields, selectedFieldId, selectField } = useField();
+  const { theme, toggleTheme, isDark } = useTheme();
   const sidebarRef = useRef(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [unread, setUnread] = useState(0);
@@ -107,6 +143,11 @@ export default function AppLayout({ children }) {
     if (!Number.isNaN(savedScroll)) {
       sidebar.scrollTop = savedScroll;
     }
+  }, [location.pathname, location.search]);
+
+  // Close mobile drawer on route change
+  useEffect(() => {
+    setMobileOpen(false);
   }, [location.pathname, location.search]);
 
   const handleNav = (path) => {
@@ -134,41 +175,38 @@ export default function AppLayout({ children }) {
     return location.pathname === itemPath;
   };
 
-  const roleColor = isAdmin ? '#7c3aed' : isOfficer ? '#0284c7' : '#2d7a3e';
-  const roleTitle = isAdmin ? 'Administrator' : isOfficer ? 'Agricultural Officer' : 'Sugarcane Grower';
+  const roleColor = isAdmin ? '#8b5cf6' : isOfficer ? '#0284c7' : '#10b981';
+  const roleBadgeBg = isAdmin ? 'rgba(139, 92, 246, 0.12)' : isOfficer ? 'rgba(2, 132, 199, 0.12)' : 'rgba(16, 185, 129, 0.12)';
+  const roleBadgeBorder = isAdmin ? 'rgba(139, 92, 246, 0.25)' : isOfficer ? 'rgba(2, 132, 199, 0.25)' : 'rgba(16, 185, 129, 0.25)';
+  const roleTitle = isAdmin ? 'Administrator' : isOfficer ? 'Extension Officer' : 'Sugarcane Grower';
+  const RoleIcon = isAdmin ? Shield : isOfficer ? Landmark : Sprout;
 
   return (
     <div className={`app-shell ${collapsed ? 'sidebar-collapsed' : ''} ${isAdmin ? 'admin-shell' : ''}`}>
       {/* ── Sidebar ── */}
-      <aside ref={sidebarRef} className={`sidebar ${mobileOpen ? 'sidebar-open' : ''}`}>
+      <aside ref={sidebarRef} className={`sidebar ${mobileOpen ? 'sidebar-open' : ''}`} aria-label="Main Navigation">
         <div className="sidebar-brand">
           <Brand />
-          <button className="sidebar-collapse-btn" onClick={() => setCollapsed(c => !c)} title={collapsed ? 'Expand' : 'Collapse'}>
-            {collapsed ? '›' : '‹'}
+          <button
+            className="sidebar-collapse-btn"
+            onClick={() => setCollapsed(c => !c)}
+            title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
           </button>
         </div>
 
         {!collapsed && (
-          <div style={{
-            margin: '0 12px 10px',
-            padding: '6px 10px',
-            background: isAdmin ? '#f3e8ff' : isOfficer ? '#e0f2fe' : '#f0fdf4',
-            borderRadius: 8,
-            border: `1px solid ${isAdmin ? '#e9d5ff' : isOfficer ? '#bae6fd' : '#bbf7d0'}`,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6
+          <div className="sidebar-role-card" style={{
+            background: roleBadgeBg,
+            borderColor: roleBadgeBorder,
           }}>
-            <span style={{ fontSize: 13 }}>{isAdmin ? '🛡️' : isOfficer ? '🏛️' : '🌾'}</span>
-            <span style={{
-              fontSize: 11,
-              fontWeight: 700,
-              color: roleColor,
-              textTransform: 'uppercase',
-              letterSpacing: 0.5
-            }}>
+            <RoleIcon size={14} style={{ color: roleColor, flexShrink: 0 }} />
+            <span className="sidebar-role-text" style={{ color: roleColor }}>
               {roleTitle}
             </span>
+            <span className="sidebar-role-online-dot" style={{ background: roleColor }} />
           </div>
         )}
 
@@ -176,153 +214,157 @@ export default function AppLayout({ children }) {
           {navItems.map(group => (
             <div key={group.group} className="nav-group">
               {!collapsed && <span className="nav-group-label">{group.group}</span>}
-              {group.items.map(item => (
-                <button
-                  key={item.path}
-                  className={`sidebar-link ${isActive(item.path) ? 'sidebar-link-active' : ''}`}
-                  onClick={() => handleNav(item.path)}
-                  title={item.label}
-                >
-                  <span className="sidebar-icon">{item.icon}</span>
-                  {!collapsed && <span className="sidebar-label">{item.label}</span>}
-                  {item.path === '/alerts' && unread > 0 && (
-                    <span className="nav-badge">{unread}</span>
-                  )}
-                </button>
-              ))}
+              {group.items.map(item => {
+                const ItemIcon = item.icon;
+                const active = isActive(item.path);
+                return (
+                  <button
+                    key={item.path}
+                    className={`sidebar-link ${active ? 'sidebar-link-active' : ''} ${item.highlight ? 'sidebar-link-highlight' : ''}`}
+                    onClick={() => handleNav(item.path)}
+                    title={collapsed ? item.label : undefined}
+                    data-tooltip={item.label}
+                  >
+                    <span className="sidebar-icon">
+                      <ItemIcon size={17} strokeWidth={active ? 2.2 : 1.8} />
+                    </span>
+                    {!collapsed && <span className="sidebar-label">{item.label}</span>}
+                    {item.path === '/alerts' && unread > 0 && (
+                      <span className="nav-badge animate-pulse">{unread}</span>
+                    )}
+                    {item.highlight && !collapsed && (
+                      <span className="nav-ai-pill">AI</span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           ))}
         </nav>
 
         <div className="sidebar-footer">
           {!collapsed && (
-            <div className="sidebar-user">
+            <div className="sidebar-user" onClick={() => navigate('/profile')} title="View profile" style={{ cursor: 'pointer' }}>
               <div
                 className="sidebar-avatar"
                 style={{
-                  background: roleColor,
-                  boxShadow: `0 0 10px ${roleColor}40`
+                  background: `linear-gradient(135deg, ${roleColor}, #059669)`,
+                  boxShadow: `0 0 12px ${roleColor}40`
                 }}
               >
-                {isAdmin ? '🛡️' : isOfficer ? '🏛️' : (user?.name?.[0]?.toUpperCase() || 'U')}
+                {user?.name?.[0]?.toUpperCase() || (isAdmin ? 'A' : isOfficer ? 'O' : 'U')}
               </div>
               <div className="sidebar-user-info">
                 <span className="sidebar-user-name">{user?.name || roleTitle}</span>
-                <span
-                  className="sidebar-user-role"
-                  style={{
-                    color: roleColor,
-                    fontWeight: 600,
-                    letterSpacing: '0.02em'
-                  }}
-                >
+                <span className="sidebar-user-role" style={{ color: roleColor }}>
                   {roleTitle}
                 </span>
               </div>
             </div>
           )}
-          <button className="sidebar-signout" onClick={signout} title="Sign out">
-            {collapsed ? '⏏' : '⏏ Sign out'}
+          <button className="sidebar-signout" onClick={signout} title="Sign out" aria-label="Sign out">
+            <LogOut size={16} />
+            {!collapsed && <span>Sign out</span>}
           </button>
         </div>
       </aside>
 
-      {mobileOpen && <div className="sidebar-overlay" onClick={() => setMobileOpen(false)} />}
+      {mobileOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
-      {/* ── Main ── */}
+      {/* ── Main Container ── */}
       <div className="app-main">
         <header className="app-topbar">
-          <button className="topbar-menu-btn" onClick={() => setMobileOpen(true)} aria-label="Open menu">
-            <span /><span /><span />
-          </button>
-          <div className="topbar-brand-mobile"><Brand /></div>
-
-          {/* Global Active Field Connection Selector */}
-          {!isAdmin && allFields.length > 0 && (
-            <div className="topbar-field-selector" style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              background: '#f8fafc',
-              border: '1px solid #e2e8f0',
-              padding: '4px 10px',
-              borderRadius: 8,
-              fontSize: 12
-            }}>
-              <span style={{ fontSize: 14 }}>📍</span>
-              <span style={{ color: '#64748b', fontWeight: 600, whiteSpace: 'nowrap' }}>Active Field:</span>
-              <select
-                value={selectedFieldId || ''}
-                onChange={(e) => selectField(e.target.value)}
-                style={{
-                  border: 'none',
-                  background: 'transparent',
-                  fontWeight: 600,
-                  color: '#0f172a',
-                  cursor: 'pointer',
-                  outline: 'none',
-                  fontSize: 12
-                }}
-                title="Active field propagates across all intelligence and analytics modules"
-              >
-                {allFields.map(fld => (
-                  <option key={fld.id} value={fld.id}>
-                    {fld.farm_name} › {fld.name} ({fld.sugarcane_variety || 'Co 86032'})
-                  </option>
-                ))}
-              </select>
+          <div className="topbar-left">
+            <button
+              className="topbar-menu-btn"
+              onClick={() => setMobileOpen(prev => !prev)}
+              aria-label="Toggle navigation menu"
+            >
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+            <div className="topbar-brand-mobile">
+              <Brand />
             </div>
-          )}
+
+            {/* Global Active Field Connection Selector */}
+            {!isAdmin && allFields.length > 0 && (
+              <div className="topbar-field-selector" title="Active field propagates across all intelligence & analytics modules">
+                <div className="tfs-icon-wrap">
+                  <MapPin size={13} className="text-emerald-500" />
+                </div>
+                <span className="tfs-label">Active Field:</span>
+                <select
+                  value={selectedFieldId || ''}
+                  onChange={(e) => selectField(e.target.value)}
+                  className="tfs-select"
+                >
+                  {allFields.map(fld => (
+                    <option key={fld.id} value={fld.id}>
+                      {fld.farm_name} › {fld.name} ({fld.sugarcane_variety || 'Co 86032'})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+          </div>
 
           <div className="topbar-right">
+            {/* Theme Toggle Button */}
+            <button
+              className="topbar-icon-btn theme-toggle-btn"
+              onClick={toggleTheme}
+              title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+            >
+              {isDark ? <Sun size={17} className="text-amber-400" /> : <Moon size={17} className="text-slate-600" />}
+            </button>
+
             {isAdmin && (
-              <span
-                className="status-badge"
-                style={{
-                  background: '#f3e8ff',
-                  color: '#7c3aed',
-                  border: '1px solid #e9d5ff',
-                  marginRight: '6px',
-                  fontSize: '11px',
-                  fontWeight: 700
-                }}
-              >
-                <span className="pulsing-dot purple" style={{ width: 6, height: 6 }} /> Admin Active
+              <span className="status-badge admin-badge">
+                <span className="pulsing-dot purple" /> Admin Console
               </span>
             )}
             {isOfficer && (
-              <span
-                className="status-badge"
-                style={{
-                  background: '#e0f2fe',
-                  color: '#0284c7',
-                  border: '1px solid #bae6fd',
-                  marginRight: '6px',
-                  fontSize: '11px',
-                  fontWeight: 700
-                }}
-              >
-                <span className="pulsing-dot" style={{ width: 6, height: 6, background: '#0284c7' }} /> Extension Officer
+              <span className="status-badge officer-badge">
+                <span className="pulsing-dot blue" /> Extension Officer
               </span>
             )}
-            <button className="topbar-alert-btn" onClick={() => navigate(isAdmin ? '/dashboard?tab=alerts' : '/alerts')} title="Alert Center">
-              🔔 {unread > 0 && <span className="topbar-badge">{unread}</span>}
+
+            {/* Alerts Center Button */}
+            <button
+              className="topbar-icon-btn topbar-alert-btn"
+              onClick={() => navigate(isAdmin ? '/dashboard?tab=alerts' : '/alerts')}
+              title="Alerts Center"
+              aria-label="Alerts Center"
+            >
+              <Bell size={18} />
+              {unread > 0 && <span className="topbar-badge">{unread}</span>}
             </button>
-            <div
+
+            {/* User Profile Avatar */}
+            <button
               className="topbar-user"
               onClick={() => navigate('/profile')}
-              title="View Profile"
+              title={`Logged in as ${user?.name || roleTitle}`}
+              aria-label="View Profile"
               style={{
-                background: roleColor,
-                color: '#ffffff',
-                fontWeight: 700
+                background: `linear-gradient(135deg, ${roleColor}, #059669)`,
               }}
             >
-              {isAdmin ? '🛡️' : isOfficer ? '🏛️' : (user?.name?.[0]?.toUpperCase() || 'U')}
-            </div>
+              <span>{user?.name?.[0]?.toUpperCase() || (isAdmin ? 'A' : isOfficer ? 'O' : 'U')}</span>
+            </button>
           </div>
         </header>
-        <div className="app-content">{children}</div>
+
+        <main className="app-content">
+          {children}
+        </main>
       </div>
     </div>
   );

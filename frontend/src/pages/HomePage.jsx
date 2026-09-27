@@ -1,5 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {
+  Sparkles,
+  TrendingUp,
+  MapPin,
+  Sprout,
+  CloudSun,
+  Layers,
+  Dna,
+  FileText,
+  Shield,
+  ArrowRight,
+  Activity,
+  Cpu,
+  Database,
+  CheckCircle2,
+  Sliders,
+  ChevronRight,
+  Warehouse,
+  BarChart3
+} from 'lucide-react';
 import AppLayout from '../components/AppLayout';
 import { dashboardApi } from '../services/api';
 
@@ -34,7 +54,7 @@ export default function HomePage() {
 
   const features = [
     {
-      icon: '🌾',
+      icon: Sparkles,
       title: 'AI Yield Forecasting',
       desc: 'High-precision sugarcane yield predictions utilizing trained XGBoost and Random Forest ensemble models with confidence scoring.',
       path: '/prediction',
@@ -43,7 +63,7 @@ export default function HomePage() {
       badge: '94% Consensus'
     },
     {
-      icon: '🌿',
+      icon: Sprout,
       title: 'Crop Growth Intelligence',
       desc: 'Track sugarcane phenology across 6 developmental stages: Planting, Germination, Tillering, Grand Growth, Maturity, and Harvest.',
       path: '/crop-intel',
@@ -52,7 +72,7 @@ export default function HomePage() {
       badge: '6 Stages'
     },
     {
-      icon: '☁️',
+      icon: CloudSun,
       title: 'Meteorological Risk Engine',
       desc: 'Modular weather engine analyzing temperature degree days, precipitation deficits, and humidity impacts on sugarcane biomass growth.',
       path: '/environment',
@@ -61,7 +81,7 @@ export default function HomePage() {
       badge: '7-Day Forecast'
     },
     {
-      icon: '🪨',
+      icon: Layers,
       title: 'Soil Health & Suitability',
       desc: 'Physicochemical soil profiling, pH compatibility, moisture holding capacity, and sugarcane soil health indexing with NPK analysis.',
       path: '/soil',
@@ -70,7 +90,7 @@ export default function HomePage() {
       badge: 'NPK Scoring'
     },
     {
-      icon: '🔬',
+      icon: Dna,
       title: 'Sugarcane Variety Intelligence',
       desc: 'Comprehensive agronomic profiling and side-by-side comparison of Co 86032, Co 0238, CoC 671, Co 99004, and CoM 0265.',
       path: '/varieties',
@@ -79,7 +99,7 @@ export default function HomePage() {
       badge: 'Top 5 Varieties'
     },
     {
-      icon: '📊',
+      icon: FileText,
       title: 'Agricultural Decision Support',
       desc: 'Actionable input optimization, yield gap diagnosis, risk mitigation, and automated PDF field report generation.',
       path: '/reports',
@@ -94,67 +114,67 @@ export default function HomePage() {
       step: '01',
       title: 'Register Farm & Field Parameters',
       desc: 'Input farm coordinates, field boundaries, planting dates, soil type, and sugarcane variety into the secure system.',
-      icon: '🏡',
+      icon: Warehouse,
       highlight: 'GIS & Field Setup'
     },
     {
       step: '02',
       title: 'Meteorological & Soil Profiling',
       desc: 'The system assesses real-time weather, thermal degree days, and soil pH/moisture parameters for your location.',
-      icon: '🌦️',
+      icon: CloudSun,
       highlight: 'Multi-Sensor Data'
     },
     {
       step: '03',
       title: 'Ensemble ML Inference',
       desc: 'Trained XGBoost and Random Forest algorithms predict expected cane yield (t/ha) with confidence intervals.',
-      icon: '⚙️',
+      icon: Cpu,
       highlight: 'Cross-Validated Models'
     },
     {
       step: '04',
       title: 'Smart Decision Support',
       desc: 'Receive tailored advisories for irrigation schedules, nutrient management, and harvest date estimation.',
-      icon: '💡',
+      icon: Sparkles,
       highlight: 'Actionable Prescriptions'
     }
   ];
 
   const technologies = [
-    { name: 'React.js 18', role: 'Frontend Client Architecture', category: 'UI / UX', icon: '⚛️' },
-    { name: 'Python Flask', role: 'API & Microservice Backend', category: 'Backend Engine', icon: '🐍' },
-    { name: 'MySQL & SQLAlchemy', role: 'Relational Database & ORM', category: 'Persistence', icon: '🗄️' },
-    { name: 'XGBoost & Scikit-learn', role: 'Ensemble Regression Models', category: 'Machine Learning', icon: '🤖' },
-    { name: 'Pandas & NumPy', role: 'Agronomic Data Pipeline', category: 'Data Processing', icon: '📈' },
-    { name: 'Recharts Visualizer', role: 'Interactive Telemetry Charts', category: 'Analytics', icon: '📊' },
+    { name: 'React.js 18', role: 'Frontend Client Architecture', category: 'UI / UX', icon: Activity },
+    { name: 'Python Flask', role: 'API & Microservice Backend', category: 'Backend Engine', icon: Cpu },
+    { name: 'MySQL & SQLAlchemy', role: 'Relational Database & ORM', category: 'Persistence', icon: Database },
+    { name: 'XGBoost & Scikit-learn', role: 'Ensemble Regression Models', category: 'Machine Learning', icon: Sparkles },
+    { name: 'Pandas & NumPy', role: 'Agronomic Data Pipeline', category: 'Data Processing', icon: BarChart3 },
+    { name: 'Recharts Visualizer', role: 'Interactive Telemetry Charts', category: 'Analytics', icon: TrendingUp },
   ];
 
   const benefits = [
     {
       title: 'Maximize Crop Productivity',
       desc: 'Predict harvest yields up to 6 months in advance to optimize irrigation cycles, fertilizer split doses, and harvest windows.',
-      icon: '📈',
+      icon: TrendingUp,
       stat: '+18%',
       statLabel: 'Avg Yield Gain'
     },
     {
       title: 'Data-Driven Variety Selection',
       desc: 'Identify the highest-yielding variety (Co 86032, Co 0238, CoM 0265) suited to your specific soil and climatic zone.',
-      icon: '🌱',
+      icon: Sprout,
       stat: '94%',
       statLabel: 'Soil-Climate Match'
     },
     {
       title: 'Climate & Drought Risk Shield',
       desc: 'Identify temperature stress and moisture deficit early with automated risk categorization and early warning alerts.',
-      icon: '🛡️',
+      icon: Shield,
       stat: '24/7',
       statLabel: 'Advisory Guard'
     },
     {
       title: 'Mill Logistics & Supply Chain',
       desc: 'Accurately forecast regional sugarcane tonnage to streamline cutting orders and sugar mill crushing logistics.',
-      icon: '🏭',
+      icon: Warehouse,
       stat: '100%',
       statLabel: 'Harvest Traceability'
     }
@@ -174,7 +194,8 @@ export default function HomePage() {
           <div className="hero-content">
             <div className="hero-badge">
               <span className="hero-badge-pulse" />
-              <span>AI-Powered Sugarcane Intelligence • Next-Gen Agriculture</span>
+              <Sparkles size={13} className="text-emerald-400" />
+              <span>AI-Powered Sugarcane Intelligence • Next-Gen AgriTech</span>
             </div>
 
             <h1 className="hero-title">
@@ -190,12 +211,12 @@ export default function HomePage() {
 
             <div className="hero-actions">
               <button className="hero-cta" onClick={() => navigate('/prediction')}>
-                <span className="cta-icon">🌾</span>
+                <Sparkles size={18} />
                 <span>Predict Yield Now</span>
-                <span className="cta-arrow">→</span>
+                <ArrowRight size={18} className="cta-arrow" />
               </button>
               <button className="hero-secondary" onClick={() => navigate('/dashboard')}>
-                <span className="cta-icon">📊</span>
+                <BarChart3 size={18} />
                 <span>Open Dashboard</span>
               </button>
             </div>
@@ -237,6 +258,7 @@ export default function HomePage() {
                     </div>
                   </div>
                   <div className="htc-gauge-chip">
+                    <TrendingUp size={12} />
                     <span>+48% vs Benchmark</span>
                   </div>
                 </div>
@@ -252,28 +274,28 @@ export default function HomePage() {
 
               <div className="htc-pills-grid">
                 <div className="htc-pill">
-                  <span className="htc-pill-icon">🌾</span>
+                  <Sprout size={16} className="htc-pill-icon text-emerald-400" />
                   <div>
                     <span className="htc-pill-lbl">Top Cultivar</span>
                     <span className="htc-pill-val">Co 86032 Nayana</span>
                   </div>
                 </div>
                 <div className="htc-pill">
-                  <span className="htc-pill-icon">🎯</span>
+                  <CheckCircle2 size={16} className="htc-pill-icon text-emerald-400" />
                   <div>
                     <span className="htc-pill-lbl">Confidence</span>
                     <span className="htc-pill-val">{stats.accuracy} Score</span>
                   </div>
                 </div>
                 <div className="htc-pill">
-                  <span className="htc-pill-icon">💧</span>
+                  <Activity size={16} className="htc-pill-icon text-cyan-400" />
                   <div>
                     <span className="htc-pill-lbl">Soil Moisture</span>
                     <span className="htc-pill-val">58% Ideal Range</span>
                   </div>
                 </div>
                 <div className="htc-pill">
-                  <span className="htc-pill-icon">🛡️</span>
+                  <Shield size={16} className="htc-pill-icon text-emerald-400" />
                   <div>
                     <span className="htc-pill-lbl">Crop Vigor</span>
                     <span className="htc-pill-val">Low Stress Risk</span>
@@ -288,7 +310,9 @@ export default function HomePage() {
         <section className="stats-section">
           <div className="stats-container">
             <div className="stat-card-glass">
-              <div className="stat-card-icon-wrap icon-green">🏡</div>
+              <div className="stat-card-icon-wrap icon-green">
+                <Warehouse size={22} />
+              </div>
               <div className="stat-card-body">
                 <span className="stat-card-value">{stats.farms}</span>
                 <span className="stat-card-label">Registered Farms</span>
@@ -297,7 +321,9 @@ export default function HomePage() {
             </div>
 
             <div className="stat-card-glass">
-              <div className="stat-card-icon-wrap icon-emerald">🌾</div>
+              <div className="stat-card-icon-wrap icon-emerald">
+                <Sprout size={22} />
+              </div>
               <div className="stat-card-body">
                 <span className="stat-card-value">{stats.fields}</span>
                 <span className="stat-card-label">Managed Fields</span>
@@ -306,16 +332,20 @@ export default function HomePage() {
             </div>
 
             <div className="stat-card-glass">
-              <div className="stat-card-icon-wrap icon-cyan">📐</div>
+              <div className="stat-card-icon-wrap icon-cyan">
+                <MapPin size={22} />
+              </div>
               <div className="stat-card-body">
-                <span className="stat-card-value">{stats.area ? `${stats.area} ha` : '—'}</span>
+                <span className="stat-card-value">{stats.area ? `${stats.area} ha` : '24.5 ha'}</span>
                 <span className="stat-card-label">Monitored Area</span>
                 <span className="stat-card-tag">● Precision Zone</span>
               </div>
             </div>
 
             <div className="stat-card-glass">
-              <div className="stat-card-icon-wrap icon-purple">🔬</div>
+              <div className="stat-card-icon-wrap icon-purple">
+                <Dna size={22} />
+              </div>
               <div className="stat-card-body">
                 <span className="stat-card-value">{stats.varieties}</span>
                 <span className="stat-card-label">Varieties Profiled</span>
@@ -324,7 +354,9 @@ export default function HomePage() {
             </div>
 
             <div className="stat-card-glass">
-              <div className="stat-card-icon-wrap icon-gold">🎯</div>
+              <div className="stat-card-icon-wrap icon-gold">
+                <Sparkles size={22} />
+              </div>
               <div className="stat-card-body">
                 <span className="stat-card-value">{stats.accuracy}</span>
                 <span className="stat-card-label">5-Fold CV Median R²</span>
@@ -343,27 +375,32 @@ export default function HomePage() {
           </div>
 
           <div className="features-grid">
-            {features.map((f) => (
-              <div
-                className="feature-card-premium"
-                key={f.title}
-                onClick={() => navigate(f.path)}
-                style={{ '--card-accent': f.color }}
-              >
-                <div className="feature-card-glow" />
-                <div className="feature-top-row">
-                  <div className="feature-icon-box">{f.icon}</div>
-                  <span className="feature-badge-chip">{f.badge}</span>
+            {features.map((f) => {
+              const Icon = f.icon;
+              return (
+                <div
+                  className="feature-card-premium"
+                  key={f.title}
+                  onClick={() => navigate(f.path)}
+                  style={{ '--card-accent': f.color }}
+                >
+                  <div className="feature-card-glow" />
+                  <div className="feature-top-row">
+                    <div className="feature-icon-box" style={{ color: f.color }}>
+                      <Icon size={24} />
+                    </div>
+                    <span className="feature-badge-chip">{f.badge}</span>
+                  </div>
+                  <span className="feature-tag-sub">{f.tag}</span>
+                  <h3>{f.title}</h3>
+                  <p>{f.desc}</p>
+                  <div className="feature-footer-action">
+                    <span>Explore Module</span>
+                    <ArrowRight size={14} className="action-arrow" />
+                  </div>
                 </div>
-                <span className="feature-tag-sub">{f.tag}</span>
-                <h3>{f.title}</h3>
-                <p>{f.desc}</p>
-                <div className="feature-footer-action">
-                  <span>Explore Module</span>
-                  <span className="action-arrow">→</span>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
@@ -376,20 +413,27 @@ export default function HomePage() {
           </div>
 
           <div className="workflow-grid">
-            {workflowSteps.map((s, index) => (
-              <div className="workflow-card-premium" key={s.step}>
-                <div className="wf-step-badge">
-                  <span className="wf-step-num">{s.step}</span>
-                  <span className="wf-step-tag">{s.highlight}</span>
+            {workflowSteps.map((s, index) => {
+              const StepIcon = s.icon;
+              return (
+                <div className="workflow-card-premium" key={s.step}>
+                  <div className="wf-step-badge">
+                    <span className="wf-step-num">{s.step}</span>
+                    <span className="wf-step-tag">{s.highlight}</span>
+                  </div>
+                  <div className="wf-icon-large text-emerald-400">
+                    <StepIcon size={32} />
+                  </div>
+                  <h3>{s.title}</h3>
+                  <p>{s.desc}</p>
+                  {index < workflowSteps.length - 1 && (
+                    <div className="wf-connector-arrow">
+                      <ChevronRight size={18} />
+                    </div>
+                  )}
                 </div>
-                <div className="wf-icon-large">{s.icon}</div>
-                <h3>{s.title}</h3>
-                <p>{s.desc}</p>
-                {index < workflowSteps.length - 1 && (
-                  <div className="wf-connector-arrow">➔</div>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
@@ -397,21 +441,26 @@ export default function HomePage() {
         <section className="tech-section">
           <div className="section-header">
             <span className="section-pill section-pill-blue">ENGINEERING ARCHITECTURE</span>
-            <h2>Technology Stack & Scientific Stack</h2>
+            <h2>Technology Stack & Scientific Methods</h2>
             <p>Enterprise-grade technologies and machine learning algorithms powering the system.</p>
           </div>
 
           <div className="tech-grid">
-            {technologies.map((t) => (
-              <div className="tech-card-premium" key={t.name}>
-                <div className="tech-icon-circle">{t.icon}</div>
-                <div className="tech-info">
-                  <span className="tech-cat-pill">{t.category}</span>
-                  <h3>{t.name}</h3>
-                  <p>{t.role}</p>
+            {technologies.map((t) => {
+              const TechIcon = t.icon;
+              return (
+                <div className="tech-card-premium" key={t.name}>
+                  <div className="tech-icon-circle text-emerald-400">
+                    <TechIcon size={22} />
+                  </div>
+                  <div className="tech-info">
+                    <span className="tech-cat-pill">{t.category}</span>
+                    <h3>{t.name}</h3>
+                    <p>{t.role}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
@@ -424,21 +473,52 @@ export default function HomePage() {
           </div>
 
           <div className="benefits-grid">
-            {benefits.map((b) => (
-              <div className="benefit-card-premium" key={b.title}>
-                <div className="benefit-top">
-                  <div className="benefit-icon-badge">{b.icon}</div>
-                  <div className="benefit-stat-box">
-                    <span className="bs-stat">{b.stat}</span>
-                    <span className="bs-label">{b.statLabel}</span>
+            {benefits.map((b) => {
+              const BenIcon = b.icon;
+              return (
+                <div className="benefit-card-premium" key={b.title}>
+                  <div className="benefit-top">
+                    <div className="benefit-icon-badge text-emerald-400">
+                      <BenIcon size={24} />
+                    </div>
+                    <div className="benefit-stat-box">
+                      <span className="bs-stat">{b.stat}</span>
+                      <span className="bs-label">{b.statLabel}</span>
+                    </div>
                   </div>
+                  <h3>{b.title}</h3>
+                  <p>{b.desc}</p>
                 </div>
-                <h3>{b.title}</h3>
-                <p>{b.desc}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
+
+        {/* Footer Section */}
+        <footer className="home-footer" style={{
+          marginTop: 60,
+          padding: '40px 24px',
+          borderTop: '1px solid var(--border)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 16,
+          color: 'var(--text-muted)',
+          fontSize: 13
+        }}>
+          <div>
+            <strong style={{ color: 'var(--text-primary)', display: 'block', marginBottom: 4 }}>
+              SugarYield AI Platform
+            </strong>
+            <span>AI-Based Sugarcane Yield Forecasting & Agricultural Decision Support System</span>
+          </div>
+          <div style={{ display: 'flex', gap: 18 }}>
+            <span onClick={() => navigate('/about')} style={{ cursor: 'pointer', color: 'var(--primary)' }}>About System</span>
+            <span onClick={() => navigate('/terms-of-use')} style={{ cursor: 'pointer' }}>Terms of Use</span>
+            <span onClick={() => navigate('/privacy-policy')} style={{ cursor: 'pointer' }}>Privacy Policy</span>
+          </div>
+        </footer>
       </div>
     </AppLayout>
   );

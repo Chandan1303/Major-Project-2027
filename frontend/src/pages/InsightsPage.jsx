@@ -4,30 +4,36 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   ScatterChart, Scatter, LineChart, Line, Legend, Cell, ReferenceLine
 } from 'recharts';
+import {
+  Sparkles, Cpu, BarChart3, History, CheckCircle2, AlertTriangle,
+  TrendingUp, TrendingDown, Layers, ShieldCheck, Check, Info, ArrowRight,
+  Activity, Sliders
+} from 'lucide-react';
 import AppLayout from '../components/AppLayout';
 import { mlApi, predictionApi } from '../services/api';
 import { useField } from '../context/FieldContext';
+import StatCard from '../components/ui/StatCard';
+import Badge from '../components/ui/Badge';
+import EmptyState from '../components/ui/EmptyState';
 import toast, { Toaster } from 'react-hot-toast';
 
 export default function InsightsPage({ defaultTab = 'explain' }) {
   const [searchParams] = useSearchParams();
   const { selectedField, selectedPrediction, setSelectedPrediction } = useField();
 
-  const [tab, setTab] = useState(() => searchParams.get('tab') || defaultTab);
-  const [perf, setPerf] = useState(null);
-  const [explain, setExplain] = useState(null);
-  const [preds, setPreds] = useState([]);
-  const [activePred, setActivePred] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [tab, setTab]                 = useState(() => searchParams.get('tab') || defaultTab);
+  const [perf, setPerf]               = useState(null);
+  const [explain, setExplain]         = useState(null);
+  const [preds, setPreds]             = useState([]);
+  const [activePred, setActivePred]   = useState(null);
+  const [loading, setLoading]         = useState(true);
   const [explainLoading, setExplainLoading] = useState(false);
 
-  // Sync tab if prop changes or URL query changes
   useEffect(() => {
     const qTab = searchParams.get('tab');
     if (qTab) setTab(qTab);
   }, [searchParams]);
 
-  // Load Performance & Predictions
   useEffect(() => {
     Promise.allSettled([
       mlApi.performance(),
@@ -46,7 +52,6 @@ export default function InsightsPage({ defaultTab = 'explain' }) {
         setPreds(predList);
       }
 
-      // Determine initial active prediction to explain
       let initialPred = selectedPrediction;
       if (!initialPred && predList.length > 0) {
         initialPred = predList[0];
@@ -56,7 +61,6 @@ export default function InsightsPage({ defaultTab = 'explain' }) {
       if (initialPred) {
         fetchExplanation(initialPred);
       } else if (selectedField) {
-        // Fallback explain with active field parameters
         fetchExplanationFromField(selectedField);
       }
     }).catch(e => {
@@ -127,21 +131,16 @@ export default function InsightsPage({ defaultTab = 'explain' }) {
       <AppLayout>
         <div className="page-loading-center">
           <div className="loading-spinner" />
-          <p>Loading Explainable AI & Machine Learning Benchmarks…</p>
+          <p>Compiling Explainable AI Shapley attributions & model telemetry…</p>
         </div>
       </AppLayout>
     );
   }
 
-  // Feature Importance Data for Best Model
-  const rawTop10 = perf?.feature_importance_top10 || perf?.feature_importance || [];
-  const fiTop10 = rawTop10.map(f => ({
-    name: (f.feature || '').replace(/_encoded/g, '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
-    importance: Number(((f.importance || 0) * 100).toFixed(1)),
-    raw: f.importance
-  }));
+  // Cross-Validation and Model References
+  const rfModel = perf?.models?.find(m => m.name === 'random_forest') || perf?.models?.[0];
+  const xgbModel = perf?.models?.find(m => m.name === 'xgboost') || perf?.models?.[1];
 
-  // Side-by-side RF vs XGBoost feature importances
   const rfFeatures = (perf?.feature_importances?.random_forest || []).slice(0, 8);
   const xgbFeatures = (perf?.feature_importances?.xgboost || []).slice(0, 8);
 
@@ -154,10 +153,6 @@ export default function InsightsPage({ defaultTab = 'explain' }) {
     };
   });
 
-  // Cross-Validation Folds comparison
-  const rfModel = perf?.models?.find(m => m.name === 'random_forest') || perf?.models?.[0];
-  const xgbModel = perf?.models?.find(m => m.name === 'xgboost') || perf?.models?.[1];
-
   const cvFoldsData = [
     { fold: 'Fold 1', 'Random Forest': 0.7878, 'XGBoost': 0.7739 },
     { fold: 'Fold 2', 'Random Forest': 0.7848, 'XGBoost': 0.7868 },
@@ -166,7 +161,6 @@ export default function InsightsPage({ defaultTab = 'explain' }) {
     { fold: 'Fold 5', 'Random Forest': 0.7943, 'XGBoost': 0.7993 },
   ];
 
-  // Actual vs Predicted Sample Points (from real validation data)
   const actualVsPredPoints = [
     { actual: 68.5, predicted: 71.2, residual: 2.7 },
     { actual: 74.0, predicted: 75.8, residual: 1.8 },
@@ -188,59 +182,94 @@ export default function InsightsPage({ defaultTab = 'explain' }) {
     <AppLayout>
       <Toaster position="top-right" />
       <div className="page-container">
-        {/* Header */}
-        <div className="page-header">
+        
+        {/* Page Header */}
+        <div className="page-header" style={{ marginBottom: 20 }}>
           <div>
-            <p className="eyebrow">Explainable AI & Machine Learning</p>
-            <h1 className="page-title">Explainable AI & Model Performance</h1>
-            <p className="page-subtitle">
-              Inspect feature attributions, model consensus, positive/negative drivers, and evaluate real Random Forest vs XGBoost accuracy.
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 20, background: 'rgba(99, 102, 241, 0.1)', color: '#6366f1', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
+              <Cpu size={13} /> Machine Learning Governance & Interpretability
+            </div>
+            <h1 className="page-title" style={{ margin: '0 0 6px' }}>Explainable AI & Model Benchmarks</h1>
+            <p className="page-subtitle" style={{ margin: 0, color: 'var(--text-secondary)' }}>
+              Transparent feature attributions, model consensus, positive/negative drivers, and dual-model RF vs XGBoost validation metrics.
             </p>
           </div>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-            <span className="badge badge-green" style={{ fontSize: 13 }}>
-              ★ Production Model: {perf?.best_model === 'random_forest' ? 'Random Forest Regressor' : 'XGBoost Regressor'}
-            </span>
+            <Badge variant="success">
+              ★ Active Production Model: {perf?.best_model === 'random_forest' ? 'Random Forest Regressor' : 'XGBoost Regressor'}
+            </Badge>
           </div>
         </div>
 
         {/* Navigation Tabs */}
-        <div className="tab-bar">
+        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 6, marginBottom: 24 }}>
           {[
-            { id: 'explain', label: '🤖 Explainable AI (XAI)' },
-            { id: 'performance', label: '🧠 Model Benchmarks (RF vs XGBoost)' },
-            { id: 'importance', label: '📊 Feature Importance Analytics' },
-            { id: 'history', label: `📈 Audited Predictions (${preds.length})` },
-          ].map(t => (
-            <button
-              key={t.id}
-              className={`tab-btn ${tab === t.id ? 'tab-btn-active' : ''}`}
-              onClick={() => setTab(t.id)}
-            >
-              {t.label}
-            </button>
-          ))}
+            { id: 'explain', label: 'Explainable AI (XAI)', icon: Sparkles },
+            { id: 'performance', label: 'Model Benchmarks (RF vs XGBoost)', icon: Cpu },
+            { id: 'importance', label: 'Feature Importance Analytics', icon: BarChart3 },
+            { id: 'history', label: `Audited Predictions (${preds.length})`, icon: History },
+          ].map(t => {
+            const isSel = tab === t.id;
+            const Icon = t.icon;
+            return (
+              <button
+                key={t.id}
+                onClick={() => setTab(t.id)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '9px 18px',
+                  borderRadius: 12,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  border: isSel ? '1px solid var(--primary)' : '1px solid var(--border-color)',
+                  background: isSel ? 'var(--primary-glow)' : 'var(--card-bg)',
+                  color: isSel ? 'var(--primary)' : 'var(--text-secondary)',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                <Icon size={15} />
+                <span>{t.label}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* ─── TAB 1: EXPLAINABLE AI (XAI) ─── */}
         {tab === 'explain' && (
           <>
-            {/* Active prediction selector pills */}
+            {/* Prediction Selection Ribbon */}
             {preds.length > 0 && (
-              <div style={{ marginBottom: 16 }}>
-                <span style={{ fontSize: 12, fontWeight: 700, color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'block', marginBottom: 8 }}>
-                  Select Field Prediction to Explain:
+              <div style={{ marginBottom: 20 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'block', marginBottom: 8 }}>
+                  SELECT HISTORICAL RECORD TO EXPLAIN:
                 </span>
-                <div className="profile-selector" style={{ margin: 0 }}>
-                  {preds.slice(0, 6).map(p => (
-                    <button
-                      key={p.id}
-                      className={`profile-btn ${activePred?.id === p.id ? 'profile-btn-active' : ''}`}
-                      onClick={() => handleSelectPrediction(p)}
-                    >
-                      🌾 {p.variety} — {Number(p.predicted_yield).toFixed(1)} t/ha ({new Date(p.created_at).toLocaleDateString('en-IN')})
-                    </button>
-                  ))}
+                <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 6 }}>
+                  {preds.slice(0, 6).map(p => {
+                    const isSel = activePred?.id === p.id;
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() => handleSelectPrediction(p)}
+                        style={{
+                          padding: '7px 14px',
+                          borderRadius: 10,
+                          fontSize: 12,
+                          fontWeight: 600,
+                          cursor: 'pointer',
+                          border: isSel ? '1px solid var(--primary)' : '1px solid var(--border-color)',
+                          background: isSel ? 'var(--primary-glow)' : 'var(--card-bg)',
+                          color: isSel ? 'var(--primary)' : 'var(--text-secondary)',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {p.variety} · {Number(p.predicted_yield).toFixed(1)} t/ha ({new Date(p.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })})
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -253,38 +282,48 @@ export default function InsightsPage({ defaultTab = 'explain' }) {
             ) : explain ? (
               <>
                 {/* Hero Summary Card */}
-                <div className="insight-hero" style={{ background: 'linear-gradient(135deg, #1e3a1e 0%, #2d5a35 100%)', borderRadius: 14, color: '#ffffff', padding: '24px 28px', marginBottom: 24, boxShadow: '0 8px 24px rgba(45, 90, 53, 0.2)' }}>
+                <div
+                  className="card"
+                  style={{
+                    background: 'var(--card-bg)',
+                    borderRadius: 18,
+                    border: '1px solid var(--border-color)',
+                    padding: 28,
+                    marginBottom: 24,
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 20 }}>
                     <div style={{ flex: '1 1 450px' }}>
-                      <span style={{ fontSize: 11, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#86efac', display: 'block', marginBottom: 6 }}>
-                        Why The AI Predicted This Yield
-                      </span>
-                      <div style={{ fontSize: 42, fontWeight: 800, lineHeight: 1.1, marginBottom: 12, display: 'flex', alignItems: 'baseline', gap: 10 }}>
-                        {Number(explain.predicted_yield || activePred?.predicted_yield || 88.5).toFixed(1)}
-                        <span style={{ fontSize: 18, fontWeight: 500, opacity: 0.85 }}>tonnes / hectare</span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 700, color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 8 }}>
+                        <Sparkles size={14} /> EXPLAINABLE AI DIAGNOSTIC REPORT
                       </div>
-                      <p style={{ fontSize: 15, lineHeight: 1.6, opacity: 0.95, margin: 0, maxWidth: 680 }}>
-                        {explain.summary || `The AI ensemble forecasts a high yield potential based on optimal vegetative growing conditions and balanced precipitation.`}
+                      <div style={{ fontSize: 44, fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1.1, marginBottom: 12, display: 'flex', alignItems: 'baseline', gap: 10 }}>
+                        {Number(explain.predicted_yield || activePred?.predicted_yield || 88.5).toFixed(1)}
+                        <span style={{ fontSize: 18, fontWeight: 500, color: 'var(--text-secondary)' }}>tonnes / hectare</span>
+                      </div>
+                      <p style={{ fontSize: 15, lineHeight: 1.6, color: 'var(--text-secondary)', margin: 0, maxWidth: 680 }}>
+                        {explain.summary || 'The AI ensemble forecasts high yield potential based on optimal vegetative growing conditions and balanced precipitation.'}
                       </p>
                     </div>
 
-                    <div style={{ background: 'rgba(255,255,255,0.12)', backdropFilter: 'blur(8px)', borderRadius: 12, padding: '16px 20px', minWidth: 220, border: '1px solid rgba(255,255,255,0.18)' }}>
-                      <div style={{ fontSize: 12, opacity: 0.8, marginBottom: 4 }}>Prediction Confidence</div>
-                      <div style={{ fontSize: 32, fontWeight: 800, color: '#86efac' }}>
+                    <div style={{ background: 'var(--bg-secondary)', borderRadius: 14, padding: '18px 24px', minWidth: 220, border: '1px solid var(--border-color)', textAlign: 'center' }}>
+                      <span style={{ fontSize: 12, color: 'var(--text-muted)', display: 'block', marginBottom: 4 }}>MODEL CONFIDENCE</span>
+                      <div style={{ fontSize: 34, fontWeight: 800, color: 'var(--primary)' }}>
                         {Number(explain.confidence || activePred?.confidence || 91.2).toFixed(1)}%
                       </div>
-                      <div style={{ fontSize: 11, opacity: 0.9, marginTop: 4 }}>
+                      <span style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4, display: 'block' }}>
                         Consensus across 500 decision trees
-                      </div>
+                      </span>
                     </div>
                   </div>
 
-                  {/* Confidence Reasons */}
                   {explain.confidence_reasons && explain.confidence_reasons.length > 0 && (
-                    <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.15)', display: 'flex', flexWrap: 'wrap', gap: 16 }}>
+                    <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border-color)', display: 'flex', flexWrap: 'wrap', gap: 16 }}>
                       {explain.confidence_reasons.map((cr, idx) => (
-                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, opacity: 0.9 }}>
-                          <span style={{ color: '#86efac' }}>✓</span>
+                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: 'var(--text-secondary)' }}>
+                          <CheckCircle2 size={14} color="var(--primary)" />
                           <span>{cr}</span>
                         </div>
                       ))}
@@ -292,65 +331,63 @@ export default function InsightsPage({ defaultTab = 'explain' }) {
                   )}
                 </div>
 
-                {/* Positive vs Negative Drivers */}
-                <div className="dash-two-col" style={{ marginBottom: 24 }}>
-                  {/* Positive Factors */}
-                  <div className="dash-panel factors-panel factor-pos-panel" style={{ borderLeft: '4px solid #16a34a' }}>
-                    <div className="dash-panel-header">
+                {/* Positive vs Negative Drivers Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 20, marginBottom: 24 }}>
+                  
+                  {/* Positive Boosters */}
+                  <div className="card" style={{ padding: 22, borderRadius: 16, border: '1px solid var(--border-color)', borderLeft: '4px solid #10b981', background: 'var(--card-bg)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span style={{ fontSize: 18 }}>✅</span>
-                        <h3 style={{ margin: 0, color: '#166534' }}>Positive Yield Boosters</h3>
+                        <CheckCircle2 size={18} color="#10b981" />
+                        <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>Positive Yield Boosters</h3>
                       </div>
-                      <span className="badge badge-green">Favorable Agronomy</span>
+                      <Badge variant="success">Favorable Agronomy</Badge>
                     </div>
-                    <div className="factors-list">
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                       {(explain.positive_factors || []).map((f, i) => (
-                        <div key={i} className="factor-item factor-pos" style={{ padding: '12px 14px' }}>
-                          <span className="fi-icon" style={{ background: '#dcfce7', color: '#16a34a' }}>✓</span>
-                          <div style={{ flex: 1 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                              <strong style={{ fontSize: 14, color: '#14532d' }}>{f.factor}</strong>
-                              <span style={{ fontSize: 12, fontWeight: 700, color: '#16a34a' }}>
-                                {f.value} {f.contribution ? `(+${f.contribution} t/ha)` : ''}
-                              </span>
-                            </div>
-                            <p style={{ fontSize: 12, color: '#374151', margin: '4px 0 0', lineHeight: 1.4 }}>{f.note}</p>
+                        <div key={i} style={{ padding: '12px 14px', borderRadius: 10, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+                            <strong style={{ fontSize: 14, color: 'var(--text-primary)' }}>{f.factor}</strong>
+                            <span style={{ fontSize: 12, fontWeight: 700, color: '#10b981' }}>
+                              {f.value} {f.contribution ? `(+${f.contribution} t/ha)` : ''}
+                            </span>
                           </div>
+                          <p style={{ margin: 0, fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.45 }}>{f.note}</p>
                         </div>
                       ))}
                       {!explain.positive_factors?.length && (
-                        <p style={{ color: '#9ca3af', fontSize: 13, padding: 12 }}>No major boosting factors flagged.</p>
+                        <p style={{ color: 'var(--text-muted)', fontSize: 13, padding: 12, margin: 0 }}>No major boosting factors flagged.</p>
                       )}
                     </div>
                   </div>
 
-                  {/* Limiting / Negative Factors */}
-                  <div className="dash-panel factors-panel factor-neg-panel" style={{ borderLeft: '4px solid #f59e0b' }}>
-                    <div className="dash-panel-header">
+                  {/* Limiting / Negative Drivers */}
+                  <div className="card" style={{ padding: 22, borderRadius: 16, border: '1px solid var(--border-color)', borderLeft: '4px solid #f59e0b', background: 'var(--card-bg)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <span style={{ fontSize: 18 }}>⚠️</span>
-                        <h3 style={{ margin: 0, color: '#92400e' }}>Limiting Factors & Vulnerabilities</h3>
+                        <AlertTriangle size={18} color="#f59e0b" />
+                        <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>Limiting Agronomic Factors</h3>
                       </div>
-                      <span className="badge badge-yellow">Actionable Drag</span>
+                      <Badge variant="warning">Actionable Drag</Badge>
                     </div>
-                    <div className="factors-list">
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                       {(explain.negative_factors || []).map((f, i) => (
-                        <div key={i} className="factor-item factor-neg" style={{ padding: '12px 14px' }}>
-                          <span className="fi-icon" style={{ background: '#fef3c7', color: '#d97706' }}>!</span>
-                          <div style={{ flex: 1 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                              <strong style={{ fontSize: 14, color: '#78350f' }}>{f.factor}</strong>
-                              <span style={{ fontSize: 12, fontWeight: 700, color: '#d97706' }}>
-                                {f.value} {f.contribution ? `(${f.contribution} t/ha)` : ''}
-                              </span>
-                            </div>
-                            <p style={{ fontSize: 12, color: '#374151', margin: '4px 0 0', lineHeight: 1.4 }}>{f.note}</p>
+                        <div key={i} style={{ padding: '12px 14px', borderRadius: 10, background: 'var(--bg-secondary)', border: '1px solid var(--border-color)' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4 }}>
+                            <strong style={{ fontSize: 14, color: 'var(--text-primary)' }}>{f.factor}</strong>
+                            <span style={{ fontSize: 12, fontWeight: 700, color: '#f59e0b' }}>
+                              {f.value} {f.contribution ? `(${f.contribution} t/ha)` : ''}
+                            </span>
                           </div>
+                          <p style={{ margin: 0, fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.45 }}>{f.note}</p>
                         </div>
                       ))}
                       {!explain.negative_factors?.length && (
-                        <div style={{ padding: 16, background: '#f0fdf4', borderRadius: 8, color: '#166534', fontSize: 13 }}>
-                          ✓ No significant limiting factors detected. Field parameters align with high-yield conditions.
+                        <div style={{ padding: 16, borderRadius: 10, background: 'rgba(16, 185, 129, 0.1)', color: 'var(--primary)', fontSize: 13, display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <CheckCircle2 size={16} />
+                          <span>No significant limiting factors detected. Field conditions align with optimal yield potential.</span>
                         </div>
                       )}
                     </div>
@@ -359,24 +396,24 @@ export default function InsightsPage({ defaultTab = 'explain' }) {
 
                 {/* Feature Contribution Breakdown */}
                 {explain.feature_contributions && explain.feature_contributions.length > 0 && (
-                  <div className="dash-panel" style={{ marginBottom: 24 }}>
-                    <div className="dash-panel-header">
+                  <div className="card" style={{ padding: 24, borderRadius: 16, border: '1px solid var(--border-color)', background: 'var(--card-bg)', marginBottom: 24 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
                       <div>
-                        <h3>Feature Contribution To Forecast (Model Attributions)</h3>
-                        <p className="text-xs text-gray-500">Relative weighting of each agronomic variable calculated by tree branch splits.</p>
+                        <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>Feature Contribution to Forecast</h3>
+                        <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Relative weighting computed across decision tree splits</span>
                       </div>
-                      <span className="badge badge-blue">Tree-Based Importance</span>
+                      <Badge variant="primary">Tree Attributions</Badge>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '14px', marginTop: 12 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 14 }}>
                       {explain.feature_contributions.map(fc => (
-                        <div key={fc.feature} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 8, padding: '12px 14px' }}>
+                        <div key={fc.feature} style={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: 10, padding: '12px 16px' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, marginBottom: 6 }}>
-                            <strong style={{ color: '#1e293b' }}>{fc.feature}</strong>
-                            <span style={{ color: '#0f766e', fontWeight: 700 }}>{fc.percentage}%</span>
+                            <strong style={{ color: 'var(--text-primary)' }}>{fc.feature}</strong>
+                            <span style={{ color: 'var(--primary)', fontWeight: 700 }}>{fc.percentage}%</span>
                           </div>
-                          <div style={{ height: 6, background: '#e2e8f0', borderRadius: 4, overflow: 'hidden' }}>
-                            <div style={{ width: `${Math.min(fc.percentage * 2, 100)}%`, height: '100%', background: '#2d7a3e', borderRadius: 4 }} />
+                          <div style={{ height: 6, background: 'var(--bg-tertiary)', borderRadius: 4, overflow: 'hidden' }}>
+                            <div style={{ width: `${Math.min(fc.percentage * 2, 100)}%`, height: '100%', background: 'var(--primary)', borderRadius: 4 }} />
                           </div>
                         </div>
                       ))}
@@ -385,11 +422,11 @@ export default function InsightsPage({ defaultTab = 'explain' }) {
                 )}
               </>
             ) : (
-              <div className="empty-page-state">
-                <div className="eps-icon">🤖</div>
-                <h2>No Prediction Selected</h2>
-                <p>Run an AI Yield Prediction first to inspect explainable factors.</p>
-              </div>
+              <EmptyState
+                icon={Sparkles}
+                title="No Prediction Selected for Explanation"
+                description="Run an AI yield forecast or select an audited record above to inspect local Shapley attributions."
+              />
             )}
           </>
         )}
@@ -397,188 +434,120 @@ export default function InsightsPage({ defaultTab = 'explain' }) {
         {/* ─── TAB 2: ML MODEL PERFORMANCE (RF VS XGBOOST) ─── */}
         {tab === 'performance' && perf && (
           <>
-            {/* Side-by-Side Model Comparison Cards */}
-            <div className="dash-two-col" style={{ marginBottom: 24 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 20, marginBottom: 24 }}>
+              
               {/* Random Forest Card */}
-              <div className="model-perf-card model-perf-active" style={{ borderTop: '4px solid #16a34a' }}>
+              <div className="card" style={{ padding: 24, borderRadius: 16, border: '1px solid var(--border-color)', borderTop: '4px solid #10b981', background: 'var(--card-bg)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                  <h3 style={{ color: '#166534', margin: 0, fontSize: 18 }}>Random Forest Regressor</h3>
-                  <span className="production-badge" style={{ position: 'static' }}>★ PRODUCTION MODEL</span>
+                  <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>Random Forest Regressor</h3>
+                  <Badge variant="success">★ Production Model</Badge>
                 </div>
-                <p style={{ fontSize: 13, color: '#4b5563', marginBottom: 16 }}>
-                  Ensemble of 500 randomized decision trees with bootstrap aggregation. Selected for superior variance reduction on multi-state sugarcane agronomic datasets.
+                <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 20, lineHeight: 1.5 }}>
+                  Ensemble of 500 randomized decision trees with bootstrap aggregation. Chosen for superior variance reduction across Indian sugarcane agronomic datasets.
                 </p>
 
-                <div className="model-metrics">
-                  <div className="model-metric-row">
-                    <span>Coefficient of Determination (R²)</span>
-                    <strong style={{ color: '#16a34a', fontSize: 15 }}>{rfModel?.r2 ?? 0.7866}</strong>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '8px 12px', borderRadius: 8, background: 'var(--bg-secondary)' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Coefficient of Determination (R²)</span>
+                    <strong style={{ color: 'var(--primary)' }}>{rfModel?.r2 ?? 0.7866}</strong>
                   </div>
-                  <div className="model-metric-row">
-                    <span>5-Fold Cross-Validation R² (Mean)</span>
-                    <strong>{rfModel?.cv_score ?? 0.8005}</strong>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '8px 12px', borderRadius: 8, background: 'var(--bg-secondary)' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>5-Fold Cross-Validation R²</span>
+                    <strong style={{ color: 'var(--text-primary)' }}>{rfModel?.cv_score ?? 0.8005}</strong>
                   </div>
-                  <div className="model-metric-row">
-                    <span>Mean Absolute Error (MAE)</span>
-                    <strong>{rfModel?.mae ?? 8.84} t/ha</strong>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '8px 12px', borderRadius: 8, background: 'var(--bg-secondary)' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Mean Absolute Error (MAE)</span>
+                    <strong style={{ color: 'var(--text-primary)' }}>{rfModel?.mae ?? 8.84} t/ha</strong>
                   </div>
-                  <div className="model-metric-row">
-                    <span>Root Mean Squared Error (RMSE)</span>
-                    <strong>{rfModel?.rmse ?? 15.33} t/ha</strong>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '8px 12px', borderRadius: 8, background: 'var(--bg-secondary)' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Root Mean Squared Error (RMSE)</span>
+                    <strong style={{ color: 'var(--text-primary)' }}>{rfModel?.rmse ?? 15.33} t/ha</strong>
                   </div>
-                  <div className="model-metric-row">
-                    <span>CV MAE Mean</span>
-                    <strong>{rfModel?.cv_mae ?? 8.67} t/ha</strong>
-                  </div>
-                  <div className="model-metric-row">
-                    <span>CV RMSE Mean</span>
-                    <strong>{rfModel?.cv_rmse ?? 14.69} t/ha</strong>
-                  </div>
-                  <div className="model-metric-row">
-                    <span>Training / Test Split</span>
-                    <strong>{perf?.n_samples_train || 6288} / {perf?.n_samples_test || 1573} samples</strong>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '8px 12px', borderRadius: 8, background: 'var(--bg-secondary)' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Training / Test Samples</span>
+                    <strong style={{ color: 'var(--text-primary)' }}>{perf?.n_samples_train || 6288} / {perf?.n_samples_test || 1573}</strong>
                   </div>
                 </div>
               </div>
 
               {/* XGBoost Card */}
-              <div className="model-perf-card" style={{ borderTop: '4px solid #2563eb' }}>
+              <div className="card" style={{ padding: 24, borderRadius: 16, border: '1px solid var(--border-color)', borderTop: '4px solid #6366f1', background: 'var(--card-bg)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                  <h3 style={{ color: '#1e40af', margin: 0, fontSize: 18 }}>XGBoost Regressor</h3>
-                  <span className="badge badge-blue">Gradient Boosting</span>
+                  <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>XGBoost Regressor</h3>
+                  <Badge variant="primary">Gradient Boosting</Badge>
                 </div>
-                <p style={{ fontSize: 13, color: '#4b5563', marginBottom: 16 }}>
+                <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 20, lineHeight: 1.5 }}>
                   Extreme Gradient Boosting with exact greedy split-finding and L2 regularization. Evaluated on identical test sets for consensus cross-checks.
                 </p>
 
-                <div className="model-metrics">
-                  <div className="model-metric-row">
-                    <span>Coefficient of Determination (R²)</span>
-                    <strong style={{ color: '#2563eb', fontSize: 15 }}>{xgbModel?.r2 ?? 0.7659}</strong>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '8px 12px', borderRadius: 8, background: 'var(--bg-secondary)' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Coefficient of Determination (R²)</span>
+                    <strong style={{ color: '#6366f1' }}>{xgbModel?.r2 ?? 0.7659}</strong>
                   </div>
-                  <div className="model-metric-row">
-                    <span>5-Fold Cross-Validation R² (Mean)</span>
-                    <strong>{xgbModel?.cv_score ?? 0.7936}</strong>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '8px 12px', borderRadius: 8, background: 'var(--bg-secondary)' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>5-Fold Cross-Validation R²</span>
+                    <strong style={{ color: 'var(--text-primary)' }}>{xgbModel?.cv_score ?? 0.7936}</strong>
                   </div>
-                  <div className="model-metric-row">
-                    <span>Mean Absolute Error (MAE)</span>
-                    <strong>{xgbModel?.mae ?? 9.17} t/ha</strong>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '8px 12px', borderRadius: 8, background: 'var(--bg-secondary)' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Mean Absolute Error (MAE)</span>
+                    <strong style={{ color: 'var(--text-primary)' }}>{xgbModel?.mae ?? 9.17} t/ha</strong>
                   </div>
-                  <div className="model-metric-row">
-                    <span>Root Mean Squared Error (RMSE)</span>
-                    <strong>{xgbModel?.rmse ?? 16.06} t/ha</strong>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '8px 12px', borderRadius: 8, background: 'var(--bg-secondary)' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Root Mean Squared Error (RMSE)</span>
+                    <strong style={{ color: 'var(--text-primary)' }}>{xgbModel?.rmse ?? 16.06} t/ha</strong>
                   </div>
-                  <div className="model-metric-row">
-                    <span>CV MAE Mean</span>
-                    <strong>{xgbModel?.cv_mae ?? 8.92} t/ha</strong>
-                  </div>
-                  <div className="model-metric-row">
-                    <span>CV RMSE Mean</span>
-                    <strong>{xgbModel?.cv_rmse ?? 14.94} t/ha</strong>
-                  </div>
-                  <div className="model-metric-row">
-                    <span>Training / Test Split</span>
-                    <strong>{perf?.n_samples_train || 6288} / {perf?.n_samples_test || 1573} samples</strong>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, padding: '8px 12px', borderRadius: 8, background: 'var(--bg-secondary)' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Training / Test Samples</span>
+                    <strong style={{ color: 'var(--text-primary)' }}>{perf?.n_samples_train || 6288} / {perf?.n_samples_test || 1573}</strong>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Model Comparison Charts */}
-            <div className="dash-two-col" style={{ marginBottom: 24 }}>
-              {/* Metric comparison bars */}
-              <div className="dash-panel">
-                <div className="dash-panel-header">
-                  <h3>Model Accuracy Benchmarks (R², MAE, RMSE)</h3>
-                  <span className="badge badge-green">Real Evaluation Metrics</span>
-                </div>
-                <ResponsiveContainer width="100%" height={260}>
+            {/* Model Comparison Recharts */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 20, marginBottom: 24 }}>
+              
+              <div className="card" style={{ padding: 22, borderRadius: 16, border: '1px solid var(--border-color)', background: 'var(--card-bg)' }}>
+                <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>
+                  Model Accuracy Benchmarks (R², MAE, RMSE)
+                </h3>
+                <ResponsiveContainer width="100%" height={240}>
                   <BarChart
                     data={[
-                      { metric: 'R² Score (x100)', 'Random Forest': 78.66, 'XGBoost': 76.59 },
-                      { metric: 'CV R² Mean (x100)', 'Random Forest': 80.05, 'XGBoost': 79.36 },
+                      { metric: 'R² (x100)', 'Random Forest': 78.66, 'XGBoost': 76.59 },
+                      { metric: 'CV R² (x100)', 'Random Forest': 80.05, 'XGBoost': 79.36 },
                       { metric: 'MAE (t/ha)', 'Random Forest': 8.84, 'XGBoost': 9.17 },
                       { metric: 'RMSE (t/ha)', 'Random Forest': 15.33, 'XGBoost': 16.06 },
                     ]}
                     margin={{ top: 10, right: 10, bottom: 0, left: -10 }}
                   >
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis dataKey="metric" tick={{ fontSize: 11 }} />
-                    <YAxis tick={{ fontSize: 11 }} />
-                    <Tooltip />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
+                    <XAxis dataKey="metric" tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
+                    <YAxis tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
+                    <Tooltip contentStyle={{ background: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 8 }} />
                     <Legend />
-                    <Bar dataKey="Random Forest" fill="#16a34a" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="XGBoost" fill="#2563eb" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="Random Forest" fill="#10b981" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="XGBoost" fill="#6366f1" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
 
-              {/* 5-Fold Cross Validation Fold Scores */}
-              <div className="dash-panel">
-                <div className="dash-panel-header">
-                  <h3>5-Fold Cross-Validation R² Consistency</h3>
-                  <span className="badge badge-blue">K-Fold Generalization</span>
-                </div>
-                <ResponsiveContainer width="100%" height={260}>
+              <div className="card" style={{ padding: 22, borderRadius: 16, border: '1px solid var(--border-color)', background: 'var(--card-bg)' }}>
+                <h3 style={{ margin: '0 0 16px', fontSize: 15, fontWeight: 700, color: 'var(--text-primary)' }}>
+                  5-Fold Cross-Validation R² Stability
+                </h3>
+                <ResponsiveContainer width="100%" height={240}>
                   <LineChart data={cvFoldsData} margin={{ top: 10, right: 10, bottom: 0, left: -10 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis dataKey="fold" tick={{ fontSize: 11 }} />
-                    <YAxis domain={[0.75, 0.85]} tick={{ fontSize: 11 }} />
-                    <Tooltip formatter={v => v.toFixed(4)} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
+                    <XAxis dataKey="fold" tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
+                    <YAxis domain={[0.75, 0.85]} tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
+                    <Tooltip formatter={v => v.toFixed(4)} contentStyle={{ background: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 8 }} />
                     <Legend />
-                    <Line type="monotone" dataKey="Random Forest" stroke="#16a34a" strokeWidth={3} dot={{ r: 4 }} />
-                    <Line type="monotone" dataKey="XGBoost" stroke="#2563eb" strokeWidth={2} strokeDasharray="4 4" dot={{ r: 4 }} />
+                    <Line type="monotone" dataKey="Random Forest" stroke="#10b981" strokeWidth={3} dot={{ r: 4 }} />
+                    <Line type="monotone" dataKey="XGBoost" stroke="#6366f1" strokeWidth={2} strokeDasharray="4 4" dot={{ r: 4 }} />
                   </LineChart>
                 </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* Actual vs Predicted and Residuals Charts */}
-            <div className="dash-two-col" style={{ marginBottom: 24 }}>
-              {/* Actual vs Predicted */}
-              <div className="dash-panel">
-                <div className="dash-panel-header">
-                  <h3>Actual vs Predicted Yield (Test Sample Points)</h3>
-                  <span className="badge badge-purple">Goodness of Fit</span>
-                </div>
-                <ResponsiveContainer width="100%" height={260}>
-                  <ScatterChart margin={{ top: 10, right: 10, bottom: 0, left: -10 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis type="number" dataKey="actual" name="Actual (t/ha)" unit=" t" tick={{ fontSize: 11 }} domain={[60, 160]} />
-                    <YAxis type="number" dataKey="predicted" name="Predicted (t/ha)" unit=" t" tick={{ fontSize: 11 }} domain={[60, 160]} />
-                    <Tooltip cursor={{ strokeDasharray: '3 3' }} />
-                    <ReferenceLine x={100} stroke="#94a3b8" strokeDasharray="3 3" />
-                    <Scatter name="Validation Samples" data={actualVsPredPoints} fill="#16a34a" />
-                  </ScatterChart>
-                </ResponsiveContainer>
-                <div style={{ fontSize: 11, color: '#64748b', marginTop: 8, textAlign: 'center' }}>
-                  Points clustering tightly along the diagonal confirm high fidelity and minimal bias.
-                </div>
-              </div>
-
-              {/* Residual / Error Distribution */}
-              <div className="dash-panel">
-                <div className="dash-panel-header">
-                  <h3>Residual / Error Distribution (t/ha)</h3>
-                  <span className="badge badge-yellow">Residual Diagnostics</span>
-                </div>
-                <ResponsiveContainer width="100%" height={260}>
-                  <BarChart data={actualVsPredPoints} margin={{ top: 10, right: 10, bottom: 0, left: -10 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis dataKey="actual" tick={{ fontSize: 10 }} label={{ value: 'Actual Yield (t/ha)', position: 'insideBottom', offset: -2 }} />
-                    <YAxis tick={{ fontSize: 11 }} domain={[-5, 5]} />
-                    <Tooltip />
-                    <ReferenceLine y={0} stroke="#475569" />
-                    <Bar dataKey="residual" fill="#f59e0b">
-                      {actualVsPredPoints.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={entry.residual >= 0 ? '#16a34a' : '#ef4444'} />
-                      ))}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-                <div style={{ fontSize: 11, color: '#64748b', marginTop: 8, textAlign: 'center' }}>
-                  Symmetric error dispersion centered at 0 indicates absence of systematic over- or under-forecasting.
-                </div>
               </div>
             </div>
           </>
@@ -586,13 +555,17 @@ export default function InsightsPage({ defaultTab = 'explain' }) {
 
         {/* ─── TAB 3: FEATURE IMPORTANCE COMPARISON ─── */}
         {tab === 'importance' && (
-          <div className="dash-panel" style={{ marginBottom: 24 }}>
-            <div className="dash-panel-header">
+          <div className="card" style={{ padding: 24, borderRadius: 16, border: '1px solid var(--border-color)', background: 'var(--card-bg)', marginBottom: 24 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <div>
-                <h3>Feature Importance Comparison (Random Forest vs XGBoost)</h3>
-                <p className="text-xs text-gray-500">How each algorithm weights agronomic variables in decision splits.</p>
+                <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+                  Dual-Model Feature Importance Comparison
+                </h3>
+                <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                  How Random Forest and XGBoost prioritize agronomic predictors
+                </span>
               </div>
-              <span className="badge badge-green">Trained Weights</span>
+              <Badge variant="success">Normalized Split Weights</Badge>
             </div>
 
             <ResponsiveContainer width="100%" height={360}>
@@ -601,78 +574,83 @@ export default function InsightsPage({ defaultTab = 'explain' }) {
                 layout="vertical"
                 margin={{ top: 10, right: 30, bottom: 0, left: 110 }}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
-                <XAxis type="number" unit="%" tick={{ fontSize: 11 }} />
-                <YAxis type="category" dataKey="feature" tick={{ fontSize: 11 }} width={120} />
-                <Tooltip formatter={v => [`${v}%`, 'Weight']} />
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" horizontal={false} />
+                <XAxis type="number" unit="%" tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} />
+                <YAxis type="category" dataKey="feature" tick={{ fontSize: 11, fill: 'var(--text-secondary)' }} width={120} />
+                <Tooltip formatter={v => [`${v}%`, 'Weight']} contentStyle={{ background: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: 8 }} />
                 <Legend />
-                <Bar dataKey="Random Forest" fill="#16a34a" radius={[0, 4, 4, 0]} />
-                <Bar dataKey="XGBoost" fill="#2563eb" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="Random Forest" fill="#10b981" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="XGBoost" fill="#6366f1" radius={[0, 4, 4, 0]} />
               </BarChart>
             </ResponsiveContainer>
-
-            <div style={{ background: '#f8fafc', padding: '14px', borderRadius: 8, marginTop: 16, fontSize: 12, color: '#475569', lineHeight: 1.5 }}>
-              ℹ️ <strong>Agronomic Finding:</strong> Both models identify <em>Historical Yield</em> and <em>Soil Type</em> as the foremost yield drivers, followed by <em>Regional Agro-Climatic Zone (State)</em> and <em>Sugarcane Variety</em>. Environmental factors (moisture, pH, precipitation) act as critical secondary modulators determining final tonnage realization.
-            </div>
           </div>
         )}
 
         {/* ─── TAB 4: AUDITED PREDICTION HISTORY ─── */}
         {tab === 'history' && (
-          <div className="dash-panel">
-            <div className="dash-panel-header">
-              <h3>Audited Prediction Records in Database</h3>
-              <span className="badge badge-blue">{preds.length} Saved Records</span>
+          <div className="card" style={{ padding: 24, borderRadius: 16, border: '1px solid var(--border-color)', background: 'var(--card-bg)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18 }}>
+              <div>
+                <h3 style={{ margin: 0, fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>
+                  Audited Prediction Records in Database
+                </h3>
+                <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Historical inference ledger</span>
+              </div>
+              <Badge variant="primary">{preds.length} Saved Records</Badge>
             </div>
 
             {preds.length === 0 ? (
-              <div className="empty-state-sm">
-                <p>No prediction records found in database.</p>
-              </div>
+              <EmptyState
+                icon={History}
+                title="No Prediction Records Found"
+                description="Launch an AI prediction from the Prediction Engine to establish verified audit history."
+              />
             ) : (
-              <div className="table-wrap">
-                <table className="data-table">
+              <div style={{ overflowX: 'auto' }}>
+                <table className="data-table" style={{ width: '100%' }}>
                   <thead>
                     <tr>
                       <th>Date</th>
-                      <th>Farm / Field</th>
-                      <th>Variety</th>
+                      <th>Holding / Parcel</th>
+                      <th>Cultivar</th>
                       <th>Forecast Yield</th>
-                      <th>Production</th>
+                      <th>Gross Production</th>
                       <th>Confidence</th>
-                      <th>Risk Level</th>
+                      <th>Risk Tier</th>
                       <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
                     {preds.map(p => (
                       <tr key={p.id}>
-                        <td className="td-muted">{new Date(p.created_at).toLocaleDateString('en-IN')}</td>
-                        <td>
-                          <strong>{p.farm_name || 'Sugarcane Farm'}</strong>
-                          <span style={{ display: 'block', fontSize: 11, color: '#64748b' }}>{p.field_name || p.location}</span>
+                        <td style={{ color: 'var(--text-muted)', fontSize: 13 }}>
+                          {new Date(p.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
                         </td>
-                        <td className="td-bold">{p.variety}</td>
-                        <td className="td-green" style={{ fontWeight: 700 }}>
+                        <td>
+                          <strong>{p.farm_name || 'Sugarcane Estate'}</strong>
+                          <span style={{ display: 'block', fontSize: 11, color: 'var(--text-muted)' }}>{p.field_name || p.location}</span>
+                        </td>
+                        <td style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{p.variety}</td>
+                        <td style={{ fontWeight: 700, color: 'var(--primary)' }}>
                           {Number(p.predicted_yield).toFixed(1)} t/ha
                         </td>
                         <td>{Number(p.expected_production || (p.predicted_yield * (p.area || 1))).toFixed(1)} t</td>
                         <td>{Number(p.confidence || 90).toFixed(0)}%</td>
                         <td>
-                          <span className={`status-badge status-${(p.risk_level || p.risk || 'low').toLowerCase()}`}>
+                          <Badge variant={(p.risk_level || p.risk || 'low').toLowerCase() === 'high' ? 'critical' : 'success'}>
                             {p.risk_level || p.risk || 'Low'}
-                          </span>
+                          </Badge>
                         </td>
                         <td>
                           <button
-                            className="btn-sm btn-primary"
-                            style={{ fontSize: 11, padding: '4px 10px' }}
+                            className="btn-outline-sm"
+                            style={{ display: 'flex', alignItems: 'center', gap: 4 }}
                             onClick={() => {
                               handleSelectPrediction(p);
                               setTab('explain');
                             }}
                           >
-                            Explain AI →
+                            <Sparkles size={12} /> Explain AI
                           </button>
                         </td>
                       </tr>
@@ -683,6 +661,7 @@ export default function InsightsPage({ defaultTab = 'explain' }) {
             )}
           </div>
         )}
+
       </div>
     </AppLayout>
   );

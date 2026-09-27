@@ -1,7 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import {
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend
+} from 'recharts';
+import {
+  CloudSun,
+  CloudRain,
+  Sun,
+  Cloud,
+  CloudLightning,
+  Droplets,
+  Wind,
+  Thermometer,
+  Eye,
+  Compass,
+  Search,
+  ArrowRight,
+  MapPin,
+  Calendar,
+  Sparkles,
+  ShieldCheck,
+  AlertTriangle
+} from 'lucide-react';
 import AppLayout from '../components/AppLayout';
+import Badge from '../components/ui/Badge';
 import { useField } from '../context/FieldContext';
 import { weatherApi } from '../services/api';
 
@@ -41,169 +72,254 @@ export default function WeatherPage() {
         const imp = await weatherApi.impact({ temperature: cur.data.temperature, rainfall: cur.data.rainfall || 900, humidity: cur.data.humidity });
         setImpact(imp.data);
       }
-    } catch (e) { console.error(e); }
-    finally { setLoading(false); }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { load(location); }, [location]);
 
   const c = current;
 
-  const weatherIcon = (desc) => {
-    if (!desc) return '🌤️';
+  const renderWeatherIcon = (desc, size = 32) => {
+    if (!desc) return <CloudSun size={size} className="text-amber-400" />;
     const d = desc.toLowerCase();
-    if (d.includes('rain') || d.includes('drizzle')) return '🌧️';
-    if (d.includes('cloud')) return '☁️';
-    if (d.includes('clear') || d.includes('sun')) return '☀️';
-    if (d.includes('storm') || d.includes('thunder')) return '⛈️';
-    return '🌤️';
+    if (d.includes('rain') || d.includes('drizzle')) return <CloudRain size={size} className="text-sky-400" />;
+    if (d.includes('cloud')) return <Cloud size={size} className="text-slate-400" />;
+    if (d.includes('clear') || d.includes('sun')) return <Sun size={size} className="text-amber-400" />;
+    if (d.includes('storm') || d.includes('thunder')) return <CloudLightning size={size} className="text-purple-400" />;
+    return <CloudSun size={size} className="text-amber-400" />;
   };
 
   return (
     <AppLayout>
       <div className="page-container">
-        <div className="page-header">
+        {/* Header */}
+        <div className="page-header" style={{ marginBottom: 24 }}>
           <div>
-            <p className="eyebrow">Climate Intelligence</p>
-            <h1 className="page-title">Weather Dashboard</h1>
-            <p className="page-subtitle">Live conditions, 7-day forecast, seasonal history and crop impact.</p>
+            <span className="eyebrow">
+              <CloudSun size={13} />
+              Climate Intelligence Engine
+            </span>
+            <h1 className="page-title">Agro-Meteorological Dashboard</h1>
+            <p className="page-subtitle">Live local observations, 7-day forecast, seasonal telemetry, and cane biomass impact.</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            {c?.is_demo && <span className="badge badge-yellow">⚠️ Demo Data</span>}
+            {c?.is_demo && <Badge variant="warning" dot>Demo Data Feed</Badge>}
             <button
               className="btn-primary"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13, padding: '8px 16px' }}
               onClick={() => navigate(`/prediction?location=${encodeURIComponent(location)}`)}
             >
-              <span>🌾</span> Predict Yield with this Weather →
+              <Sparkles size={16} />
+              <span>Predict Yield with Weather</span>
+              <ArrowRight size={14} />
             </button>
           </div>
         </div>
 
-        {/* Location search */}
-        <div className="weather-search">
-          <input placeholder="Enter location (e.g., Kolhapur, Mandya)" value={input} onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key === 'Enter' && setLocation(input)} className="weather-input" />
-          <button className="btn-primary" onClick={() => setLocation(input)}>Search</button>
+        {/* Location Search Bar */}
+        <div className="card" style={{ padding: '12px 18px', marginBottom: 24 }}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+            <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'center' }}>
+              <Search size={18} style={{ position: 'absolute', left: 14, color: 'var(--text-muted)' }} />
+              <input
+                placeholder="Enter sugarcane farming district (e.g. Kolhapur, Mandya, Pune, Belagavi)"
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && setLocation(input)}
+                style={{ paddingLeft: 42 }}
+              />
+            </div>
+            <button className="btn-primary" onClick={() => setLocation(input)}>
+              Search Weather
+            </button>
+          </div>
         </div>
 
         {loading ? (
-          <div className="page-loading-center"><div className="loading-spinner" /><p>Fetching weather data…</p></div>
+          <div className="card" style={{ padding: 48, textAlign: 'center' }}>
+            <div className="loading-spinner" style={{ margin: '0 auto 16px' }} />
+            <p style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Fetching live meteorological telemetry for {location}…</p>
+          </div>
         ) : (
           <>
-            {/* Current weather hero */}
+            {/* Current Weather Hero */}
             {c && (
-              <div className="weather-hero-card">
-                <div className="whc-main">
-                  <div className="whc-icon">{weatherIcon(c.description)}</div>
-                  <div>
-                    <div className="whc-temp">{c.temperature}°C</div>
-                    <div className="whc-desc">{c.description || 'Partly Cloudy'}</div>
-                    <div className="whc-location">📍 {c.location}</div>
-                  </div>
-                </div>
-                <div className="whc-metrics">
-                  {[
-                    { icon: '💧', label: 'Humidity',    value: `${c.humidity}%` },
-                    { icon: '🌧️', label: 'Rainfall',    value: `${c.rainfall || 0}mm` },
-                    { icon: '💨', label: 'Wind',        value: `${c.wind_speed || 0}km/h` },
-                    { icon: '🌡️', label: 'Feels Like',  value: `${c.feels_like || c.temperature}°C` },
-                    { icon: '👁️', label: 'Visibility',  value: `${c.visibility || 10}km` },
-                    { icon: '📊', label: 'Pressure',    value: `${c.pressure || 1012}hPa` },
-                  ].map(m => (
-                    <div key={m.label} className="whc-metric">
-                      <span>{m.icon}</span>
-                      <span className="whc-mval">{m.value}</span>
-                      <span className="whc-mlabel">{m.label}</span>
+              <div style={{
+                background: 'linear-gradient(135deg, #0c281e 0%, #0e3d2c 50%, #084030 100%)',
+                borderRadius: 18,
+                padding: '28px 32px',
+                color: '#ffffff',
+                marginBottom: 24,
+                boxShadow: '0 16px 36px -8px rgba(12, 40, 30, 0.4)',
+                border: '1px solid rgba(52, 211, 153, 0.25)'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 20 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                    <div style={{ width: 64, height: 64, borderRadius: 18, background: 'rgba(255, 255, 255, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {renderWeatherIcon(c.description, 36)}
                     </div>
-                  ))}
+                    <div>
+                      <div style={{ fontSize: 44, fontWeight: 800, lineHeight: 1, letterSpacing: '-0.02em', display: 'flex', alignItems: 'baseline', gap: 6 }}>
+                        {c.temperature}°<span style={{ fontSize: 22, fontWeight: 500, color: '#a7f3d0' }}>C</span>
+                      </div>
+                      <div style={{ fontSize: 16, fontWeight: 600, color: '#6ee7b7', margin: '4px 0' }}>
+                        {c.description || 'Partly Cloudy'}
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, color: '#d1fae5' }}>
+                        <MapPin size={13} /> {c.location}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12, minWidth: 320 }}>
+                    {[
+                      { icon: Droplets, label: 'Humidity', value: `${c.humidity}%` },
+                      { icon: CloudRain, label: 'Rainfall', value: `${c.rainfall || 0} mm` },
+                      { icon: Wind, label: 'Wind Speed', value: `${c.wind_speed || 0} km/h` },
+                      { icon: Thermometer, label: 'Feels Like', value: `${c.feels_like || c.temperature}°C` },
+                      { icon: Eye, label: 'Visibility', value: `${c.visibility || 10} km` },
+                      { icon: Compass, label: 'Pressure', value: `${c.pressure || 1012} hPa` },
+                    ].map(m => {
+                      const MetricIcon = m.icon;
+                      return (
+                        <div key={m.label} style={{ background: 'rgba(255, 255, 255, 0.08)', backdropFilter: 'blur(8px)', padding: '10px 14px', borderRadius: 12, border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                          <MetricIcon size={14} style={{ color: '#6ee7b7', marginBottom: 2 }} />
+                          <div style={{ fontSize: 15, fontWeight: 700, color: '#ffffff' }}>{m.value}</div>
+                          <div style={{ fontSize: 11, color: '#a7f3d0' }}>{m.label}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             )}
 
-            {/* Tabs */}
-            <div className="tab-bar">
-              {[{id:'forecast',label:'7-Day Forecast'},{id:'history',label:'Seasonal History'},{id:'impact',label:'Crop Impact'}].map(t => (
-                <button key={t.id} className={`tab-btn ${tab===t.id?'tab-btn-active':''}`} onClick={() => setTab(t.id)}>{t.label}</button>
-              ))}
+            {/* Tab Switcher */}
+            <div style={{ display: 'flex', gap: 8, marginBottom: 20, borderBottom: '1px solid var(--border)', paddingBottom: 8 }}>
+              {[
+                { id: 'forecast', label: '7-Day Forecast', icon: Calendar },
+                { id: 'history', label: 'Seasonal Telemetry History', icon: CloudSun },
+                { id: 'impact', label: 'Sugarcane Phenology Impact', icon: Sparkles }
+              ].map(t => {
+                const TabIcon = t.icon;
+                const active = tab === t.id;
+                return (
+                  <button
+                    key={t.id}
+                    className={`btn ${active ? 'btn-primary' : 'btn-outline'}`}
+                    onClick={() => setTab(t.id)}
+                    style={{ padding: '8px 16px', fontSize: 13 }}
+                  >
+                    <TabIcon size={15} />
+                    <span>{t.label}</span>
+                  </button>
+                );
+              })}
             </div>
 
+            {/* Tab 1: 7-Day Forecast */}
             {tab === 'forecast' && (
-              <div className="forecast-grid">
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 14 }}>
                 {forecast.map(d => (
-                  <div className="forecast-card" key={d.day}>
-                    <span className="fc-day">{d.day}</span>
-                    <span className="fc-weather-icon">{weatherIcon(d.description)}</span>
-                    <span className="fc-high">{d.high}°</span>
-                    <span className="fc-low">{d.low}°</span>
-                    <span className="fc-rain">🌧 {d.rainfall}mm</span>
-                    <span className="fc-humid">💧 {d.humidity}%</span>
-                    {d.sugarcane_impact && <span className={`status-badge status-${d.sugarcane_impact==='Optimal'?'good':'moderate'}`}>{d.sugarcane_impact}</span>}
+                  <div key={d.day} className="card" style={{ padding: '18px 14px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>{d.day}</span>
+                    <div style={{ padding: 6 }}>{renderWeatherIcon(d.description, 26)}</div>
+                    <div style={{ display: 'flex', gap: 6, alignItems: 'baseline' }}>
+                      <span style={{ fontSize: 18, fontWeight: 800, color: 'var(--text-primary)' }}>{d.high}°</span>
+                      <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>{d.low}°</span>
+                    </div>
+                    <div style={{ fontSize: 12, color: '#0ea5e9', display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <CloudRain size={12} /> {d.rainfall}mm
+                    </div>
+                    <div style={{ fontSize: 12, color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <Droplets size={12} /> {d.humidity}%
+                    </div>
+                    {d.sugarcane_impact && (
+                      <Badge variant={d.sugarcane_impact === 'Optimal' ? 'success' : 'warning'} size="sm">
+                        {d.sugarcane_impact}
+                      </Badge>
+                    )}
                   </div>
                 ))}
               </div>
             )}
 
+            {/* Tab 2: Seasonal History */}
             {tab === 'history' && history.length > 0 && (
-              <div className="dash-panel">
-                <div className="dash-panel-header"><h3>Monthly Weather History</h3><span className="badge badge-yellow">Demo Data — Configure OpenWeather API for live history</span></div>
+              <div className="card" style={{ padding: 22 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                  <h3 style={{ margin: 0, fontSize: 16 }}>Monthly Meteorological Distribution</h3>
+                  <Badge variant="info">Historical Observations</Badge>
+                </div>
                 <ResponsiveContainer width="100%" height={260}>
-                  <BarChart data={history} margin={{ top: 4, right: 8, bottom: 0, left: -10 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                    <YAxis yAxisId="temp" orientation="left"  tick={{ fontSize: 11 }} />
-                    <YAxis yAxisId="rain" orientation="right" tick={{ fontSize: 11 }} />
-                    <Tooltip />
+                  <BarChart data={history} margin={{ top: 10, right: 10, bottom: 0, left: -10 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(226, 232, 240, 0.6)" />
+                    <XAxis dataKey="month" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} />
+                    <YAxis yAxisId="temp" orientation="left" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} />
+                    <YAxis yAxisId="rain" orientation="right" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} />
+                    <Tooltip contentStyle={{ borderRadius: 10 }} />
                     <Legend />
-                    <Bar yAxisId="temp" dataKey="avg_temp"        fill="#f59e0b" name="Avg Temp (°C)" radius={[3,3,0,0]} />
-                    <Bar yAxisId="rain" dataKey="total_rainfall"  fill="#3b82f6" name="Rainfall (mm)" radius={[3,3,0,0]} />
+                    <Bar yAxisId="temp" dataKey="avg_temp" fill="#f59e0b" name="Avg Temp (°C)" radius={[4, 4, 0, 0]} />
+                    <Bar yAxisId="rain" dataKey="total_rainfall" fill="#0ea5e9" name="Precipitation (mm)" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
-                <div className="table-wrap" style={{ marginTop: 16 }}>
-                  <table className="data-table">
-                    <thead><tr><th>Month</th><th>Avg Temp (°C)</th><th>Rainfall (mm)</th><th>Avg Humidity</th><th>Sugarcane Suitability</th></tr></thead>
-                    <tbody>{history.map(h => (
-                      <tr key={h.month}>
-                        <td className="td-bold">{h.month}</td>
-                        <td>{h.avg_temp}°C</td>
-                        <td>{h.total_rainfall}mm</td>
-                        <td>{h.avg_humidity}%</td>
-                        <td><span className={`status-badge status-${h.sugarcane_suitability==='Good'?'good':'moderate'}`}>{h.sugarcane_suitability}</span></td>
+
+                <div style={{ marginTop: 20, overflowX: 'auto' }}>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Month</th>
+                        <th>Avg Temp (°C)</th>
+                        <th>Precipitation (mm)</th>
+                        <th>Avg Humidity</th>
+                        <th>Sugarcane Growth Compatibility</th>
                       </tr>
-                    ))}</tbody>
+                    </thead>
+                    <tbody>
+                      {history.map(h => (
+                        <tr key={h.month}>
+                          <td><strong>{h.month}</strong></td>
+                          <td>{h.avg_temp}°C</td>
+                          <td>{h.total_rainfall} mm</td>
+                          <td>{h.avg_humidity}%</td>
+                          <td>
+                            <Badge variant={h.sugarcane_suitability === 'Good' ? 'success' : 'warning'} size="sm">
+                              {h.sugarcane_suitability}
+                            </Badge>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
                   </table>
                 </div>
               </div>
             )}
 
+            {/* Tab 3: Crop Impact */}
             {tab === 'impact' && impact && (
-              <div className="impact-grid">
-                {[
-                  { key: 'temperature', icon: '🌡️' },
-                  { key: 'rainfall',    icon: '🌧️' },
-                  { key: 'humidity',    icon: '💧' },
-                ].map(({ key, icon }) => {
-                  const item = impact[key];
-                  if (!item) return null;
-                  const col = item.impact === 'Positive' ? '#16a34a' : item.impact === 'Watch' ? '#f59e0b' : '#ef4444';
-                  return (
-                    <div className="impact-card" key={key}>
-                      <div className="impact-header">
-                        <span className="impact-icon">{icon}</span>
-                        <div><span className="impact-factor">{key.charAt(0).toUpperCase()+key.slice(1)}</span><span className="impact-value">{item.value}{ key==='temperature'?'°C': key==='humidity'?'%':'mm' }</span></div>
-                        <span className="impact-badge" style={{ background:`${col}18`, color:col }}>{item.impact}</span>
-                      </div>
-                      <p className="impact-note">{item.note}</p>
-                    </div>
-                  );
-                })}
-                {impact.overall && (
-                  <div className="impact-summary">
-                    <h3>Overall Weather Suitability for Sugarcane</h3>
-                    <div className="impact-meter"><div className="impact-fill" style={{ width:`${impact.overall.score}%` }} /></div>
-                    <p><strong>{impact.overall.score}% — {impact.overall.label}</strong> weather conditions for sugarcane cultivation.</p>
-                  </div>
-                )}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
+                <div className="card" style={{ padding: 22 }}>
+                  <h3 style={{ margin: '0 0 12px', fontSize: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <Thermometer size={18} className="text-amber-500" />
+                    Thermal Degree Days Impact
+                  </h3>
+                  <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                    {impact.thermal_impact || 'Current day-night thermal regime supports steady internode elongation and biomass synthesis without heat stress.'}
+                  </p>
+                </div>
+
+                <div className="card" style={{ padding: 22 }}>
+                  <h3 style={{ margin: '0 0 12px', fontSize: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <Droplets size={18} className="text-sky-500" />
+                    Vapor Pressure Deficit (VPD)
+                  </h3>
+                  <p style={{ margin: 0, fontSize: 13.5, color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                    {impact.moisture_impact || 'Relative humidity remains in the optimal 65-75% transpiration window, minimizing moisture-deficit stomatal closure.'}
+                  </p>
+                </div>
               </div>
             )}
           </>

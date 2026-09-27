@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { UserCheck, ShieldCheck, Landmark, Sparkles, ArrowRight, Mail, Lock, CheckCircle2 } from 'lucide-react';
 import AuthLayout from '../layouts/AuthLayout';
 import PasswordInput from '../components/PasswordInput';
 import SubmitButton from '../components/SubmitButton';
@@ -54,7 +55,6 @@ export default function LoginPage() {
       }
 
       setUser(user);
-      // Both routes point to /dashboard which renders the tailored dashboard per role
       navigate(location.state?.from?.pathname || '/dashboard');
     } catch (e) {
       if (e.code === 'EMAIL_NOT_VERIFIED') {
@@ -62,7 +62,7 @@ export default function LoginPage() {
           message: (
             <>
               {e.message}{' '}
-              <Link to="/resend-verification" style={{ color: '#2d7a3e', fontWeight: 600, textDecoration: 'underline' }}>
+              <Link to="/resend-verification" style={{ color: '#10b981', fontWeight: 600, textDecoration: 'underline' }}>
                 Resend verification email
               </Link>
             </>
@@ -74,40 +74,59 @@ export default function LoginPage() {
     }
   };
 
+  const isAdm = selectedRole === 'admin';
+  const roleColor = isAdm ? '#8b5cf6' : '#10b981';
+
   return (
     <AuthLayout>
-      <div className={`form-content ${selectedRole === 'admin' ? 'admin-mode' : ''}`}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
-          <span className="eyebrow" style={{ color: selectedRole === 'admin' ? '#7c3aed' : '#2d7a3e', background: selectedRole === 'admin' ? '#f3e8ff' : '#e8f5ea' }}>
-            {selectedRole === 'admin' ? '🛡️ Administrator Access' : '🌱 Precision Agriculture Platform'}
+      <div className={`form-content ${isAdm ? 'admin-mode' : ''}`}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <span className="eyebrow" style={{
+            color: roleColor,
+            background: isAdm ? 'rgba(139, 92, 246, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+            padding: '4px 10px',
+            borderRadius: 8
+          }}>
+            {isAdm ? <ShieldCheck size={13} /> : <Sparkles size={13} />}
+            <span>{isAdm ? 'Administrator Access' : 'Precision Agriculture Portal'}</span>
           </span>
           <span className="role-pill-indicator" style={{
-            background: selectedRole === 'admin' ? '#f3e8ff' : '#e8f5e9',
-            color: selectedRole === 'admin' ? '#7c3aed' : '#2d7a3e'
+            background: isAdm ? 'rgba(139, 92, 246, 0.12)' : 'rgba(16, 185, 129, 0.12)',
+            color: roleColor,
+            border: `1px solid ${isAdm ? 'rgba(139, 92, 246, 0.25)' : 'rgba(16, 185, 129, 0.25)'}`
           }}>
-            {selectedRole === 'admin' ? 'Admin Portal' : 'User Portal'}
+            {isAdm ? 'Admin Console' : 'User Portal'}
           </span>
         </div>
 
         <h2>Sign in to SugarYield</h2>
         <p className="intro">
-          {selectedRole === 'admin'
+          {isAdm
             ? 'Access the centralized system governance console, ML inference pipelines, user administration, and security analytics.'
-            : 'Access your AI-powered yield forecasting dashboard. Monitor crop health, analyze soil and weather conditions, and predict harvests.'}
+            : 'Access your AI-powered yield forecasting dashboard. Monitor crop health, analyze soil and weather conditions, and forecast harvests.'}
         </p>
 
         {/* Quick Demo Credentials Strip */}
         <div style={{
-          marginBottom: 18,
+          marginBottom: 20,
           padding: '12px 14px',
-          background: selectedRole === 'admin' ? '#faf5ff' : '#f8fafc',
+          background: isAdm ? 'rgba(139, 92, 246, 0.05)' : 'rgba(16, 185, 129, 0.05)',
           borderRadius: 12,
-          border: `1.5px dashed ${selectedRole === 'admin' ? '#d8b4fe' : '#cbd5e1'}`,
+          border: `1.5px dashed ${isAdm ? 'rgba(139, 92, 246, 0.3)' : 'rgba(16, 185, 129, 0.3)'}`,
           transition: 'all 0.3s ease'
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-            <span style={{ fontSize: 11, fontWeight: 700, color: selectedRole === 'admin' ? '#7e22ce' : '#475569', textTransform: 'uppercase', letterSpacing: 0.5 }}>
-              ⚡ Quick Fill Demo Login (Password: password123)
+            <span style={{
+              fontSize: 11,
+              fontWeight: 700,
+              color: isAdm ? '#7c3aed' : '#059669',
+              textTransform: 'uppercase',
+              letterSpacing: 0.5,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5
+            }}>
+              <Sparkles size={12} /> Quick Demo Login (Password: password123)
             </span>
           </div>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -119,13 +138,16 @@ export default function LoginPage() {
                 fontSize: 12,
                 padding: '6px 12px',
                 borderRadius: 8,
-                background: selectedRole === 'user' ? '#ffffff' : '#f1f5f9',
-                borderColor: selectedRole === 'user' ? '#2d7a3e' : '#cbd5e1',
-                color: selectedRole === 'user' ? '#166534' : '#475569',
-                fontWeight: selectedRole === 'user' ? 700 : 500
+                background: !isAdm ? '#ffffff' : 'transparent',
+                borderColor: !isAdm ? '#10b981' : '#cbd5e1',
+                color: !isAdm ? '#059669' : '#475569',
+                fontWeight: !isAdm ? 700 : 500,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6
               }}
             >
-              👤 Fill User Account
+              <UserCheck size={14} /> Fill Farmer Account
             </button>
             <button
               type="button"
@@ -135,84 +157,118 @@ export default function LoginPage() {
                 fontSize: 12,
                 padding: '6px 12px',
                 borderRadius: 8,
-                background: selectedRole === 'admin' ? '#ffffff' : '#f1f5f9',
-                borderColor: selectedRole === 'admin' ? '#7c3aed' : '#cbd5e1',
-                color: selectedRole === 'admin' ? '#6b21a8' : '#475569',
-                fontWeight: selectedRole === 'admin' ? 700 : 500
+                background: isAdm ? '#ffffff' : 'transparent',
+                borderColor: isAdm ? '#8b5cf6' : '#cbd5e1',
+                color: isAdm ? '#7c3aed' : '#475569',
+                fontWeight: isAdm ? 700 : 500,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6
               }}
             >
-              🛡️ Fill Admin Account
+              <ShieldCheck size={14} /> Fill Admin Account
             </button>
           </div>
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          {/* ── ROLE SELECTION BUTTONS ABOVE EMAIL ADDRESS ── */}
-          <div className="role-selector-wrap">
-            <div className="role-selector-header">
-              <label className="role-selector-title">
-                <span>Select Account Role</span>
+          {/* ── ROLE SELECTION BUTTONS ── */}
+          <div className="role-selector-wrap" style={{ marginBottom: 18 }}>
+            <div className="role-selector-header" style={{ marginBottom: 8, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <label className="role-selector-title" style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)' }}>
+                Select Portal Access
               </label>
-              <span className="role-selector-hint">
-                {selectedRole === 'user' ? 'Agricultural User' : 'System Administrator'}
+              <span className="role-selector-hint" style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+                {isAdm ? 'System Administrator' : 'Grower / Field Operator'}
               </span>
             </div>
 
-            <div className="role-toggle-group" role="tablist" aria-label="Choose User or Admin login">
+            <div className="role-toggle-group" role="tablist" aria-label="Choose User or Admin login" style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 8,
+              background: 'var(--border-subtle)',
+              padding: 4,
+              borderRadius: 12
+            }}>
               <button
                 type="button"
                 role="tab"
-                aria-selected={selectedRole === 'user'}
-                className={`role-toggle-btn role-user-btn ${selectedRole === 'user' ? 'active' : ''}`}
+                aria-selected={!isAdm}
+                className={`role-toggle-btn role-user-btn ${!isAdm ? 'active' : ''}`}
                 onClick={() => handleRoleSwitch('user')}
                 id="select-user-role-btn"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '8px 12px',
+                  borderRadius: 10,
+                  border: !isAdm ? '1.5px solid #10b981' : '1px solid transparent',
+                  background: !isAdm ? 'var(--bg-panel)' : 'transparent',
+                  color: !isAdm ? '#059669' : 'var(--text-muted)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
               >
-                <span className="role-btn-icon">👤</span>
-                <div className="role-btn-text">
-                  <span className="role-btn-title">Users</span>
-                  <span className="role-btn-sub">Standard Access</span>
+                <UserCheck size={18} />
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>Users Portal</div>
+                  <div style={{ fontSize: 10.5, opacity: 0.8 }}>Farmers & Officers</div>
                 </div>
               </button>
 
               <button
                 type="button"
                 role="tab"
-                aria-selected={selectedRole === 'admin'}
-                className={`role-toggle-btn role-admin-btn ${selectedRole === 'admin' ? 'active' : ''}`}
+                aria-selected={isAdm}
+                className={`role-toggle-btn role-admin-btn ${isAdm ? 'active' : ''}`}
                 onClick={() => handleRoleSwitch('admin')}
                 id="select-admin-role-btn"
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                  padding: '8px 12px',
+                  borderRadius: 10,
+                  border: isAdm ? '1.5px solid #8b5cf6' : '1px solid transparent',
+                  background: isAdm ? 'var(--bg-panel)' : 'transparent',
+                  color: isAdm ? '#7c3aed' : 'var(--text-muted)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
               >
-                <span className="role-btn-icon">🛡️</span>
-                <div className="role-btn-text">
-                  <span className="role-btn-title">Admin</span>
-                  <span className="role-btn-sub">Governance Portal</span>
+                <ShieldCheck size={18} />
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>Administrator</div>
+                  <div style={{ fontSize: 10.5, opacity: 0.8 }}>System Governance</div>
                 </div>
               </button>
             </div>
 
-            {/* Dynamic Banner Context */}
-            <div className={`role-banner-info ${selectedRole === 'admin' ? 'role-banner-admin' : 'role-banner-user'}`}>
-              <span style={{ fontSize: 16 }}>{selectedRole === 'admin' ? '⚙️' : '🌾'}</span>
+            {/* Context Info Banner */}
+            <div className={`role-banner-info ${isAdm ? 'role-banner-admin' : 'role-banner-user'}`} style={{ marginTop: 10 }}>
+              {isAdm ? <ShieldCheck size={16} /> : <CheckCircle2 size={16} />}
               <span>
-                {selectedRole === 'admin'
-                  ? 'Signing in with Admin role grants full platform controls, ML retraining, and telemetry.'
-                  : 'Signing in with Users role grants farm management, yield predictions, and weather insights.'}
+                {isAdm
+                  ? 'Signing in with Admin role grants full platform governance, model benchmarks, and audit telemetry.'
+                  : 'Signing in with Users role grants farm tracking, AI yield forecasting, and weather decision support.'}
               </span>
             </div>
           </div>
 
-          {/* ── EMAIL ADDRESS INPUT ── */}
+          {/* ── EMAIL INPUT ── */}
           <div className="field">
-            <label htmlFor="email">
-              Email address
-              <span style={{ fontSize: 11, fontWeight: 500, color: '#64748b' }}>
-                {selectedRole === 'admin' ? 'Admin credentials' : 'User credentials'}
+            <label htmlFor="email" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>Email address</span>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>
+                {isAdm ? 'admin@sugarcane.ai' : 'farmer@sugarcane.ai'}
               </span>
             </label>
             <input
               id="email"
               type="email"
-              placeholder={selectedRole === 'admin' ? 'admin@sugarcane.ai' : 'your.email@example.com'}
+              placeholder={isAdm ? 'admin@sugarcane.ai' : 'your.email@example.com'}
               autoComplete="email"
               aria-invalid={!!errors.email}
               {...register('email')}
@@ -221,11 +277,24 @@ export default function LoginPage() {
           </div>
 
           {/* ── PASSWORD INPUT ── */}
-          <PasswordInput label="Password" name="password" error={errors.password} register={register} />
+          <PasswordInput
+            label="Password"
+            name="password"
+            error={errors.password}
+            register={register}
+          />
 
-          <div className="form-row">
-            <span></span>
-            <Link to="/forgot-password" style={{ color: selectedRole === 'admin' ? '#7c3aed' : '#2d7a3e', fontWeight: 500 }}>
+          <div className="form-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '8px 0 16px' }}>
+            <span />
+            <Link
+              to="/forgot-password"
+              style={{
+                color: roleColor,
+                fontWeight: 600,
+                fontSize: 13,
+                transition: 'opacity 0.2s'
+              }}
+            >
               Forgot password?
             </Link>
           </div>
@@ -246,15 +315,26 @@ export default function LoginPage() {
 
           <SubmitButton
             loading={isSubmitting}
-            className={selectedRole === 'admin' ? 'btn-admin' : 'submit-btn'}
+            className={isAdm ? 'btn-admin' : 'submit-btn'}
+            style={{
+              width: '100%',
+              padding: '12px 20px',
+              fontSize: 15,
+              background: isAdm
+                ? 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)'
+                : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              boxShadow: isAdm
+                ? '0 4px 14px rgba(139, 92, 246, 0.35)'
+                : '0 4px 14px rgba(16, 185, 129, 0.35)'
+            }}
           >
-            {selectedRole === 'admin' ? 'Sign in as Administrator 🛡️' : 'Sign in to Dashboard 🌾'}
+            {isAdm ? 'Sign in as Administrator' : 'Sign in to Dashboard'}
           </SubmitButton>
         </form>
 
-        <p className="alternate" style={{ marginTop: 24, textAlign: 'center', fontSize: 14 }}>
+        <p className="alternate" style={{ marginTop: 24, textAlign: 'center', fontSize: 13.5, color: 'var(--text-muted)' }}>
           New to SugarYield?{' '}
-          <Link to="/signup" style={{ color: selectedRole === 'admin' ? '#7c3aed' : '#2d7a3e', fontWeight: 600 }}>
+          <Link to="/signup" style={{ color: roleColor, fontWeight: 700 }}>
             Create an account
           </Link>
         </p>
