@@ -8,7 +8,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 const INDIA_GEOGRAPHY = [
   {
     state: "Karnataka",
-    districts: ["Belagavi", "Mandya", "Mysuru", "Bagalkot", "Shivamogga"]
+    districts: ["Belagavi", "Mandya", "Mysuru", "Bagalkot", "Shivamogga", "Vijayapura", "Chikkamagaluru", "Davangere", "Raichur", "Bellary", "Chitradurga", "Uttara Kannada"]
   },
   {
     state: "Punjab",
@@ -16,23 +16,23 @@ const INDIA_GEOGRAPHY = [
   },
   {
     state: "Tamil Nadu",
-    districts: ["Coimbatore", "Erode", "Salem", "Thanjavur", "Tiruchirappalli", "Cuddalore"]
+    districts: ["Coimbatore", "Erode", "Salem", "Thanjavur", "Tiruchirappalli", "Cuddalore", "Tirunelveli", "Thoothukudi", "Villupuram", "Namakkal", "Karur", "Perambalur"]
   },
   {
     state: "Uttar Pradesh",
-    districts: ["Muzaffarnagar", "Meerut", "Bijnor", "Saharanpur", "Bareilly", "Lakhimpur Kheri", "Deoria"]
+    districts: ["Muzaffarnagar", "Meerut", "Bijnor", "Saharanpur", "Bareilly", "Lakhimpur Kheri", "Deoria", "Basti", "Gonda", "Gorakhpur", "Pilibhit", "Shahjahanpur", "Bulandshahr"]
   },
   {
     state: "Maharashtra",
-    districts: ["Kolhapur", "Sangli", "Satara", "Ahmednagar", "Pune", "Solapur"]
+    districts: ["Kolhapur", "Sangli", "Satara", "Ahmednagar", "Pune", "Solapur", "Nashik", "Jalgaon", "Dhule", "Nandurbar", "Beed", "Osmanabad"]
   },
   {
     state: "Andhra Pradesh",
-    districts: ["East Godavari", "West Godavari", "Krishna", "Visakhapatnam"]
+    districts: ["East Godavari", "West Godavari", "Krishna", "Visakhapatnam", "Guntur", "Prakasam", "Chittoor", "Nellore"]
   },
   {
     state: "Gujarat",
-    districts: ["Surat", "Navsari", "Bharuch", "Valsad"]
+    districts: ["Surat", "Navsari", "Bharuch", "Valsad", "Tapi", "Narmada", "Ahmedabad", "Kheda"]
   },
   {
     state: "Haryana",
@@ -40,11 +40,11 @@ const INDIA_GEOGRAPHY = [
   },
   {
     state: "Bihar",
-    districts: ["Champaran", "Siwan", "Gopalganj"]
+    districts: ["Champaran", "Siwan", "Gopalganj", "Muzaffarpur", "Saran", "Darbhanga", "Vaishali"]
   },
   {
     state: "Telangana",
-    districts: ["Nizamabad", "Medak", "Karimnagar"]
+    districts: ["Nizamabad", "Medak", "Karimnagar", "Khammam", "Warangal", "Nalgonda", "Sangareddy"]
   },
   {
     state: "Uttarakhand",
