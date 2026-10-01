@@ -75,6 +75,7 @@ from backend.variety_rules import (
     filter_varieties_for_recorded_fields,
     soils_for_recorded_variety,
 )
+from backend.ndvi_routes import register_ndvi_routes
 
 # -----------------------------------------------------------------------------
 # Configuration
@@ -128,6 +129,9 @@ CORS(app, supports_credentials=True, origins=[
 ])
 
 db.init_app(app)
+
+# Register NDVI Monitoring Module (Separate feature - non-invasive)
+register_ndvi_routes(app)
 
 # Initialize ML & Decision Support Engines
 prediction_engine = YieldPredictionEngine()
