@@ -1,0 +1,153 @@
+{
+  "major_sugarcane_states": [
+    {
+      "state": "Uttar Pradesh",
+      "rank": 1,
+      "production_share": "~45%",
+      "region": "Northern",
+      "note": "Largest sugarcane producer in India"
+    },
+    {
+      "state": "Maharashtra",
+      "rank": 2,
+      "production_share": "~22%",
+      "region": "Western",
+      "note": "Second largest producer, high sugar recovery"
+    },
+    {
+      "state": "Karnataka",
+      "rank": 3,
+      "production_share": "~10%",
+      "region": "Southern",
+      "note": "Third largest producer"
+    },
+    {
+      "state": "Tamil Nadu",
+      "rank": 4,
+      "production_share": "~7%",
+      "region": "Southern",
+      "note": "High productivity per hectare"
+    },
+    {
+      "state": "Bihar",
+      "rank": 5,
+      "production_share": "~4%",
+      "region": "Eastern",
+      "note": "Growing sugarcane industry"
+    },
+    {
+      "state": "Haryana",
+      "rank": 6,
+      "production_share": "~3%",
+      "region": "Northern",
+      "note": "High sugar recovery rates"
+    },
+    {
+      "state": "Punjab",
+      "rank": 7,
+      "production_share": "~2%",
+      "region": "Northern",
+      "note": "High quality sugarcane"
+    },
+    {
+      "state": "Andhra Pradesh",
+      "rank": 8,
+      "production_share": "~2%",
+      "region": "Southern",
+      "note": "Coastal and interior regions"
+    },
+    {
+      "state": "Telangana",
+      "rank": 9,
+      "production_share": "~1.5%",
+      "region": "Southern",
+      "note": "Emerging sugarcane state"
+    },
+    {
+      "state": "Gujarat",
+      "rank": 10,
+      "production_share": "~1.5%",
+      "region": "Western",
+      "note": "Coastal sugarcane cultivation"
+    },
+    {
+      "state": "Uttarakhand",
+      "rank": 11,
+      "production_share": "~1%",
+      "region": "Northern",
+      "note": "Hilly terrain cultivation"
+    },
+    {
+      "state": "Madhya Pradesh",
+      "rank": 12,
+      "production_share": "~0.5%",
+      "region": "Central",
+      "note": "Limited cultivation"
+    },
+    {
+      "state": "Odisha",
+      "rank": 13,
+      "production_share": "~0.3%",
+      "region": "Eastern",
+      "note": "Coastal regions"
+    },
+    {
+      "state": "West Bengal",
+      "rank": 14,
+      "production_share": "~0.2%",
+      "region": "Eastern",
+      "note": "Small scale cultivation"
+    },
+    {
+      "state": "Kerala",
+      "rank": 15,
+      "production_share": "<0.1%",
+      "region": "Southern",
+      "note": "Minimal commercial cultivation"
+    }
+  ],
+  "non_sugarcane_states": [
+    "Andaman And Nicobar Islands",
+    "Arunachal Pradesh",
+    "Assam",
+    "Chhattisgarh",
+    "Dadra And Nagar Haveli",
+    "Delhi",
+    "Goa",
+    "Himachal Pradesh",
+    "Jammu And Kashmir",
+    "Jharkhand",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Puducherry",
+    "Rajasthan",
+    "Tripura"
+  ],
+  "top_5_states_90_percent_production": [
+    "Uttar Pradesh",
+    "Maharashtra",
+    "Karnataka",
+    "Tamil Nadu",
+    "Bihar"
+  ],
+  "recommended_states_for_model": [
+    "Uttar Pradesh",
+    "Maharashtra",
+    "Karnataka",
+    "Tamil Nadu",
+    "Bihar",
+    "Haryana",
+    "Punjab",
+    "Andhra Pradesh",
+    "Telangana",
+    "Gujarat",
+    "Uttarakhand"
+  ],
+  "notes": {
+    "top_5_coverage": "These 5 states account for ~88% of India's sugarcane production",
+    "top_11_coverage": "These 11 states account for ~99% of India's sugarcane production",
+    "data_quality": "Only use states with significant commercial sugarcane cultivation for accurate predictions"
+  }
+}

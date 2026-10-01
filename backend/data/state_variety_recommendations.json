@@ -1,0 +1,20 @@
+{
+  "status": "confirmed",
+  "confirmation_required": false,
+  "confirmed_states": ["Major sugarcane-growing states only (99% of India's production)"],
+  "source": "Filtered to include only 11 major sugarcane-growing states. ML models support 8 varieties including Karnataka varieties.",
+  "note": "Only states with significant commercial sugarcane cultivation are included. These 11 states account for ~99% of India's sugarcane production.",
+  "states": {
+    "Uttar Pradesh": ["Co 0238", "Co 86032"],
+    "Maharashtra": ["Co 86032", "CoM 0265"],
+    "Karnataka": ["Co 86032", "CoM 0265", "Co 94012", "Co 419", "Co 62175"],
+    "Tamil Nadu": ["Co 86032"],
+    "Bihar": ["Co 0238", "Co 86032"],
+    "Haryana": ["CoC 671", "Co 0238"],
+    "Punjab": ["Co 0238", "CoC 671"],
+    "Andhra Pradesh": ["Co 86032"],
+    "Telangana": ["Co 86032"],
+    "Gujarat": ["Co 99004", "Co 86032"],
+    "Uttarakhand": ["Co 86032", "Co 0238"]
+  }
+}
