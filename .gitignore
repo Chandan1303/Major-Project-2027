@@ -42,3 +42,13 @@ Thumbs.db
 
 # Generated reports
 reports/AGR-*
+
+# Large datasets (keep structure, not data)
+*.csv
+!backend/data/*.csv
+!final_dataset/SUGARCANE_COMPLETE_ML_DATASET.csv
+!final_dataset/SUGARCANE_COMPLETE_ML_DATASET_CLEAN.csv
+
+# Excel workbooks
+*.xlsx
+!sugarcane_varieties_master.xlsx

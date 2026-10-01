@@ -659,7 +659,7 @@ export default function PredictionPage() {
                   <div className="form-group">
                     <label style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6, fontSize: 13, marginBottom: 6 }}>
                       <TrendingUp size={14} className="text-emerald-500" />
-                      Historical Benchmark Yield (t/ha) *
+                      Previous Year Yield (t/ha) *
                     </label>
                     <input
                       type="number"
@@ -672,7 +672,7 @@ export default function PredictionPage() {
                       placeholder="e.g. 95.0"
                       required
                     />
-                    <small style={{ color: 'var(--text-muted)', fontSize: 11.5, marginTop: 4, display: 'block' }}>Prior season baseline or block average</small>
+                    <small style={{ color: 'var(--text-muted)', fontSize: 11.5, marginTop: 4, display: 'block' }}>Last season's actual harvest yield for this field/block</small>
                   </div>
                 </div>
 
