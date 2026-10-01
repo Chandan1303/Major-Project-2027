@@ -76,13 +76,17 @@ class YieldPredictionEngine:
             self.secondary_model_name = "xgboost"
             self.secondary_model = self.xgb_model
 
-        self.varieties = ["Co 86032", "Co 0238", "CoC 671", "Co 99004", "CoM 0265"]
+        self.varieties = ["Co 86032", "Co 0238", "CoC 671", "Co 99004", "CoM 0265", "Co 94012", "Co 419", "Co 62175"]
+        # Realistic average yields under good conditions (not theoretical maximum)
         self.variety_potentials = {
-            "Co 86032": 118.5,
-            "Co 0238": 132.0,
-            "CoC 671": 102.0,
-            "Co 99004": 112.0,
-            "CoM 0265": 142.0
+            "Co 86032": 95.0,   # Realistic: 80-110 t/ha
+            "Co 0238": 105.0,   # Realistic: 90-120 t/ha
+            "CoC 671": 85.0,    # Realistic: 70-100 t/ha
+            "Co 99004": 90.0,   # Realistic: 75-105 t/ha
+            "CoM 0265": 110.0,  # Realistic: 95-125 t/ha
+            "Co 94012": 90.0,   # Realistic: 75-105 t/ha (Karnataka variety)
+            "Co 419": 95.0,     # Realistic: 80-110 t/ha (Karnataka variety)
+            "Co 62175": 100.0   # Realistic: 85-115 t/ha (Karnataka variety)
         }
 
     def encode_input(self, raw: dict) -> pd.DataFrame:
@@ -266,7 +270,7 @@ class YieldPredictionEngine:
         adjusted_yield = selected_base_val * season_multiplier
         primary_val = round(adjusted_yield, 2)
 
-        ref_yield = self.variety_potentials.get(variety, 115.0)
+        ref_yield = self.variety_potentials.get(variety, 90.0)  # Default to realistic average
 
         expected_loss_t = max(0.0, ref_yield - primary_val)
         expected_loss_pct = round((expected_loss_t / ref_yield) * 100.0, 1)
