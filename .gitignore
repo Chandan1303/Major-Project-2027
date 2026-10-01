@@ -1,0 +1,76 @@
+# Dependencies
+node_modules/
+dist/
+frontend/node_modules/
+frontend/dist/
+frontend/.npm-cache/
+backend/node_modules/
+
+# Environment variables - NEVER PUSH
+.env
+*.env
+!.env.example
+backend/.env
+frontend/.env
+data_collection/.env
+
+# API Keys and Secrets
+*_API_KEY*
+*_SECRET*
+*_TOKEN*
+
+# Logs
+*.log
+npm-debug.log*
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~
+
+# Test output files
+test_*.py
+*_test.py
+karnataka_prediction*.json
+
+# Generated reports
+reports/AGR-*
+
+# Large datasets (keep structure, not data)
+*.csv
+!backend/data/*.csv
+
+# Documentation markdown files (keep these)
+!*.md
+!README*.md
+
+# Keep essential Python files
+!*.py
+
+# Excel workbooks
+*.xlsx
+!sugarcane_varieties_master.xlsx

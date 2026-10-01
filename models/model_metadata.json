@@ -1,0 +1,106 @@
+{
+  "best_model": "xgboost",
+  "training_date": "2026-10-01 12:18:41",
+  "n_samples_train": 6814,
+  "n_samples_test": 1704,
+  "n_features": 20,
+  "season_feature_added": true,
+  "variety_season_interaction_added": true,
+  "season_categories": [
+    "Autumn",
+    "Kharif",
+    "Rabi",
+    "Summer",
+    "Whole Year",
+    "Winter",
+    "nan"
+  ],
+  "variety_season_combinations": [
+    "Co 0238_Kharif",
+    "Co 0238_Whole Year",
+    "Co 86032_Autumn",
+    "Co 86032_Kharif",
+    "Co 86032_Rabi",
+    "Co 86032_Summer",
+    "Co 86032_Whole Year",
+    "Co 86032_Winter",
+    "Co 86032_nan",
+    "Co 99004_Whole Year",
+    "CoH 160_Whole Year",
+    "CoM 0265_Kharif",
+    "CoM 0265_Whole Year",
+    "CoPb 94_Whole Year"
+  ],
+  "models_trained": [
+    "xgboost"
+  ],
+  "test_metrics": {
+    "xgboost": {
+      "test_rmse": 46.4080267701164,
+      "test_mae": 13.60944739175656,
+      "test_r2": 0.8386607530119994
+    }
+  },
+  "feature_importance_top15": [
+    {
+      "feature": "yield_3yr_avg",
+      "importance": 0.4712410569190979
+    },
+    {
+      "feature": "state_encoded",
+      "importance": 0.1471971571445465
+    },
+    {
+      "feature": "yield_5yr_avg",
+      "importance": 0.10856911540031433
+    },
+    {
+      "feature": "prev_year_yield",
+      "importance": 0.049531374126672745
+    },
+    {
+      "feature": "rainfall_mm",
+      "importance": 0.04706728830933571
+    },
+    {
+      "feature": "variety_season_encoded",
+      "importance": 0.03614284098148346
+    },
+    {
+      "feature": "area_hectare",
+      "importance": 0.03454277291893959
+    },
+    {
+      "feature": "season_encoded",
+      "importance": 0.025366196408867836
+    },
+    {
+      "feature": "temperature_c",
+      "importance": 0.021058255806565285
+    },
+    {
+      "feature": "sunlight_hours",
+      "importance": 0.01826065592467785
+    },
+    {
+      "feature": "soil_phosphorus",
+      "importance": 0.010633143596351147
+    },
+    {
+      "feature": "irrigation_frequency",
+      "importance": 0.007963725365698338
+    },
+    {
+      "feature": "variety_encoded",
+      "importance": 0.006609413307160139
+    },
+    {
+      "feature": "soil_nitrogen",
+      "importance": 0.006478497758507729
+    },
+    {
+      "feature": "ndvi_mean",
+      "importance": 0.0036924949381500483
+    }
+  ]
+}
