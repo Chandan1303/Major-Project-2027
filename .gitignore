@@ -64,6 +64,7 @@ reports/AGR-*
 *.csv
 !backend/data/*.csv
 !final_dataset/SUGARCANE_COMPLETE_ML_DATASET.csv
+!final_dataset/SUGARCANE_COMPLETE_ML_DATASET_CLEAN.csv
 
 # Documentation markdown files (keep these)
 !*.md
