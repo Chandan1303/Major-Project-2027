@@ -1,0 +1,137 @@
+[
+  {
+    "state": "Uttar Pradesh",
+    "districts": [
+      "Muzaffarnagar",
+      "Meerut",
+      "Bijnor",
+      "Saharanpur",
+      "Bareilly",
+      "Lakhimpur Kheri",
+      "Deoria",
+      "Basti",
+      "Gonda",
+      "Gorakhpur",
+      "Pilibhit",
+      "Shahjahanpur",
+      "Bulandshahr"
+    ]
+  },
+  {
+    "state": "Maharashtra",
+    "districts": [
+      "Kolhapur",
+      "Sangli",
+      "Satara",
+      "Ahmednagar",
+      "Pune",
+      "Solapur",
+      "Nashik",
+      "Jalgaon",
+      "Dhule",
+      "Nandurbar",
+      "Beed",
+      "Osmanabad"
+    ]
+  },
+  {
+    "state": "Karnataka",
+    "districts": [
+      "Belagavi",
+      "Mandya",
+      "Mysuru",
+      "Bagalkot",
+      "Shivamogga",
+      "Vijayapura",
+      "Chikkamagaluru",
+      "Davangere",
+      "Raichur",
+      "Bellary",
+      "Chitradurga",
+      "Uttara Kannada"
+    ]
+  },
+  {
+    "state": "Tamil Nadu",
+    "districts": [
+      "Coimbatore",
+      "Erode",
+      "Salem",
+      "Thanjavur",
+      "Tiruchirappalli",
+      "Cuddalore",
+      "Tirunelveli",
+      "Thoothukudi",
+      "Villupuram",
+      "Namakkal",
+      "Karur",
+      "Perambalur"
+    ]
+  },
+  {
+    "state": "Andhra Pradesh",
+    "districts": [
+      "East Godavari",
+      "West Godavari",
+      "Krishna",
+      "Visakhapatnam",
+      "Guntur",
+      "Prakasam",
+      "Chittoor",
+      "Nellore"
+    ]
+  },
+  {
+    "state": "Gujarat",
+    "districts": [
+      "Surat",
+      "Navsari",
+      "Bharuch",
+      "Valsad",
+      "Tapi",
+      "Narmada",
+      "Ahmedabad",
+      "Kheda"
+    ]
+  },
+  {
+    "state": "Haryana",
+    "districts": [
+      "Yamuna Nagar",
+      "Karnal",
+      "Kurukshetra"
+    ]
+  },
+  {
+    "state": "Punjab",
+    "districts": [
+      "Jalandhar",
+      "Gurdaspur",
+      "Amritsar"
+    ]
+  },
+  {
+    "state": "Bihar",
+    "districts": [
+      "Champaran",
+      "Siwan",
+      "Gopalganj",
+      "Muzaffarpur",
+      "Saran",
+      "Darbhanga",
+      "Vaishali"
+    ]
+  },
+  {
+    "state": "Telangana",
+    "districts": [
+      "Nizamabad",
+      "Medak",
+      "Karimnagar",
+      "Khammam",
+      "Warangal",
+      "Nalgonda",
+      "Sangareddy"
+    ]
+  }
+]
