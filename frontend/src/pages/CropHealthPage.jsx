@@ -4,8 +4,20 @@ import axios from 'axios';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
-// States and districts from prediction system (11 major sugarcane states)
+// States and districts - ALL NOW HAVE NDVI DATA ✅
 const INDIA_GEOGRAPHY = [
+  {
+    state: "Karnataka",
+    districts: ["Belagavi", "Mandya", "Mysuru", "Bagalkot", "Shivamogga"]
+  },
+  {
+    state: "Punjab",
+    districts: ["Jalandhar", "Gurdaspur", "Amritsar"]
+  },
+  {
+    state: "Tamil Nadu",
+    districts: ["Coimbatore", "Erode", "Salem", "Thanjavur", "Tiruchirappalli", "Cuddalore"]
+  },
   {
     state: "Uttar Pradesh",
     districts: ["Muzaffarnagar", "Meerut", "Bijnor", "Saharanpur", "Bareilly", "Lakhimpur Kheri", "Deoria"]
@@ -13,14 +25,6 @@ const INDIA_GEOGRAPHY = [
   {
     state: "Maharashtra",
     districts: ["Kolhapur", "Sangli", "Satara", "Ahmednagar", "Pune", "Solapur"]
-  },
-  {
-    state: "Karnataka",
-    districts: ["Belagavi", "Mandya", "Mysuru", "Bagalkot", "Shivamogga"]
-  },
-  {
-    state: "Tamil Nadu",
-    districts: ["Coimbatore", "Erode", "Salem", "Thanjavur", "Tiruchirappalli", "Cuddalore"]
   },
   {
     state: "Andhra Pradesh",
@@ -33,10 +37,6 @@ const INDIA_GEOGRAPHY = [
   {
     state: "Haryana",
     districts: ["Yamuna Nagar", "Karnal", "Kurukshetra"]
-  },
-  {
-    state: "Punjab",
-    districts: ["Jalandhar", "Gurdaspur", "Amritsar"]
   },
   {
     state: "Bihar",
@@ -83,7 +83,7 @@ export default function CropHealthPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedState, setSelectedState] = useState('Karnataka');
-  const [selectedDistrict, setSelectedDistrict] = useState('Mandya');
+  const [selectedDistrict, setSelectedDistrict] = useState('Belagavi');
   const [healthThresholds, setHealthThresholds] = useState([]);
   
   const zone = zones.find(z => z.id === activeZone);
@@ -106,7 +106,11 @@ export default function CropHealthPage() {
   // Fetch NDVI data when state/district changes
   useEffect(() => {
     if (selectedState && selectedDistrict) {
-      fetchNDVIData();
+      // Add small delay to prevent multiple rapid calls
+      const timer = setTimeout(() => {
+        fetchNDVIData();
+      }, 300);
+      return () => clearTimeout(timer);
     }
   }, [selectedState, selectedDistrict]);
 

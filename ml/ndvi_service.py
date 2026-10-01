@@ -334,12 +334,77 @@ class NDVIService:
         --------
         dict : Historical NDVI statistics
         """
-        # Map districts to NDVI regions
+        # Map districts to NDVI regions (all 46+ districts)
         district_to_region_file = {
+            # Karnataka
             "Belagavi": "NDVI_belagavi_cleaned.csv",
             "Mandya": "NDVI_mandya_cleaned.csv",
-            "Punjab": "NDVI_punjab_cleaned.csv",
-            "Tamil Nadu": "NDVI_tamil_nadu_cleaned.csv"
+            "Mysuru": "NDVI_mysuru_cleaned.csv",
+            "Bagalkot": "NDVI_bagalkot_cleaned.csv",
+            "Shivamogga": "NDVI_shivamogga_cleaned.csv",
+            
+            # Uttar Pradesh
+            "Muzaffarnagar": "NDVI_muzaffarnagar_cleaned.csv",
+            "Meerut": "NDVI_meerut_cleaned.csv",
+            "Bijnor": "NDVI_bijnor_cleaned.csv",
+            "Saharanpur": "NDVI_saharanpur_cleaned.csv",
+            "Bareilly": "NDVI_bareilly_cleaned.csv",
+            "Lakhimpur Kheri": "NDVI_lakhimpur_kheri_cleaned.csv",
+            "Deoria": "NDVI_deoria_cleaned.csv",
+            
+            # Maharashtra
+            "Kolhapur": "NDVI_kolhapur_cleaned.csv",
+            "Sangli": "NDVI_sangli_cleaned.csv",
+            "Satara": "NDVI_satara_cleaned.csv",
+            "Ahmednagar": "NDVI_ahmednagar_cleaned.csv",
+            "Pune": "NDVI_pune_cleaned.csv",
+            "Solapur": "NDVI_solapur_cleaned.csv",
+            
+            # Tamil Nadu
+            "Coimbatore": "NDVI_coimbatore_cleaned.csv",
+            "Erode": "NDVI_erode_cleaned.csv",
+            "Salem": "NDVI_salem_cleaned.csv",
+            "Thanjavur": "NDVI_thanjavur_cleaned.csv",
+            "Tiruchirappalli": "NDVI_tiruchirappalli_cleaned.csv",
+            "Cuddalore": "NDVI_cuddalore_cleaned.csv",
+            "Tamil Nadu": "NDVI_tamil_nadu_cleaned.csv",  # State-level fallback
+            
+            # Andhra Pradesh
+            "East Godavari": "NDVI_east_godavari_cleaned.csv",
+            "West Godavari": "NDVI_west_godavari_cleaned.csv",
+            "Krishna": "NDVI_krishna_cleaned.csv",
+            "Visakhapatnam": "NDVI_visakhapatnam_cleaned.csv",
+            
+            # Gujarat
+            "Surat": "NDVI_surat_cleaned.csv",
+            "Navsari": "NDVI_navsari_cleaned.csv",
+            "Bharuch": "NDVI_bharuch_cleaned.csv",
+            "Valsad": "NDVI_valsad_cleaned.csv",
+            
+            # Haryana
+            "Yamuna Nagar": "NDVI_yamuna_nagar_cleaned.csv",
+            "Karnal": "NDVI_karnal_cleaned.csv",
+            "Kurukshetra": "NDVI_kurukshetra_cleaned.csv",
+            
+            # Punjab
+            "Jalandhar": "NDVI_jalandhar_cleaned.csv",
+            "Gurdaspur": "NDVI_gurdaspur_cleaned.csv",
+            "Amritsar": "NDVI_amritsar_cleaned.csv",
+            "Punjab": "NDVI_punjab_cleaned.csv",  # State-level fallback
+            
+            # Bihar
+            "Champaran": "NDVI_champaran_cleaned.csv",
+            "Siwan": "NDVI_siwan_cleaned.csv",
+            "Gopalganj": "NDVI_gopalganj_cleaned.csv",
+            
+            # Telangana
+            "Nizamabad": "NDVI_nizamabad_cleaned.csv",
+            "Medak": "NDVI_medak_cleaned.csv",
+            "Karimnagar": "NDVI_karimnagar_cleaned.csv",
+            
+            # Uttarakhand
+            "Haridwar": "NDVI_haridwar_cleaned.csv",
+            "Dehradun": "NDVI_dehradun_cleaned.csv",
         }
         
         # Try to find matching file
