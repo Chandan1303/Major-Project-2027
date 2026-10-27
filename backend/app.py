@@ -5,6 +5,7 @@ Technology: Python Flask, Flask-CORS, MySQL, SQLAlchemy, Pandas, NumPy, Scikit-l
 """
 
 import os
+import re
 import sys
 import json
 import hashlib
@@ -22,15 +23,24 @@ if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':
 
 import jwt
 import bcrypt
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, redirect
 from flask_cors import CORS
-from sqlalchemy import func
+from sqlalchemy import func, inspect, text
 import numpy as np
+
+try:
+    from backend.ndvi_routes import ndvi_bp
+except ImportError:
+    from ndvi_routes import ndvi_bp
 
 # Ensure project root is in sys.path
 ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
+
+from dotenv import load_dotenv
+load_dotenv(ROOT_DIR / ".env")
+load_dotenv(ROOT_DIR / "backend" / ".env")
 
 from backend.models import (
     db, Role, User, Farm, Field, SugarcaneVariety, SoilData, WeatherData,
@@ -38,6 +48,8 @@ from backend.models import (
     YieldPrediction, PredictionHistory, PredictionExplanation,
     Recommendation, ModelPerformance, Report
 )
+from backend.email_service import send_reset_email, send_verification_email
+from backend.crop_intelligence_routes import crop_intelligence_bp, seed_crop_intelligence_references
 from ml import (
     YieldPredictionEngine, CropIntelligenceEngine, WeatherService,
     SoilAnalyzer, VarietyIntelligenceEngine
@@ -49,25 +61,123 @@ from reports.report_generator import AgronomicReportGenerator
 # -----------------------------------------------------------------------------
 app = Flask(__name__)
 
-DB_USER = os.environ.get("DB_USER", "root")
-DB_PASS = os.environ.get("DB_PASS", "212006")
-DB_HOST = os.environ.get("DB_HOST", "localhost")
+DB_USER = os.environ.get("DB_USER")
+DB_PASS = os.environ.get("DB_PASS")
+DB_HOST = os.environ.get("DB_HOST")
 DB_PORT = os.environ.get("DB_PORT", "3306")
-DB_NAME = os.environ.get("DB_NAME", "majorlogin")
+DB_NAME = os.environ.get("DB_NAME")
 
-app.config["SQLALCHEMY_DATABASE_URI"] = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
+
+def resolve_database_uri():
+    configured_database_url = os.environ.get("DATABASE_URL") or os.environ.get("SQLALCHEMY_DATABASE_URI")
+    if configured_database_url:
+        if configured_database_url.startswith("mysql://"):
+            configured_database_url = configured_database_url.replace("mysql://", "mysql+pymysql://", 1)
+        return configured_database_url
+
+    if os.environ.get("USE_SQLITE", "auto").lower() in {"1", "true", "yes", "on"}:
+        sqlite_db_path = (ROOT_DIR / "backend" / "sugar_yield.db").resolve()
+        return f"sqlite:///{sqlite_db_path}"
+
+    if DB_USER and DB_HOST and DB_NAME:
+        return f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}?charset=utf8mb4"
+
+    sqlite_db_path = (ROOT_DIR / "backend" / "sugar_yield.db").resolve()
+    return f"sqlite:///{sqlite_db_path}"
+
+
+app.config["SQLALCHEMY_DATABASE_URI"] = resolve_database_uri()
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_POOL_RECYCLE"] = 280
 app.config["SQLALCHEMY_POOL_TIMEOUT"] = 20
 app.config["SECRET_KEY"] = os.environ.get("JWT_SECRET", "sugarcane_secret_jwt_key_2027")
 
-# CORS setup
-CORS(app, supports_credentials=True, origins=[
-    "http://localhost:5173", "http://127.0.0.1:5173",
-    "http://localhost:3000", "http://127.0.0.1:3000"
-])
+configured_frontend_origins = [
+    origin.strip().rstrip("/")
+    for origin in os.environ.get("FRONTEND_URL", "").split(",")
+    if origin.strip()
+]
+cors_origins = [
+    re.compile(r"^https?://(localhost|127\.0\.0\.1)(:\d+)?$"),
+    *configured_frontend_origins,
+]
+CORS(
+    app,
+    resources={r"/*": {"origins": cors_origins}},
+    supports_credentials=True,
+)
 
 db.init_app(app)
+app.register_blueprint(ndvi_bp)
+app.register_blueprint(crop_intelligence_bp)
+
+
+@app.route("/ndvi", defaults={"subpath": "status"}, methods=["GET", "POST"])
+@app.route("/ndvi/<path:subpath>", methods=["GET", "POST"])
+def ndvi_compat(subpath):
+    query_string = request.query_string.decode("utf-8")
+    target = f"/api/ndvi/{subpath}"
+    if query_string:
+        target = f"{target}?{query_string}"
+    return redirect(target, code=307)
+
+
+def seed_default_roles():
+    default_roles = [
+        {"id": 1, "name": "user", "display_name": "Farmer / User", "description": "Primary farm operator"},
+        {"id": 2, "name": "officer", "display_name": "Agricultural Officer", "description": "Field advisory role"},
+        {"id": 3, "name": "admin", "display_name": "Administrator", "description": "Platform administrator"},
+    ]
+
+    for role_data in default_roles:
+        existing_role = Role.query.filter_by(name=role_data["name"]).first()
+        if existing_role is None:
+            db.session.add(Role(**role_data))
+    db.session.commit()
+
+
+with app.app_context():
+    db.create_all()
+    seed_crop_intelligence_references()
+    # Keep older MySQL installations compatible with the current ORM models.
+    # create_all() creates missing tables, but does not add columns to existing ones.
+    legacy_columns = {
+        "farms": {
+            "survey_number": "VARCHAR(120) NULL",
+            "description": "TEXT NULL",
+        },
+        "fields": {
+            "latitude": "DECIMAL(10, 7) NULL",
+            "longitude": "DECIMAL(10, 7) NULL",
+            "irrigation_method": "VARCHAR(80) NULL",
+            "notes": "TEXT NULL",
+            "boundary_geojson": "TEXT NULL",
+        },
+    }
+    for table_name, columns_to_add in legacy_columns.items():
+        existing_columns = {column["name"] for column in inspect(db.engine).get_columns(table_name)}
+        for column_name, column_definition in columns_to_add.items():
+            if column_name not in existing_columns:
+                db.session.execute(text(
+                    f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_definition}"
+                ))
+    for table_name in ("farms", "fields"):
+        column_names = {column["name"] for column in inspect(db.engine).get_columns(table_name)}
+        if "is_archived" not in column_names:
+            db.session.execute(text(f"ALTER TABLE {table_name} ADD COLUMN is_archived BOOLEAN NOT NULL DEFAULT 0"))
+    field_columns = {column["name"]: column for column in inspect(db.engine).get_columns("fields")}
+    if db.engine.dialect.name == "mysql" and any(
+        not field_columns[column_name]["nullable"]
+        for column_name in ("soil_ph", "soil_moisture", "planting_date")
+    ):
+        db.session.execute(text(
+            "ALTER TABLE fields "
+            "MODIFY COLUMN soil_ph DECIMAL(4, 2) NULL, "
+            "MODIFY COLUMN soil_moisture DECIMAL(5, 2) NULL, "
+            "MODIFY COLUMN planting_date DATE NULL"
+        ))
+    db.session.commit()
+    seed_default_roles()
 
 # Initialize ML & Decision Support Engines
 prediction_engine = YieldPredictionEngine()
@@ -105,7 +215,8 @@ def get_current_user():
 
     try:
         payload = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
-        return User.query.get(payload["user_id"])
+        user = User.query.get(payload["user_id"])
+        return user if user and user.status == "active" else None
     except Exception:
         return None
 
@@ -127,11 +238,22 @@ def require_roles(*allowed_roles):
             user = get_current_user()
             if not user:
                 return jsonify({"success": False, "message": "Authentication required."}), 401
-            if user.role not in allowed_roles and "admin" not in allowed_roles:
+            if user.role not in allowed_roles:
                 return jsonify({"success": False, "message": "Permission denied: insufficient role privileges."}), 403
             return f(user, *args, **kwargs)
         return decorated
     return decorator
+
+
+def validate_password(password):
+    if (
+        len(password) < 10
+        or not re.search(r"[a-z]", password)
+        or not re.search(r"[A-Z]", password)
+        or not re.search(r"\d", password)
+    ):
+        return False
+    return True
 
 
 # -----------------------------------------------------------------------------
@@ -154,43 +276,57 @@ def auth_register():
     if not name or not email or not password:
         return jsonify({"success": False, "message": "Name, email, and password are required."}), 400
 
-    if len(password) < 6:
-        return jsonify({"success": False, "message": "Password must be at least 6 characters."}), 400
+    if role_requested != "user":
+        return jsonify({
+            "success": False,
+            "code": "ROLE_NOT_ALLOWED",
+            "message": "Public registration is limited to standard user accounts."
+        }), 403
+
+    if not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email):
+        return jsonify({"success": False, "message": "Enter a valid email address."}), 400
+
+    if not validate_password(password):
+        return jsonify({
+            "success": False,
+            "message": "Password must be at least 10 characters and include lowercase, uppercase, and a number."
+        }), 400
 
     if User.query.filter_by(email=email).first():
         return jsonify({"success": False, "message": "An account with this email already exists."}), 409
 
-    # Two-tier role validation: user and admin (backward compatible for farmer)
-    if role_requested == "admin":
-        user_role = "admin"
-        role_id = 3
-    else:
-        user_role = "user"
-        role_id = 1
-
     hashed_pw = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    verification_token = secrets.token_hex(32)
 
     new_user = User(
         name=name,
         email=email,
         password_hash=hashed_pw,
-        role=user_role,
-        role_id=role_id,
-        email_verified=True, # Auto-verify for seamless onboarding
+        role="user",
+        role_id=1,
+        email_verified=False,
+        verification_token=hashlib.sha256(verification_token.encode("utf-8")).hexdigest(),
+        verification_token_expires=datetime.utcnow() + timedelta(hours=24),
         status="active"
     )
     db.session.add(new_user)
     db.session.commit()
 
-    token = generate_jwt(new_user)
-    resp = make_response(jsonify({
+    try:
+        send_verification_email(new_user.name, new_user.email, verification_token)
+    except Exception:
+        app.logger.exception("Failed to send email verification message for user %s", new_user.id)
+        return jsonify({
+            "success": False,
+            "code": "EMAIL_DELIVERY_FAILED",
+            "message": "Your account was created, but the verification email could not be sent. Please try resending it."
+        }), 503
+
+    return jsonify({
         "success": True,
-        "message": "Account created successfully!",
-        "token": token,
-        "data": {"user": new_user.to_dict()}
-    }), 201)
-    resp.set_cookie("token", token, httponly=True, samesite="Lax", max_age=7*86400)
-    return resp
+        "message": "Account created. Check your email to verify your account.",
+        "data": {"user": new_user.to_dict(), "requiresVerification": True}
+    }), 201
 
 
 @app.route("/api/auth/login", methods=["POST"])
@@ -214,6 +350,37 @@ def auth_login():
 
     if not is_valid:
         return jsonify({"success": False, "message": "Invalid email or password."}), 401
+
+    if user.status != "active":
+        return jsonify({
+            "success": False,
+            "code": "ACCOUNT_DISABLED",
+            "message": "This account is inactive or suspended. Contact an administrator for assistance."
+        }), 403
+
+    portal = data.get("portal")
+    if portal is not None and portal not in {"admin", "user"}:
+        return jsonify({"success": False, "message": "Select a valid login portal."}), 400
+
+    if portal == "admin" and user.role != "admin":
+        return jsonify({
+            "success": False,
+            "code": "ROLE_MISMATCH",
+            "message": "This account does not have administrator access."
+        }), 403
+    if portal == "user" and user.role not in {"user", "farmer", "officer"}:
+        return jsonify({
+            "success": False,
+            "code": "ROLE_MISMATCH",
+            "message": "This account cannot access the user portal."
+        }), 403
+
+    if not user.email_verified:
+        return jsonify({
+            "success": False,
+            "code": "EMAIL_NOT_VERIFIED",
+            "message": "Verify your email address before signing in."
+        }), 403
 
     token = generate_jwt(user)
     resp = make_response(jsonify({
@@ -249,20 +416,30 @@ def auth_forgot_password():
     user = User.query.filter_by(email=email).first()
     if not user:
         # Don't leak user existence
-        return jsonify({"success": True, "message": "If an account with that email exists, password reset instructions have been generated."})
+        return jsonify({"success": True, "message": "If an account with that email exists, password reset instructions have been sent."})
 
-    reset_token = secrets.token_hex(20)
+    reset_token = secrets.token_hex(32)
     token_hash = hashlib.sha256(reset_token.encode("utf-8")).hexdigest()
-    expires_at = datetime.utcnow() + timedelta(hours=2)
+    expires_at = datetime.utcnow() + timedelta(minutes=30)
 
+    PasswordResetToken.query.filter_by(user_id=user.id, used=False).update({"used": True})
     prt = PasswordResetToken(user_id=user.id, token_hash=token_hash, expires_at=expires_at)
     db.session.add(prt)
     db.session.commit()
 
+    try:
+        send_reset_email(user.name, user.email, reset_token)
+    except Exception:
+        app.logger.exception("Failed to send password reset message for user %s", user.id)
+        return jsonify({
+            "success": False,
+            "code": "EMAIL_DELIVERY_FAILED",
+            "message": "Password reset email could not be sent. Please try again later."
+        }), 503
+
     return jsonify({
         "success": True,
-        "message": "Password reset link generated successfully.",
-        "reset_token": reset_token
+        "message": "If an account with that email exists, password reset instructions have been sent."
     })
 
 
@@ -274,6 +451,12 @@ def auth_reset_password():
 
     if not token or not new_password:
         return jsonify({"success": False, "message": "Token and new password are required."}), 400
+
+    if not validate_password(new_password):
+        return jsonify({
+            "success": False,
+            "message": "Password must be at least 10 characters and include lowercase, uppercase, and a number."
+        }), 400
 
     token_hash = hashlib.sha256(token.encode("utf-8")).hexdigest()
     prt = PasswordResetToken.query.filter_by(token_hash=token_hash, used=False).first()
@@ -301,11 +484,11 @@ def auth_reset_password():
 @app.route("/api/dashboard/summary", methods=["GET"])
 @require_auth
 def dashboard_summary(user):
-    farms = Farm.query.filter_by(user_id=user.id).order_by(Farm.created_at.desc()).all()
+    farms = Farm.query.filter_by(user_id=user.id, is_archived=False).order_by(Farm.created_at.desc()).all()
     predictions = Prediction.query.filter_by(user_id=user.id).order_by(Prediction.created_at.desc()).limit(20).all()
 
     total_farms = len(farms)
-    total_fields = sum(len(f.fields) for f in farms)
+    total_fields = sum(sum(not field.is_archived for field in f.fields) for f in farms)
     total_cultivated_area = sum(float(f.total_area or 0) for f in farms)
 
     all_fields = [fld for f in farms for fld in f.fields]
@@ -331,26 +514,26 @@ def dashboard_summary(user):
         pred_conf = float(latest_pred.confidence)
         pred_loss = float(latest_pred.expected_loss)
     else:
-        expected_yield = 84.5 if total_farms > 0 else 0.0
-        crop_health_status = "Healthy" if total_farms > 0 else "Pending Telemetry"
-        loc = farms[0].location if farms else "Kolhapur"
-        cur_w = weather_service.get_current(loc)
+        expected_yield = None
+        crop_health_status = "Pending Telemetry"
+        loc = farms[0].location if farms else None
+        cur_w = weather_service.get_current(loc) if loc else {}
         pred_weather = {
-            "temperature": cur_w.get("temperature", 28.5),
-            "rainfall": cur_w.get("rainfall", 18.0),
-            "humidity": cur_w.get("humidity", 64.0),
-            "condition": cur_w.get("condition", "Sunny / Favorable"),
+            "temperature": cur_w.get("temperature"),
+            "rainfall": cur_w.get("rainfall"),
+            "humidity": cur_w.get("humidity"),
+            "condition": cur_w.get("condition", "Unavailable"),
             "location": loc
         }
         f0 = all_fields[0] if all_fields else None
         pred_soil = {
-            "type": f0.soil_type if f0 else "Loamy Soil",
-            "ph": float(f0.soil_ph) if f0 else 6.8,
-            "moisture": float(f0.soil_moisture) if f0 else 58.0,
-            "suitability": "Highly Suitable"
+            "type": f0.soil_type if f0 else None,
+            "ph": float(f0.soil_ph) if f0 and f0.soil_ph is not None else None,
+            "moisture": float(f0.soil_moisture) if f0 and f0.soil_moisture is not None else None,
+            "suitability": "Unavailable"
         }
-        pred_conf = 92.4 if total_farms > 0 else 0.0
-        pred_loss = 3.4 if total_farms > 0 else 0.0
+        pred_conf = None
+        pred_loss = None
 
     # Health distribution
     healthy_cnt = 0
@@ -365,8 +548,6 @@ def dashboard_summary(user):
                 stress_cnt += 1
             else:
                 mod_cnt += 1
-    elif total_fields > 0:
-        healthy_cnt = total_fields
 
     tot_evals = healthy_cnt + mod_cnt + stress_cnt or 1
     health_distribution = {
@@ -413,13 +594,7 @@ def dashboard_summary(user):
             for idx, p in enumerate(reversed(predictions[:7]))
         ]
     else:
-        yield_trend = [
-            {"label": "Plot 1", "variety": "Co 86032", "yield": 86.4, "benchmark": 80.0, "confidence": 93},
-            {"label": "Plot 2", "variety": "Co 0238", "yield": 84.1, "benchmark": 80.0, "confidence": 91},
-            {"label": "Plot 3", "variety": "CoM 0265", "yield": 91.2, "benchmark": 80.0, "confidence": 95},
-            {"label": "Plot 4", "variety": "CoC 671", "yield": 78.5, "benchmark": 80.0, "confidence": 89},
-            {"label": "Plot 5", "variety": "Co 99004", "yield": 82.0, "benchmark": 80.0, "confidence": 92}
-        ]
+        yield_trend = []
 
     farms_overview = [
         {
@@ -436,19 +611,19 @@ def dashboard_summary(user):
 
     varieties_count = SugarcaneVariety.query.count()
     unread_alerts = Alert.query.filter_by(user_id=user.id, is_read=False).count()
-    avg_yield = round(sum(float(p.predicted_yield) for p in predictions) / len(predictions), 1) if predictions else 76.5
+    avg_yield = round(sum(float(p.predicted_yield) for p in predictions) / len(predictions), 1) if predictions else None
 
     rf_r2 = prediction_engine.metadata.get("metrics", {}).get("random_forest", {}).get("R2", 0.7866)
     stats = {
         "totalFarms": total_farms,
         "totalFields": total_fields,
         "totalCultivatedArea": round(total_cultivated_area, 2),
-        "expectedYield": round(expected_yield, 1),
+        "expectedYield": round(expected_yield, 1) if expected_yield is not None else None,
         "cropHealthStatus": crop_health_status,
         "weather": pred_weather,
         "soilCondition": pred_soil,
-        "predictionConfidence": round(pred_conf, 1),
-        "expectedLoss": round(pred_loss, 1)
+        "predictionConfidence": round(pred_conf, 1) if pred_conf is not None else None,
+        "expectedLoss": round(pred_loss, 1) if pred_loss is not None else None
     }
 
     statistics = {
@@ -491,11 +666,13 @@ def dashboard_summary(user):
 @app.route("/api/farms", methods=["GET"])
 @require_auth
 def list_farms(user):
-    farms = Farm.query.filter_by(user_id=user.id).order_by(Farm.created_at.desc()).all()
+    farms = Farm.query.filter_by(user_id=user.id, is_archived=False).order_by(Farm.created_at.desc()).all()
+    farm_dicts = [f.to_dict() for f in farms]
     return jsonify({
         "success": True,
+        "farms": farm_dicts,
         "data": {
-            "farms": [f.to_dict() for f in farms],
+            "farms": farm_dicts,
             "total": len(farms)
         }
     })
@@ -505,34 +682,89 @@ def list_farms(user):
 @require_auth
 def create_farm(user):
     data = request.get_json(force=True) or {}
+    for key in ("name", "survey_number", "location", "address", "district", "state", "description"):
+        if data.get(key) is not None and not isinstance(data[key], str):
+            return jsonify({"success": False, "message": f"{key.replace('_', ' ').title()} must be text."}), 400
     name = (data.get("name") or "").strip()
     location = (data.get("location") or "").strip()
     address = (data.get("address") or location).strip()
     district = (data.get("district") or location).strip()
     state = (data.get("state") or "Maharashtra").strip()
+    description = (data.get("description") or "").strip()
     total_area = data.get("total_area")
+    fields_data = data.get("fields", [])
+
+    if not isinstance(fields_data, list):
+        return jsonify({"success": False, "message": "Farm fields must be provided as a list."}), 400
 
     if not name or not location or total_area is None:
         return jsonify({"success": False, "message": "Farm name, location, and total area are required."}), 400
 
     try:
         area_val = float(total_area)
-    except ValueError:
+        if not np.isfinite(area_val) or area_val <= 0:
+            raise ValueError()
+    except (ValueError, TypeError):
         return jsonify({"success": False, "message": "Total area must be a valid number."}), 400
+
+    field_total = 0.0
+    for field_data in fields_data:
+        if not isinstance(field_data, dict) or not isinstance(field_data.get("name"), str):
+            return jsonify({"success": False, "message": "Each field needs a name and area."}), 400
+        try:
+            field_area = float(field_data.get("area"))
+            if not np.isfinite(field_area) or field_area <= 0:
+                raise ValueError()
+            field_total += field_area
+        except (ValueError, TypeError):
+            return jsonify({"success": False, "message": "Each field area must be a positive number."}), 400
+    if field_total > area_val:
+        return jsonify({"success": False, "message": "Field areas cannot exceed the gross cultivable area."}), 400
+
+    try:
+        latitude = float(data["latitude"]) if data.get("latitude") not in (None, "") else None
+        longitude = float(data["longitude"]) if data.get("longitude") not in (None, "") else None
+        if (latitude is None) != (longitude is None) or (latitude is not None and (not (-90 <= latitude <= 90 and -180 <= longitude <= 180) or (latitude == 0 and longitude == 0))):
+            raise ValueError()
+    except (ValueError, TypeError):
+        return jsonify({"success": False, "message": "Provide valid latitude and longitude together; 0°, 0° cannot be used as a farm location."}), 400
 
     new_farm = Farm(
         user_id=user.id,
         name=name,
+        survey_number=(data.get("survey_number") or "").strip() or None,
         location=location,
         address=address,
         district=district,
         state=state,
         total_area=area_val,
-        latitude=data.get("latitude"),
-        longitude=data.get("longitude")
+        latitude=latitude,
+        longitude=longitude,
+        description=description
     )
     db.session.add(new_farm)
-    db.session.commit()
+    try:
+        db.session.flush()
+        for field_data in fields_data:
+            field_name = field_data["name"].strip()
+            if not field_name:
+                raise ValueError("Each field needs a name.")
+            db.session.add(Field(
+                farm_id=new_farm.id,
+                name=field_name,
+                location=location,
+                area=float(field_data["area"]),
+                soil_type="Black Cotton Soil",
+                soil_ph=None,
+                soil_moisture=None,
+                sugarcane_variety="Co 86032",
+                irrigation_method="Drip Irrigation"
+            ))
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+        app.logger.exception("Farm registration transaction failed")
+        return jsonify({"success": False, "message": "Farm registration could not be saved. Please try again."}), 500
 
     return jsonify({
         "success": True,
@@ -544,7 +776,7 @@ def create_farm(user):
 @app.route("/api/farms/<int:farm_id>", methods=["GET"])
 @require_auth
 def get_farm(user, farm_id):
-    farm = Farm.query.filter_by(id=farm_id, user_id=user.id).first()
+    farm = Farm.query.filter_by(id=farm_id, user_id=user.id, is_archived=False).first()
     if not farm:
         return jsonify({"success": False, "message": "Farm not found."}), 404
     return jsonify({
@@ -556,17 +788,45 @@ def get_farm(user, farm_id):
 @app.route("/api/farms/<int:farm_id>", methods=["PATCH", "PUT"])
 @require_auth
 def update_farm(user, farm_id):
-    farm = Farm.query.filter_by(id=farm_id, user_id=user.id).first()
+    farm = Farm.query.filter_by(id=farm_id, user_id=user.id, is_archived=False).first()
     if not farm:
         return jsonify({"success": False, "message": "Farm not found."}), 404
 
     data = request.get_json(force=True) or {}
-    if "name" in data:       farm.name = data["name"].strip()
-    if "location" in data:   farm.location = data["location"].strip()
-    if "address" in data:    farm.address = data["address"].strip()
-    if "district" in data:   farm.district = data["district"].strip()
-    if "state" in data:      farm.state = data["state"].strip()
-    if "total_area" in data: farm.total_area = float(data["total_area"])
+    previous_location = farm.location
+    for key in ("name", "survey_number", "location", "address", "district", "state", "description"):
+        if key not in data:
+            continue
+        value = data[key]
+        if value is None and key in ("address", "description"):
+            value = ""
+        if not isinstance(value, str):
+            return jsonify({"success": False, "message": f"{key.replace('_', ' ').title()} must be text."}), 400
+        value = value.strip()
+        if key in ("name", "location", "district", "state") and not value:
+            return jsonify({"success": False, "message": f"{key.replace('_', ' ').title()} is required."}), 400
+        setattr(farm, key, value)
+    if farm.location != previous_location:
+        for field in farm.fields:
+            if not field.is_archived:
+                field.location = farm.location
+    if "total_area" in data:
+        try:
+            area = float(data["total_area"])
+            if not np.isfinite(area) or area <= 0 or area < sum(float(field.area or 0) for field in farm.fields if not field.is_archived):
+                raise ValueError()
+            farm.total_area = area
+        except (ValueError, TypeError):
+            return jsonify({"success": False, "message": "Farm area must be positive and at least the sum of its field areas."}), 400
+    if "latitude" in data or "longitude" in data:
+        try:
+            latitude = float(data["latitude"]) if data.get("latitude") not in (None, "") else None
+            longitude = float(data["longitude"]) if data.get("longitude") not in (None, "") else None
+            if (latitude is None) != (longitude is None) or (latitude is not None and (not (-90 <= latitude <= 90 and -180 <= longitude <= 180) or (latitude == 0 and longitude == 0))):
+                raise ValueError()
+            farm.latitude, farm.longitude = latitude, longitude
+        except (ValueError, TypeError):
+            return jsonify({"success": False, "message": "Provide valid latitude and longitude together; 0°, 0° cannot be used as a farm location."}), 400
 
     db.session.commit()
     return jsonify({
@@ -579,13 +839,15 @@ def update_farm(user, farm_id):
 @app.route("/api/farms/<int:farm_id>", methods=["DELETE"])
 @require_auth
 def delete_farm(user, farm_id):
-    farm = Farm.query.filter_by(id=farm_id, user_id=user.id).first()
+    farm = Farm.query.filter_by(id=farm_id, user_id=user.id, is_archived=False).first()
     if not farm:
         return jsonify({"success": False, "message": "Farm not found."}), 404
 
-    db.session.delete(farm)
+    farm.is_archived = True
+    for field in farm.fields:
+        field.is_archived = True
     db.session.commit()
-    return jsonify({"success": True, "message": "Farm and associated fields deleted."})
+    return jsonify({"success": True, "message": "Farm and its fields archived. Soil, crop, and prediction history has been preserved."})
 
 
 # -----------------------------------------------------------------------------
@@ -599,12 +861,12 @@ def delete_farm(user, farm_id):
 @app.route("/api/farms/<int:farm_id>/fields", methods=["GET"])
 @require_auth
 def list_farm_fields(user, farm_id):
-    farm = Farm.query.filter_by(id=farm_id, user_id=user.id).first()
+    farm = Farm.query.filter_by(id=farm_id, user_id=user.id, is_archived=False).first()
     if not farm:
         return jsonify({"success": False, "message": "Farm not found."}), 404
     return jsonify({
         "success": True,
-        "data": {"fields": [f.to_dict() for f in farm.fields]}
+        "data": {"fields": [f.to_dict() for f in farm.fields if not f.is_archived]}
     })
 
 
@@ -613,79 +875,132 @@ def list_farm_fields(user, farm_id):
 @require_auth
 def create_field(user, farm_id=None):
     data = request.get_json(force=True) or {}
+    for key in ("name", "location", "soil_type", "sugarcane_variety", "irrigation_method", "notes", "boundary_geojson"):
+        if data.get(key) is not None and not isinstance(data[key], str):
+            return jsonify({"success": False, "message": f"{key.replace('_', ' ').title()} must be text."}), 400
     target_farm_id = farm_id or data.get("farm_id")
 
     if not target_farm_id:
         return jsonify({"success": False, "message": "farm_id is required."}), 400
 
-    farm = Farm.query.filter_by(id=target_farm_id, user_id=user.id).first()
+    farm = Farm.query.filter_by(id=target_farm_id, user_id=user.id, is_archived=False).first()
     if not farm:
         return jsonify({"success": False, "message": "Target farm not found."}), 404
 
     name = (data.get("name") or "").strip()
     area = data.get("area")
-    location = (data.get("location") or farm.location).strip()
+    # Parcel location is inherited from its registered parent holding.
+    location = (farm.location or "").strip()
     soil_type = (data.get("soil_type") or "Black Cotton Soil").strip()
-    soil_ph = float(data.get("soil_ph", 6.8))
-    soil_moisture = float(data.get("soil_moisture", 65.0))
+    try:
+        area_value = float(area)
+        if not np.isfinite(area_value) or area_value <= 0 or area_value + sum(float(field.area or 0) for field in farm.fields if not field.is_archived) > float(farm.total_area):
+            raise ValueError()
+    except (ValueError, TypeError):
+        return jsonify({"success": False, "message": "Field area must be positive and fit within the farm's registered area."}), 400
+    soil_values = {}
+    for key, upper in (("soil_ph", 14), ("soil_moisture", 100)):
+        raw_value = data.get(key)
+        if raw_value in (None, ""):
+            soil_values[key] = None
+            continue
+        try:
+            value = float(raw_value)
+            if not np.isfinite(value) or not 0 <= value <= upper:
+                raise ValueError()
+            soil_values[key] = value
+        except (ValueError, TypeError):
+            return jsonify({"success": False, "message": f"{key.replace('_', ' ').title()} must be between 0 and {upper}."}), 400
     variety = (data.get("sugarcane_variety") or "Co 86032").strip()
+    location_varieties = VARIETY_RECOMMENDATIONS_DATA.get("states", {}).get(farm.state, [])
+    if variety not in location_varieties:
+        return jsonify({
+            "success": False,
+            "message": f"Choose a sugarcane variety recommended for {farm.state or 'the registered farm state'}."
+        }), 400
     planting_date_raw = data.get("planting_date")
-
-    if not name or area is None or not planting_date_raw:
-        return jsonify({"success": False, "message": "Field name, area, and planting date are required."}), 400
+    irrigation_method = (data.get("irrigation_method") or "Drip Irrigation").strip()
+    notes = (data.get("notes") or "").strip()
+    boundary_geojson = (data.get("boundary_geojson") or "").strip() or None
 
     try:
-        p_date = datetime.strptime(planting_date_raw.split("T")[0], "%Y-%m-%d").date()
-    except Exception:
-        return jsonify({"success": False, "message": "Invalid planting date format. Use YYYY-MM-DD."}), 400
+        latitude = float(data["latitude"]) if data.get("latitude") not in (None, "") else None
+        longitude = float(data["longitude"]) if data.get("longitude") not in (None, "") else None
+        if (latitude is None) != (longitude is None) or (
+            latitude is not None and (not (-90 <= latitude <= 90 and -180 <= longitude <= 180) or (latitude == 0 and longitude == 0))
+        ):
+            raise ValueError()
+    except (ValueError, TypeError):
+        return jsonify({"success": False, "message": "Provide valid latitude and longitude together; 0°, 0° cannot be used as a farm location."}), 400
+
+    if not name or area is None or not location or not soil_type or not variety:
+        return jsonify({"success": False, "message": "Field name, area, location, soil type, and variety are required."}), 400
+
+    p_date = None
+    if planting_date_raw:
+        try:
+            p_date = datetime.strptime(str(planting_date_raw).split("T")[0], "%Y-%m-%d").date()
+        except (ValueError, TypeError):
+            return jsonify({"success": False, "message": "Invalid planting date format. Use YYYY-MM-DD."}), 400
+
+    if boundary_geojson:
+        try:
+            boundary = json.loads(boundary_geojson)
+            if boundary.get("type") not in ("Feature", "FeatureCollection", "Polygon", "MultiPolygon"):
+                raise ValueError()
+        except (AttributeError, json.JSONDecodeError, ValueError):
+            return jsonify({"success": False, "message": "Boundary must be valid Polygon, MultiPolygon, Feature, or FeatureCollection GeoJSON."}), 400
 
     new_field = Field(
         farm_id=farm.id,
         name=name,
         location=location,
-        area=float(area),
+        area=area_value,
         soil_type=soil_type,
-        soil_ph=soil_ph,
-        soil_moisture=soil_moisture,
+        soil_ph=soil_values["soil_ph"],
+        soil_moisture=soil_values["soil_moisture"],
         sugarcane_variety=variety,
-        planting_date=p_date
+        planting_date=p_date,
+        latitude=latitude,
+        longitude=longitude,
+        irrigation_method=irrigation_method,
+        notes=notes,
+        boundary_geojson=boundary_geojson
     )
     db.session.add(new_field)
     db.session.flush()
 
-    # Automatically initialize crop records for growth tracker
-    crop_eval = CropIntelligenceEngine.evaluate_crop_status(p_date, soil_moisture, soil_ph)
-    crop_rec = CropRecord(
-        field_id=new_field.id,
-        sugarcane_variety=variety,
-        planting_date=p_date,
-        current_stage=crop_eval["current_stage"],
-        days_since_planting=crop_eval["days_since_planting"],
-        expected_growth_timeline_days=crop_eval["expected_growth_timeline_days"],
-        estimated_harvest_date=datetime.strptime(crop_eval["estimated_harvest_date"], "%Y-%m-%d").date(),
-        current_crop_condition=crop_eval["current_crop_condition"],
-        stage_progress_pct=crop_eval["progress_pct"],
-        health_score=crop_eval["condition_score"],
-        water_requirement_level=crop_eval["water_requirement"],
-        key_agronomic_activity=crop_eval["key_agronomic_activity"]
-    )
-    db.session.add(crop_rec)
+    if p_date and soil_values["soil_ph"] is not None and soil_values["soil_moisture"] is not None:
+        crop_eval = CropIntelligenceEngine.evaluate_crop_status(p_date, soil_values["soil_moisture"], soil_values["soil_ph"])
+        db.session.add(CropRecord(
+            field_id=new_field.id,
+            sugarcane_variety=variety,
+            planting_date=p_date,
+            current_stage=crop_eval["current_stage"],
+            days_since_planting=crop_eval["days_since_planting"],
+            expected_growth_timeline_days=crop_eval["expected_growth_timeline_days"],
+            estimated_harvest_date=datetime.strptime(crop_eval["estimated_harvest_date"], "%Y-%m-%d").date(),
+            current_crop_condition=crop_eval["current_crop_condition"],
+            stage_progress_pct=crop_eval["progress_pct"],
+            health_score=crop_eval["condition_score"],
+            water_requirement_level=crop_eval["water_requirement"],
+            key_agronomic_activity=crop_eval["key_agronomic_activity"]
+        ))
 
-    # Initialize soil record
-    soil_eval = SoilAnalyzer.evaluate_soil(soil_type, soil_ph, soil_moisture)
-    soil_rec = SoilData(
-        field_id=new_field.id,
-        farm_id=farm.id,
-        soil_type=soil_type,
-        soil_ph=soil_ph,
-        soil_moisture=soil_moisture,
-        soil_health_score=soil_eval["health_score"],
-        sugarcane_suitability=soil_eval["sugarcane_suitability"],
-        ph_impact=soil_eval["ph_impact"],
-        moisture_impact=soil_eval["moisture_impact"],
-        soil_impact_summary=soil_eval["soil_impact"]
-    )
-    db.session.add(soil_rec)
+    if soil_values["soil_ph"] is not None and soil_values["soil_moisture"] is not None:
+        soil_eval = SoilAnalyzer.evaluate_soil(soil_type, soil_values["soil_ph"], soil_values["soil_moisture"])
+        db.session.add(SoilData(
+            field_id=new_field.id,
+            farm_id=farm.id,
+            soil_type=soil_type,
+            soil_ph=soil_values["soil_ph"],
+            soil_moisture=soil_values["soil_moisture"],
+            soil_health_score=soil_eval["health_score"],
+            sugarcane_suitability=soil_eval["sugarcane_suitability"],
+            ph_impact=soil_eval["ph_impact"],
+            moisture_impact=soil_eval["moisture_impact"],
+            soil_impact_summary=soil_eval["soil_impact"]
+        ))
     db.session.commit()
 
     return jsonify({
@@ -702,17 +1017,53 @@ def get_field(user, field_id):
     if not field:
         return jsonify({"success": False, "message": "Field not found."}), 404
 
+    has_soil_measurements = field.soil_ph is not None and field.soil_moisture is not None
     crop_eval = CropIntelligenceEngine.evaluate_crop_status(
         field.planting_date, float(field.soil_moisture), float(field.soil_ph)
-    )
+    ) if field.planting_date and has_soil_measurements else None
     soil_eval = SoilAnalyzer.evaluate_soil(
         field.soil_type, float(field.soil_ph), float(field.soil_moisture)
-    )
+    ) if has_soil_measurements else None
 
     data = field.to_dict()
     data["crop_intelligence"] = crop_eval
     data["soil_analysis"] = soil_eval
     return jsonify({"success": True, "data": {"field": data}})
+
+
+@app.route("/api/fields/<int:field_id>/history", methods=["GET"])
+@require_auth
+def get_field_history(user, field_id):
+    field = Field.query.join(Farm).filter(Field.id == field_id, Farm.user_id == user.id).first()
+    if not field:
+        return jsonify({"success": False, "message": "Field not found."}), 404
+
+    has_soil_measurements = field.soil_ph is not None and field.soil_moisture is not None
+    crop_eval = CropIntelligenceEngine.evaluate_crop_status(
+        field.planting_date, float(field.soil_moisture), float(field.soil_ph)
+    ) if field.planting_date and has_soil_measurements else None
+    soil_eval = SoilAnalyzer.evaluate_soil(
+        field.soil_type, float(field.soil_ph), float(field.soil_moisture)
+    ) if has_soil_measurements else None
+
+    crop_recs = [c.to_dict() for c in (field.crop_records or [])]
+    soil_recs = [s.to_dict() for s in (field.soil_records or [])]
+    preds = YieldPrediction.query.filter_by(user_id=user.id, field_id=field.id).order_by(YieldPrediction.created_at.desc()).all()
+    legacy_preds = Prediction.query.filter_by(user_id=user.id, field_id=field.id).order_by(Prediction.created_at.desc()).all()
+    alerts = Alert.query.filter_by(user_id=user.id, field_id=field.id).order_by(Alert.created_at.desc()).all()
+
+    return jsonify({
+        "success": True,
+        "data": {
+            "field": field.to_dict(),
+            "crop_intelligence": crop_eval,
+            "soil_analysis": soil_eval,
+            "crop_records": crop_recs,
+            "soil_records": soil_recs,
+            "predictions": [p.to_dict() for p in preds] + [p.to_dict() for p in legacy_preds],
+            "alerts": [a.to_dict() for a in alerts]
+        }
+    })
 
 
 @app.route("/api/fields/<int:field_id>", methods=["PATCH", "PUT"])
@@ -724,15 +1075,108 @@ def update_field(user, field_id, farm_id=None):
         return jsonify({"success": False, "message": "Field not found."}), 404
 
     data = request.get_json(force=True) or {}
-    if "name" in data:               field.name = data["name"].strip()
-    if "area" in data:               field.area = float(data["area"])
-    if "location" in data:           field.location = data["location"].strip()
-    if "soil_type" in data:          field.soil_type = data["soil_type"].strip()
-    if "soil_ph" in data:            field.soil_ph = float(data["soil_ph"])
-    if "soil_moisture" in data:      field.soil_moisture = float(data["soil_moisture"])
-    if "sugarcane_variety" in data:  field.sugarcane_variety = data["sugarcane_variety"].strip()
+    if "area" in data:
+        try:
+            area = float(data["area"])
+            farm = field.farm
+            other_area = sum(float(item.area or 0) for item in farm.fields if item.id != field.id and not item.is_archived)
+            if not np.isfinite(area) or area <= 0 or other_area + area > float(farm.total_area):
+                raise ValueError()
+            field.area = area
+        except (ValueError, TypeError):
+            return jsonify({"success": False, "message": "Field area must be positive and remain within the farm's registered area."}), 400
+    text_fields = {
+        "name": True,
+        "location": True,
+        "soil_type": True,
+        "sugarcane_variety": True,
+        "irrigation_method": False,
+        "notes": False,
+    }
+    previous_soil_ph = float(field.soil_ph) if field.soil_ph is not None else None
+    previous_soil_moisture = float(field.soil_moisture) if field.soil_moisture is not None else None
+    for key, required in text_fields.items():
+        if key not in data:
+            continue
+        value = data[key]
+        if value is None and not required:
+            value = ""
+        if not isinstance(value, str):
+            return jsonify({"success": False, "message": f"{key.replace('_', ' ').title()} must be text."}), 400
+        value = value.strip()
+        if required and not value:
+            return jsonify({"success": False, "message": f"{key.replace('_', ' ').title()} is required."}), 400
+        if key == "sugarcane_variety":
+            allowed_varieties = VARIETY_RECOMMENDATIONS_DATA.get("states", {}).get(field.farm.state, [])
+            if value not in allowed_varieties and value != field.sugarcane_variety:
+                return jsonify({
+                    "success": False,
+                    "message": f"Choose a sugarcane variety recommended for {field.farm.state or 'the registered farm state'}."
+                }), 400
+        setattr(field, key, value or ("Drip Irrigation" if key == "irrigation_method" else ""))
+
+    for key, lower, upper in (("soil_ph", 0, 14), ("soil_moisture", 0, 100)):
+        if key not in data:
+            continue
+        if data[key] in (None, ""):
+            setattr(field, key, None)
+            continue
+        try:
+            value = float(data[key])
+            if not np.isfinite(value) or not lower <= value <= upper:
+                raise ValueError()
+        except (ValueError, TypeError):
+            return jsonify({"success": False, "message": f"{key.replace('_', ' ').title()} must be between {lower} and {upper}."}), 400
+        setattr(field, key, value)
+
+    if "boundary_geojson" in data:
+        boundary_geojson = (data["boundary_geojson"] or "").strip() if isinstance(data["boundary_geojson"], str) else ""
+        if boundary_geojson:
+            try:
+                boundary = json.loads(boundary_geojson)
+                if boundary.get("type") not in ("Feature", "FeatureCollection", "Polygon", "MultiPolygon"):
+                    raise ValueError()
+            except (AttributeError, json.JSONDecodeError, ValueError):
+                return jsonify({"success": False, "message": "Boundary must be valid Polygon, MultiPolygon, Feature, or FeatureCollection GeoJSON."}), 400
+        field.boundary_geojson = boundary_geojson or None
+
+    if "latitude" in data or "longitude" in data:
+        try:
+            latitude = float(data["latitude"]) if data.get("latitude") not in (None, "") else None
+            longitude = float(data["longitude"]) if data.get("longitude") not in (None, "") else None
+            if (latitude is None) != (longitude is None) or (
+                latitude is not None and (not (-90 <= latitude <= 90 and -180 <= longitude <= 180) or (latitude == 0 and longitude == 0))
+            ):
+                raise ValueError()
+            field.latitude, field.longitude = latitude, longitude
+        except (ValueError, TypeError):
+            return jsonify({"success": False, "message": "Provide valid latitude and longitude together; 0°, 0° cannot be used as a farm location."}), 400
     if "planting_date" in data:
-        field.planting_date = datetime.strptime(data["planting_date"].split("T")[0], "%Y-%m-%d").date()
+        if data["planting_date"] in (None, ""):
+            field.planting_date = None
+        else:
+            try:
+                field.planting_date = datetime.strptime(str(data["planting_date"]).split("T")[0], "%Y-%m-%d").date()
+            except (ValueError, TypeError):
+                return jsonify({"success": False, "message": "Invalid planting date format. Use YYYY-MM-DD."}), 400
+
+    soil_values_changed = (
+        field.soil_ph != previous_soil_ph or field.soil_moisture != previous_soil_moisture
+    )
+    if soil_values_changed and field.soil_ph is not None and field.soil_moisture is not None:
+        soil_eval = SoilAnalyzer.evaluate_soil(field.soil_type, float(field.soil_ph), float(field.soil_moisture))
+        db.session.add(SoilData(
+            field_id=field.id,
+            farm_id=field.farm_id,
+            soil_type=field.soil_type,
+            soil_ph=field.soil_ph,
+            soil_moisture=field.soil_moisture,
+            soil_health_score=soil_eval["health_score"],
+            sugarcane_suitability=soil_eval["sugarcane_suitability"],
+            ph_impact=soil_eval["ph_impact"],
+            moisture_impact=soil_eval["moisture_impact"],
+            soil_impact_summary=soil_eval["soil_impact"]
+        ))
 
     db.session.commit()
     return jsonify({
@@ -750,9 +1194,9 @@ def delete_field(user, field_id, farm_id=None):
     if not field:
         return jsonify({"success": False, "message": "Field not found."}), 404
 
-    db.session.delete(field)
+    field.is_archived = True
     db.session.commit()
-    return jsonify({"success": True, "message": "Field deleted."})
+    return jsonify({"success": True, "message": "Field archived. Soil, crop, prediction, and alert history has been preserved."})
 
 
 # -----------------------------------------------------------------------------
@@ -812,13 +1256,35 @@ def soil_all(user):
     farms = Farm.query.filter_by(user_id=user.id).all()
     fields_list = []
     total_health = 0.0
+    assessed_count = 0
 
     for farm in farms:
         for fld in farm.fields:
+            latest_soil = max(
+                (soil for soil in fld.soil_records if soil.recorded_at),
+                key=lambda soil: soil.recorded_at,
+                default=None
+            )
+            reading_age = (datetime.utcnow() - latest_soil.recorded_at).total_seconds() if latest_soil else None
+            reading_is_fresh = reading_age is not None and 0 <= reading_age <= 30 * 86400
+            if fld.soil_ph is None or fld.soil_moisture is None or not reading_is_fresh:
+                fields_list.append({
+                    "id": fld.id,
+                    "name": fld.name,
+                    "farm_name": farm.name,
+                    "soil_type": fld.soil_type,
+                    "soil_ph": None if fld.soil_ph is None else float(fld.soil_ph),
+                    "soil_moisture": None if fld.soil_moisture is None else float(fld.soil_moisture),
+                    "health_score": None,
+                    "health_label": "Reading outdated" if latest_soil else "Data unavailable",
+                    "data_available": False
+                })
+                continue
             eval_data = SoilAnalyzer.evaluate_soil(
                 fld.soil_type, float(fld.soil_ph), float(fld.soil_moisture)
             )
             total_health += eval_data["health_score"]
+            assessed_count += 1
             fields_list.append({
                 "id": fld.id,
                 "name": fld.name,
@@ -828,6 +1294,7 @@ def soil_all(user):
                 "soil_moisture": float(fld.soil_moisture),
                 "health_score": eval_data["health_score"],
                 "health_label": eval_data["health_label"],
+                "data_available": True,
                 "suitability": eval_data["sugarcane_suitability"],
                 "ph_status": eval_data["ph_status"],
                 "moisture_status": eval_data["moisture_status"],
@@ -835,12 +1302,14 @@ def soil_all(user):
                 "nutrients": eval_data["nutrients"] # None unless explicitly recorded
             })
 
-    avg_health = round(total_health / len(fields_list)) if fields_list else 85
+    avg_health = round(total_health / assessed_count) if assessed_count else None
     summary = {
         "avg_health_score": avg_health,
-        "health_label": "Optimal" if avg_health >= 80 else "Good" if avg_health >= 65 else "Attention Required",
-        "excellent_count": sum(1 for f in fields_list if f["health_score"] >= 80),
-        "needs_attention": sum(1 for f in fields_list if f["health_score"] < 65)
+        "health_label": "Data unavailable" if avg_health is None else "Optimal" if avg_health >= 80 else "Good" if avg_health >= 65 else "Attention Required",
+        "excellent_count": sum(1 for f in fields_list if f["health_score"] is not None and f["health_score"] >= 80),
+        "needs_attention": sum(1 for f in fields_list if f["health_score"] is not None and f["health_score"] < 65),
+        "assessed_fields": assessed_count,
+        "unassessed_fields": len(fields_list) - assessed_count
     }
 
     return jsonify({
@@ -880,9 +1349,23 @@ def soil_by_field(user, field_id):
     if not field:
         return jsonify({"success": False, "message": "Field not found."}), 404
 
+    latest_soil = SoilData.query.filter_by(field_id=field.id).order_by(SoilData.recorded_at.desc()).first()
+    reading_age = (datetime.utcnow() - latest_soil.recorded_at).total_seconds() if latest_soil and latest_soil.recorded_at else None
+    reading_is_fresh = reading_age is not None and 0 <= reading_age <= 30 * 86400
+    if field.soil_ph is None or field.soil_moisture is None or not reading_is_fresh:
+        return jsonify({"success": True, "data": {
+            "data_available": False,
+            "status": "Reading outdated" if latest_soil else "Data unavailable",
+            "message": "Soil analysis requires current pH and moisture measurements.",
+            "soil_type": field.soil_type,
+            "soil_ph": None if field.soil_ph is None else float(field.soil_ph),
+            "soil_moisture": None if field.soil_moisture is None else float(field.soil_moisture),
+            "recorded_at": latest_soil.recorded_at.isoformat() if latest_soil and latest_soil.recorded_at else None
+        }})
     eval_data = SoilAnalyzer.evaluate_soil(
         field.soil_type, float(field.soil_ph), float(field.soil_moisture)
     )
+    eval_data["data_available"] = True
     return jsonify({"success": True, "data": eval_data})
 
 
@@ -1055,7 +1538,22 @@ def get_crop_records(user):
     fields = Field.query.filter(Field.farm_id.in_(farm_ids)).all() if farm_ids else []
 
     records = []
+    unassessed_fields = []
     for fld in fields:
+        latest_soil = max(
+            (soil for soil in fld.soil_records if soil.recorded_at),
+            key=lambda soil: soil.recorded_at,
+            default=None
+        )
+        reading_age = (datetime.utcnow() - latest_soil.recorded_at).total_seconds() if latest_soil else None
+        reading_is_fresh = reading_age is not None and 0 <= reading_age <= 30 * 86400
+        if not fld.planting_date or fld.soil_moisture is None or fld.soil_ph is None or not reading_is_fresh:
+            unassessed_fields.append({
+                "field_id": fld.id,
+                "field_name": fld.name,
+                "status": "Reading outdated" if latest_soil else "Data unavailable"
+            })
+            continue
         eval_data = CropIntelligenceEngine.evaluate_crop_status(
             fld.planting_date, float(fld.soil_moisture), float(fld.soil_ph)
         )
@@ -1066,11 +1564,8 @@ def get_crop_records(user):
             "variety": fld.sugarcane_variety,
             **eval_data
         })
-    return jsonify({"success": True, "data": {"crop_records": records}})
+    return jsonify({"success": True, "data": {"crop_records": records, "unassessed_fields": unassessed_fields}})
 
-
-# -----------------------------------------------------------------------------
-# -----------------------------------------------------------------------------
 # 9. ML PREDICTION & COMPLETE PREDICTION PERSISTENCE
 # Inputs: Location, Sugarcane variety, Area, Soil type, Soil pH, Soil moisture,
 # Rainfall, Temperature, Humidity, Planting date, Crop growth stage, Historical yield
@@ -1082,8 +1577,15 @@ def get_crop_records(user):
 def ml_predict():
     data = request.get_json(force=True) or {}
     try:
+        print(f"[DEBUG] ml_predict called with data keys: {list(data.keys())}")
+        
         user = get_current_user()
+        print(f"[DEBUG] Current user: {getattr(user, 'email', str(user)) if user else 'None'}")
+        
+        print("[DEBUG] Calling prediction_engine.predict()...")
         prediction = prediction_engine.predict(data)
+        print(f"[DEBUG] Prediction successful. Keys: {list(prediction.keys())}")
+        print(f"[DEBUG] Predicted yield: {prediction.get('predicted_yield')}")
 
         # Save every prediction in MySQL
         user_id = user.id if user else data.get("user_id", 24)
@@ -1112,6 +1614,7 @@ def ml_predict():
         growth_stage = data.get("crop_growth_stage", data.get("growth_stage", "Grand Growth"))
         historical_yield = float(data.get("historical_yield", data.get("prev_year_yield", 85.0)))
 
+        print("[DEBUG] Creating yield_predictions record...")
         # 1. Save in yield_predictions
         yp = YieldPrediction(
             user_id=user_id,
@@ -1143,7 +1646,9 @@ def ml_predict():
         )
         db.session.add(yp)
         db.session.flush()
+        print(f"[DEBUG] yield_predictions record created with ID: {yp.id}")
 
+        print("[DEBUG] Creating legacy predictions record...")
         # 2. Save in legacy predictions table for 100% Part 1 compatibility
         legacy_pred = Prediction(
             user_id=user_id,
@@ -1167,7 +1672,9 @@ def ml_predict():
             factors=json.dumps(prediction.get("feature_importance", []))
         )
         db.session.add(legacy_pred)
+        print("[DEBUG] Legacy predictions record created")
 
+        print("[DEBUG] Creating prediction_history record...")
         # 3. Save prediction history record
         hist = PredictionHistory(
             prediction_id=yp.id,
@@ -1187,9 +1694,13 @@ def ml_predict():
             details_json=json.dumps(prediction)
         )
         db.session.add(hist)
+        print("[DEBUG] prediction_history record created")
 
+        print("[DEBUG] Generating explainable AI...")
         # 4. Save prediction explanations (XAI)
         xai = prediction_engine.explain_prediction(data)
+        print(f"[DEBUG] XAI generated with keys: {list(xai.keys())}")
+        
         pe = PredictionExplanation(
             prediction_id=yp.id,
             feature_importances_json=json.dumps(prediction.get("feature_importance", [])),
@@ -1200,7 +1711,11 @@ def ml_predict():
             summary_explanation=xai.get("summary", "")
         )
         db.session.add(pe)
+        print("[DEBUG] prediction_explanations record created")
+        
+        print("[DEBUG] Committing to database...")
         db.session.commit()
+        print("[DEBUG] Database commit successful")
 
         return jsonify({
             "success": True,
@@ -1214,6 +1729,9 @@ def ml_predict():
         })
     except Exception as e:
         db.session.rollback()
+        print(f"[ERROR] Exception in ml_predict: {type(e).__name__}: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({"success": False, "message": str(e)}), 500
 
 
@@ -1230,6 +1748,7 @@ def ml_what_if():
     base = data.get("base", {})
     scenario = data.get("scenario", {})
     scenario_type = data.get("scenario_type", "custom")
+    current_prediction = data.get("current_prediction")
 
     # Apply preset scenarios
     if scenario_type == "increased_rainfall":
@@ -1257,6 +1776,24 @@ def ml_what_if():
 
     try:
         res = prediction_engine.what_if_simulation(base, scenario)
+        # Keep comparisons anchored to the forecast shown to the user. The
+        # model still supplies the scenario's sensitivity delta, while its own
+        # independently recalculated base prediction may differ from the
+        # saved active forecast.
+        if current_prediction is not None:
+            reference_prediction = float(current_prediction)
+            model_base = float(res["base_prediction"])
+            scenario_prediction = reference_prediction + (float(res["scenario_prediction"]) - model_base)
+            res["base_prediction"] = round(reference_prediction, 2)
+            res["scenario_prediction"] = round(scenario_prediction, 2)
+            res["difference"] = round(scenario_prediction - reference_prediction, 2)
+            res["percentage_change"] = round(
+                (res["difference"] / max(reference_prediction, 1.0)) * 100.0, 1
+            )
+            area = float(base.get("area_hectare", base.get("area", 1.0)))
+            scenario_area = float(scenario.get("area_hectare", scenario.get("area", area)))
+            res["base_production"] = round(reference_prediction * area, 2)
+            res["scenario_production"] = round(scenario_prediction * scenario_area, 2)
         res["scenario_type"] = scenario_type
         return jsonify({"success": True, "data": res})
     except Exception as e:
@@ -1651,63 +2188,6 @@ def yield_loss_analysis(user):
 
 
 # -----------------------------------------------------------------------------
-# 16. CROP INTELLIGENCE & PHENOLOGY TRACKER
-# Growth stages: Planting, Germination, Tillering, Grand Growth, Maturity, Harvest
-# Days since planting, Days remaining, Estimated harvest
-# -----------------------------------------------------------------------------
-@app.route("/api/crop-records/<int:field_id>/tracker", methods=["GET"])
-@require_auth
-def crop_field_tracker(user, field_id):
-    field = Field.query.get(field_id)
-    if not field:
-        return jsonify({"success": False, "message": "Field not found"}), 404
-
-    record = CropRecord.query.filter_by(field_id=field_id).first()
-    planting_date = field.planting_date or date(2025, 10, 15)
-    days_since = (date.today() - planting_date).days
-    timeline_days = record.expected_growth_timeline_days if record else 360
-    days_remaining = max(0, timeline_days - days_since)
-    est_harvest = planting_date + timedelta(days=timeline_days)
-
-    if days_since < 30:
-        stage = "Planting"
-        progress = (days_since / 30.0) * 100
-    elif days_since < 60:
-        stage = "Germination"
-        progress = ((days_since - 30) / 30.0) * 100
-    elif days_since < 120:
-        stage = "Tillering"
-        progress = ((days_since - 60) / 60.0) * 100
-    elif days_since < 270:
-        stage = "Grand Growth"
-        progress = ((days_since - 120) / 150.0) * 100
-    elif days_since < 360:
-        stage = "Maturity"
-        progress = ((days_since - 270) / 90.0) * 100
-    else:
-        stage = "Harvest"
-        progress = 100.0
-
-    return jsonify({
-        "success": True,
-        "data": {
-            "field_id": field_id,
-            "field_name": field.name,
-            "variety": field.sugarcane_variety,
-            "planting_date": planting_date.isoformat(),
-            "days_since_planting": days_since,
-            "days_remaining": days_remaining,
-            "estimated_harvest_date": est_harvest.isoformat(),
-            "current_stage": stage,
-            "stage_progress_pct": round(min(100.0, progress), 1),
-            "crop_condition": record.current_crop_condition if record else "Good",
-            "health_score": float(record.health_score) if record else 88.0,
-            "key_agronomic_activity": record.key_agronomic_activity if record else "Maintain steady irrigation and monitor leaf health."
-        }
-    })
-
-
-# -----------------------------------------------------------------------------
 # 17. IRRIGATION DECISION SUPPORT
 # Inputs: Soil moisture, Rainfall, Temperature, Weather forecast
 # Outputs: Normal, Monitor, Attention Required + Agronomic guidance
@@ -1716,36 +2196,158 @@ def crop_field_tracker(user, field_id):
 @app.route("/api/irrigation/schedule", methods=["GET"])
 @require_auth
 def irrigation_decision_support(user):
-    field_id = request.args.get("field_id", type=int)
-    field = Field.query.get(field_id) if field_id else None
-
-    moisture = float(field.soil_moisture) if field else float(request.args.get("soil_moisture", 58.0))
-    rainfall = float(request.args.get("rainfall", 12.0))
-    temp = float(request.args.get("temperature", 30.0))
-
-    if moisture < 42.0 or (moisture < 48.0 and temp > 35.0):
-        status = "Attention Required"
-        color = "red"
-        advice = "Soil moisture is critically low. Initiate supplemental irrigation to prevent vegetative growth stoppage."
-    elif moisture < 54.0 or rainfall < 5.0:
-        status = "Monitor"
-        color = "amber"
-        advice = "Soil moisture is in the lower viable envelope. Prepare irrigation within 48-72 hours if no rain occurs."
+    raw_field_id = request.args.get("field_id")
+    raw_farm_id = request.args.get("farm_id")
+    if raw_field_id and str(raw_field_id).lower() != "all":
+        try:
+            field = Field.query.join(Farm).filter(Field.id == int(raw_field_id), Farm.user_id == user.id).first()
+        except (ValueError, TypeError):
+            field = None
+        if not field:
+            return jsonify({"success": False, "message": "Field not found."}), 404
+        fields = [field]
+    elif raw_farm_id and str(raw_farm_id).lower() != "all":
+        try:
+            farm = Farm.query.filter_by(id=int(raw_farm_id), user_id=user.id).first()
+        except (ValueError, TypeError):
+            farm = None
+        if not farm:
+            return jsonify({"success": False, "message": "Farm not found."}), 404
+        fields = list(farm.fields or [])
     else:
-        status = "Normal"
-        color = "green"
-        advice = "Root moisture reserves are optimal. Maintain standard scheduled irrigation rotation."
+        fields = Field.query.join(Farm).filter(Farm.user_id == user.id).all()
 
+    def evaluate_field(field):
+        location = (field.farm.district if field.farm and field.farm.district else None) or field.location
+        try:
+            weather = weather_service.get_current(location) or {}
+        except Exception:
+            weather = {}
+
+        temp_override = request.args.get("temperature", type=float)
+        rainfall_override = request.args.get("rainfall", type=float)
+        temperature = temp_override if temp_override is not None else weather.get("temperature")
+        rainfall = rainfall_override if rainfall_override is not None else weather.get("rainfall")
+        if not isinstance(temperature, (int, float)) or not np.isfinite(temperature):
+            temperature = None
+        if not isinstance(rainfall, (int, float)) or not np.isfinite(rainfall):
+            rainfall = None
+
+        latest_soil = SoilData.query.filter_by(field_id=field.id).order_by(SoilData.recorded_at.desc()).first()
+        reading_time = latest_soil.recorded_at if latest_soil else None
+        reading_age = (datetime.utcnow() - reading_time).total_seconds() if reading_time else None
+        reading_is_fresh = reading_age is not None and 0 <= reading_age <= 30 * 86400
+        moisture = (
+            float(latest_soil.soil_moisture)
+            if reading_is_fresh and latest_soil.soil_moisture is not None
+            else None
+        )
+        crop_eval = CropIntelligenceEngine.evaluate_crop_status(
+            field.planting_date, moisture if moisture is not None else 60.0, float(field.soil_ph or 7.0)
+        ) if field.planting_date else {}
+        stage = crop_eval.get("current_stage", "Unavailable")
+        water_req = crop_eval.get("water_requirement", "Unknown")
+
+        if moisture is None:
+            status = "Unavailable"
+            advice = "No recent soil-moisture measurement is available for this parcel. Record a fresh reading before irrigating."
+            recommendation = "Conduct a current soil-moisture measurement before committing irrigation volumes."
+        elif moisture < 45.0 or (moisture < 50.0 and temperature is not None and temperature > 35.0):
+            status = "Critical"
+            advice = f"Soil moisture ({moisture:.1f}%) is critically low at the {stage} stage."
+            recommendation = f"Assess immediate supplemental irrigation via {field.irrigation_method or 'the recorded irrigation method'}."
+        elif moisture < 60.0 or (rainfall is not None and rainfall < 5.0 and moisture < 62.0):
+            status = "Monitor"
+            advice = f"Soil moisture ({moisture:.1f}%) is below the preferred range; root-zone reserves may be depleting."
+            recommendation = "Check the field and rainfall outlook; prepare an irrigation cycle if the deficit persists."
+        elif moisture <= 75.0:
+            status = "Normal"
+            advice = f"Measured root-zone moisture ({moisture:.1f}%) is within the configured operating range."
+            recommendation = f"Continue the scheduled {field.irrigation_method or 'irrigation'} rotation and monitor readings."
+        elif moisture <= 80.0:
+            status = "Monitor"
+            advice = f"Soil moisture ({moisture:.1f}%) is near the configured upper range."
+            recommendation = "Pause scheduled irrigation and check drainage until moisture recedes."
+        else:
+            status = "Critical"
+            advice = f"Soil moisture ({moisture:.1f}%) is above the configured range; possible saturation requires inspection."
+            recommendation = "Inspect drainage and pause water delivery pending a field check."
+
+        color = {"Critical": "red", "Monitor": "amber", "Normal": "green", "Unavailable": "gray"}[status]
+        return {
+            "field_id": field.id,
+            "field_name": field.name,
+            "farm_name": field.farm.name if field.farm else "",
+            "status": status,
+            "status_color": color,
+            "status_badge": {"Critical": "critical", "Monitor": "warning", "Normal": "success", "Unavailable": "default"}[status],
+            "soil_moisture_pct": moisture,
+            "soil_moisture_status": "Optimal" if moisture is not None and 60.0 <= moisture <= 75.0 else "Unavailable" if moisture is None else "Outside configured range",
+            "soil_moisture_recorded_at": reading_time.isoformat() if reading_time else None,
+            "ambient_temperature_c": temperature,
+            "recent_rainfall_mm": rainfall,
+            "crop_stage": stage,
+            "water_requirement": water_req,
+            "irrigation_method": field.irrigation_method or "Not specified",
+            "advice": advice,
+            "recommendation": recommendation,
+            "is_estimated": False,
+            "data_source": "Recent soil record" if moisture is not None else "No recent soil record"
+        }
+
+    decisions = [evaluate_field(field) for field in fields]
+    if not decisions:
+        return jsonify({
+            "success": True,
+            "data": {
+                "status": "Unavailable",
+                "status_color": "gray",
+                "status_badge": "default",
+                "soil_moisture_pct": None,
+                "soil_moisture_status": "Unavailable",
+                "recent_rainfall_mm": None,
+                "ambient_temperature_c": None,
+                "crop_stage": "Unavailable",
+                "water_requirement": "Unknown",
+                "irrigation_method": "Not specified",
+                "advice": "No field parcels are registered in this scope.",
+                "recommendation": "Add a field parcel and record soil measurements to enable decision support.",
+                "is_estimated": False,
+                "data_source": "No registered parcels"
+            }
+        })
+
+    if len(decisions) == 1:
+        return jsonify({"success": True, "data": decisions[0]})
+
+    counts = {status: sum(item["status"] == status for item in decisions) for status in ("Normal", "Monitor", "Critical", "Unavailable")}
+    if counts["Critical"]:
+        overall_status = "Critical"
+    elif counts["Monitor"]:
+        overall_status = "Monitor"
+    elif counts["Unavailable"]:
+        overall_status = "Unavailable"
+    else:
+        overall_status = "Normal"
+    color = {"Critical": "red", "Monitor": "amber", "Normal": "green", "Unavailable": "gray"}[overall_status]
+    summary = ", ".join(f"{count} {status.lower()}" for status, count in counts.items() if count)
     return jsonify({
         "success": True,
         "data": {
-            "status": status,
+            "status": overall_status,
             "status_color": color,
-            "soil_moisture_pct": moisture,
-            "ambient_temperature_c": temp,
-            "recent_rainfall_mm": rainfall,
-            "advice": advice,
-            "disclaimer": "Irrigation recommendations are agronomic indicators based on moisture deficits. Not exact water liter volumes."
+            "status_badge": {"Critical": "critical", "Monitor": "warning", "Normal": "success", "Unavailable": "default"}[overall_status],
+            "soil_moisture_pct": None,
+            "soil_moisture_status": "Per-field readings",
+            "recent_rainfall_mm": None,
+            "ambient_temperature_c": None,
+            "advice": f"Scoped holdings contain {summary} field assessments.",
+            "recommendation": "Review each field assessment before taking action; unavailable readings are not classified as normal.",
+            "is_estimated": False,
+            "data_source": "Per-field recent soil records",
+            "field_count": len(decisions),
+            "counts": counts,
+            "field_decisions": decisions
         }
     })
 
@@ -1806,34 +2408,64 @@ def historical_yield_analytics(user):
 # High-risk fields, Healthy fields, Average confidence
 # -----------------------------------------------------------------------------
 @app.route("/api/dashboard/multi-farm", methods=["GET"])
+@app.route("/api/dashboard/farm-summary", methods=["GET"])
 @require_auth
 def multi_farm_dashboard(user):
-    farms = Farm.query.filter_by(user_id=user.id).all() if user.role != "admin" else Farm.query.all()
+    farms = Farm.query.filter_by(user_id=user.id, is_archived=False).all() if user.role != "admin" else Farm.query.filter_by(is_archived=False).all()
     all_fields = [fld for f in farms for fld in (f.fields or [])]
-    preds = YieldPrediction.query.filter_by(user_id=user.id).all() if user.role != "admin" else YieldPrediction.query.all()
+    preds = YieldPrediction.query.filter_by(user_id=user.id, is_demo=False).all() if user.role != "admin" else YieldPrediction.query.filter_by(is_demo=False).all()
 
     total_area = sum(float(f.total_area or 0) for f in farms)
-    total_prod = sum(float(p.expected_production or 0) for p in preds)
-    avg_yield = round(sum(float(p.predicted_yield or 0) for p in preds) / len(preds), 1) if preds else 92.5
-    avg_conf = round(sum(float(p.confidence or 0) for p in preds) / len(preds), 1) if preds else 90.2
+    farm_ids = {f.id for f in farms}
+    preds = [p for p in preds if p.farm_id in farm_ids or p.field_id in {fld.id for fld in all_fields}]
+    latest_by_field = {}
+    for prediction in preds:
+        if prediction.field_id and (prediction.field_id not in latest_by_field or prediction.created_at > latest_by_field[prediction.field_id].created_at):
+            latest_by_field[prediction.field_id] = prediction
+    total_prod = sum(float(p.expected_production or 0) for p in latest_by_field.values())
+    predicted_area = sum(float(fld.area or 0) for fld in all_fields if fld.id in latest_by_field)
+    avg_yield = round(total_prod / predicted_area, 1) if predicted_area else None
+    avg_conf = round(sum(float(p.confidence or 0) for p in latest_by_field.values()) / len(latest_by_field), 1) if latest_by_field else None
 
-    high_risk_count = sum(1 for p in preds if p.risk_level in ["High", "Critical"])
-    healthy_count = sum(1 for p in preds if p.risk_level == "Low" or p.crop_health in ["Excellent", "Good"])
+    high_risk_count = sum(1 for p in latest_by_field.values() if p.risk_level in ["High", "Critical"])
+    healthy_count = sum(1 for p in latest_by_field.values() if p.risk_level == "Low" or p.crop_health in ["Excellent", "Good"])
 
     field_rows = []
     for fld in all_fields:
-        fld_pred = next((p for p in preds if p.field_id == fld.id), None)
+        fld_pred = latest_by_field.get(fld.id)
         field_rows.append({
             "field_id": fld.id,
             "field_name": fld.name,
             "farm_name": fld.farm.name if fld.farm else "N/A",
             "variety": fld.sugarcane_variety,
-            "area": float(fld.area or 1.0),
-            "predicted_yield": float(fld_pred.predicted_yield) if fld_pred else 85.0,
-            "expected_production": float(fld_pred.expected_production) if fld_pred else round(85.0 * float(fld.area or 1.0), 1),
-            "risk_level": fld_pred.risk_level if fld_pred else "Low",
-            "confidence": float(fld_pred.confidence) if fld_pred else 91.0
+            "area": float(fld.area or 0),
+            "predicted_yield": float(fld_pred.predicted_yield) if fld_pred else None,
+            "expected_production": float(fld_pred.expected_production) if fld_pred else None,
+            "risk_level": fld_pred.risk_level if fld_pred else None,
+            "risk_assessed_at": fld_pred.created_at.isoformat() if fld_pred and fld_pred.created_at else None,
+            "confidence": float(fld_pred.confidence) if fld_pred else None
         })
+
+    seasonal = {}
+    for prediction in preds:
+        if prediction.created_at is None:
+            continue
+        season = str(prediction.created_at.year)
+        bucket = seasonal.setdefault(season, {"label": season, "predicted_total": 0.0, "predicted_area": 0.0, "field_ids": set(), "farm_ids": set()})
+        record_area = float(prediction.area or 0)
+        if record_area <= 0:
+            continue
+        bucket["predicted_total"] += float(prediction.predicted_yield or 0) * record_area
+        bucket["predicted_area"] += record_area
+        if prediction.field_id is not None: bucket["field_ids"].add(prediction.field_id)
+        if prediction.farm_id is not None: bucket["farm_ids"].add(prediction.farm_id)
+    yield_history = [{
+        "label": item["label"],
+        "historical_yield": None,
+        "predicted_yield": round(item["predicted_total"] / item["predicted_area"], 2) if item["predicted_area"] else None,
+        "field_ids": list(item["field_ids"]),
+        "farm_ids": list(item["farm_ids"])
+    } for _, item in sorted(seasonal.items())]
 
     return jsonify({
         "success": True,
@@ -1846,7 +2478,8 @@ def multi_farm_dashboard(user):
             "average_confidence_pct": avg_conf,
             "high_risk_fields_count": high_risk_count,
             "healthy_fields_count": healthy_count,
-            "field_breakdown": field_rows
+            "field_breakdown": field_rows,
+            "yield_history": yield_history
         }
     })
 
@@ -1856,31 +2489,44 @@ def multi_farm_dashboard(user):
 # -----------------------------------------------------------------------------
 @app.route("/api/farms/map-data", methods=["GET"])
 @app.route("/api/farms/map", methods=["GET"])
+@app.route("/api/farm-map", methods=["GET"])
 @require_auth
 def farms_map_data(user):
-    farms = Farm.query.filter_by(user_id=user.id).all() if user.role != "admin" else Farm.query.all()
+    farms = Farm.query.filter_by(user_id=user.id, is_archived=False).all() if user.role != "admin" else Farm.query.filter_by(is_archived=False).all()
     map_features = []
 
     for farm in farms:
-        lat = float(farm.latitude) if farm.latitude else 16.704987
-        lon = float(farm.longitude) if farm.longitude else 74.243256
+        lat = float(farm.latitude) if farm.latitude is not None else None
+        lon = float(farm.longitude) if farm.longitude is not None else None
 
         fields_summary = []
         for fld in (farm.fields or []):
-            soil = SoilData.query.filter_by(field_id=fld.id).first()
-            pred = YieldPrediction.query.filter_by(field_id=fld.id).order_by(YieldPrediction.created_at.desc()).first()
+            if fld.is_archived:
+                continue
+            soil = SoilData.query.filter_by(field_id=fld.id).order_by(SoilData.recorded_at.desc()).first()
+            pred = YieldPrediction.query.filter_by(user_id=user.id, field_id=fld.id).order_by(YieldPrediction.created_at.desc()).first()
 
             fields_summary.append({
                 "field_id": fld.id,
+                "id": fld.id,
                 "field_name": fld.name,
+                "name": fld.name,
                 "variety": fld.sugarcane_variety,
+                "sugarcane_variety": fld.sugarcane_variety,
                 "area": float(fld.area or 0),
                 "soil_type": fld.soil_type,
-                "soil_ph": float(fld.soil_ph or 7.0),
-                "soil_moisture": float(fld.soil_moisture or 60.0),
-                "soil_health_score": float(soil.soil_health_score) if soil else 85.0,
-                "predicted_yield": float(pred.predicted_yield) if pred else 90.0,
-                "risk_level": pred.risk_level if pred else "Low"
+                "soil_ph": float(fld.soil_ph) if fld.soil_ph is not None else None,
+                "soil_moisture": float(fld.soil_moisture) if fld.soil_moisture is not None else None,
+                "soil_moisture_recorded_at": soil.recorded_at.isoformat() if soil and soil.recorded_at else None,
+                "soil_health_score": float(soil.soil_health_score) if soil else None,
+                "predicted_yield": float(pred.predicted_yield) if pred else None,
+                "risk_level": pred.risk_level if pred else None,
+                "risk_assessed_at": pred.created_at.isoformat() if pred and pred.created_at else None,
+                "latitude": float(fld.latitude) if fld.latitude is not None else None,
+                "longitude": float(fld.longitude) if fld.longitude is not None else None,
+                "irrigation_method": fld.irrigation_method or "Drip Irrigation",
+                "notes": fld.notes or "",
+                "boundary_geojson": fld.boundary_geojson or None
             })
 
         map_features.append({
@@ -1888,9 +2534,12 @@ def farms_map_data(user):
             "name": farm.name,
             "location": farm.location,
             "address": farm.address or farm.location,
+            "district": farm.district,
+            "state": farm.state,
             "latitude": lat,
             "longitude": lon,
             "total_area": float(farm.total_area or 0),
+            "description": farm.description or "",
             "fields": fields_summary
         })
 
@@ -1933,13 +2582,18 @@ def get_advisor_suggestions(user):
         risk_lvl = latest_pred.risk_level if latest_pred else "Low"
 
         weather = WeatherData.query.first()
-        temp = float(weather.temperature) if weather else 29.5
-        rf = float(weather.rainfall) if weather else 1220.0
+        temp = float(getattr(weather, 'temperature_c', getattr(weather, 'temperature', 29.5)) or 29.5) if weather else 29.5
+        rf = float(getattr(weather, 'rainfall_mm', getattr(weather, 'rainfall', 1220.0)) or 1220.0) if weather else 1220.0
 
         days_in = 120
         if field.planting_date:
             try:
-                days_in = max(0, (datetime.utcnow() - field.planting_date).days)
+                p_date = field.planting_date
+                if isinstance(p_date, datetime):
+                    p_date = p_date.date()
+                elif isinstance(p_date, str):
+                    p_date = datetime.strptime(str(p_date)[:10], "%Y-%m-%d").date()
+                days_in = max(0, (date.today() - p_date).days)
             except Exception:
                 days_in = 120
 
@@ -2468,21 +3122,21 @@ def chat_message(user):
 # 25. AGRICULTURAL OFFICER DASHBOARD APIS
 # -----------------------------------------------------------------------------
 @app.route("/api/officer/farms", methods=["GET"])
-@require_auth
+@require_roles("officer", "admin")
 def officer_farms(user):
     farms = Farm.query.all()
     return jsonify({"success": True, "data": {"farms": [f.to_dict() for f in farms]}})
 
 
 @app.route("/api/officer/high-risk-fields", methods=["GET"])
-@require_auth
+@require_roles("officer", "admin")
 def officer_high_risk_fields(user):
     preds = YieldPrediction.query.filter(YieldPrediction.risk_level.in_(["High", "Critical"])).all()
     return jsonify({"success": True, "data": {"high_risk_fields": [p.to_dict() for p in preds]}})
 
 
 @app.route("/api/officer/analytics", methods=["GET"])
-@require_auth
+@require_roles("officer", "admin")
 def officer_analytics(user):
     all_preds = YieldPrediction.query.all()
     varieties_stats = {}
@@ -2507,7 +3161,7 @@ def officer_analytics(user):
 
 
 @app.route("/api/officer/stats", methods=["GET"])
-@require_auth
+@require_roles("officer", "admin")
 def officer_stats(user):
     total_farms = Farm.query.count()
     total_fields = Field.query.count()
@@ -2529,7 +3183,7 @@ def officer_stats(user):
 # 26. ADMIN DASHBOARD APIS
 # -----------------------------------------------------------------------------
 @app.route("/api/admin/stats", methods=["GET"])
-@require_auth
+@require_roles("admin")
 def admin_stats(user):
     total_users = User.query.count()
     total_admins = User.query.filter_by(role="admin").count()
@@ -2554,17 +3208,15 @@ def admin_stats(user):
 
 
 @app.route("/api/admin/users", methods=["GET"])
-@require_auth
+@require_roles("admin")
 def admin_users(user):
     users = User.query.order_by(User.created_at.desc()).limit(100).all()
     return jsonify({"success": True, "data": {"users": [u.to_dict() for u in users]}})
 
 
 @app.route("/api/admin/users/<int:user_id>/status", methods=["PATCH"])
-@require_auth
+@require_roles("admin")
 def admin_update_user_status(user, user_id):
-    if user.role != "admin":
-        return jsonify({"success": False, "message": "Admin privileges required."}), 403
     target_user = User.query.get(user_id)
     if not target_user:
         return jsonify({"success": False, "message": "User not found."}), 404
@@ -2586,21 +3238,21 @@ def admin_update_user_status(user, user_id):
 
 
 @app.route("/api/admin/varieties", methods=["GET"])
-@require_auth
+@require_roles("admin")
 def admin_varieties(user):
     varieties = SugarcaneVariety.query.all()
     return jsonify({"success": True, "data": {"varieties": [v.to_dict() for v in varieties]}})
 
 
 @app.route("/api/admin/ml-performance", methods=["GET"])
-@require_auth
+@require_roles("admin")
 def admin_ml_perf(user):
     metrics = prediction_engine.get_model_metrics()
     return jsonify({"success": True, "data": metrics})
 
 
 @app.route("/api/admin/logs", methods=["GET"])
-@require_auth
+@require_roles("admin")
 def admin_logs(user):
     recent_preds = YieldPrediction.query.order_by(YieldPrediction.created_at.desc()).limit(20).all()
     recent_alerts = Alert.query.order_by(Alert.created_at.desc()).limit(20).all()
@@ -2670,8 +3322,11 @@ def profile_change_password(user):
 
     if not current_password or not new_password:
         return jsonify({"success": False, "message": "Both current and new password are required."}), 400
-    if len(new_password) < 6:
-        return jsonify({"success": False, "message": "New password must be at least 6 characters."}), 422
+    if not validate_password(new_password):
+        return jsonify({
+            "success": False,
+            "message": "Password must be at least 10 characters and include lowercase, uppercase, and a number."
+        }), 422
 
     try:
         ok = bcrypt.checkpw(current_password.encode("utf-8"), user.password_hash.encode("utf-8"))
@@ -2692,19 +3347,186 @@ def auth_verify_email(token):
     user = User.query.filter((User.verification_token == token_hash) | (User.verification_token == token)).first()
     if not user:
         return jsonify({"success": False, "message": "Invalid or expired verification token."}), 400
+    if user.email_verified:
+        return jsonify({
+            "success": True,
+            "message": "Your email is already verified. You can sign in.",
+            "data": {"alreadyVerified": True}
+        })
+    if not user.verification_token_expires or user.verification_token_expires < datetime.utcnow():
+        user.verification_token = None
+        user.verification_token_expires = None
+        db.session.commit()
+        return jsonify({"success": False, "message": "Verification link has expired. Request a new one."}), 400
+
     user.email_verified = True
     user.verification_token = None
+    user.verification_token_expires = None
     db.session.commit()
-    return jsonify({"success": True, "message": "Email verified successfully! You can now access your account.", "data": {"user": user.to_dict()}})
+    token = generate_jwt(user)
+    resp = make_response(jsonify({
+        "success": True,
+        "message": "Email verified successfully! You can now access your account.",
+        "data": {"user": user.to_dict()}
+    }))
+    resp.set_cookie("token", token, httponly=True, samesite="Lax", max_age=7*86400)
+    return resp
 
 
 @app.route("/api/auth/resend-verification", methods=["POST"])
 def auth_resend_verification():
-    return jsonify({"success": True, "message": "If an unverified account exists for that email, a new verification link has been sent.", "data": {}})
+    data = request.get_json(force=True) or {}
+    email = (data.get("email") or "").strip().lower()
+    user = User.query.filter_by(email=email).first()
+    response = {
+        "success": True,
+        "message": "If an unverified account exists for that email, a new verification link has been sent.",
+        "data": {}
+    }
+    if not user or user.email_verified:
+        return jsonify(response)
+
+    verification_token = secrets.token_hex(32)
+    user.verification_token = hashlib.sha256(verification_token.encode("utf-8")).hexdigest()
+    user.verification_token_expires = datetime.utcnow() + timedelta(hours=24)
+    db.session.commit()
+    try:
+        send_verification_email(user.name, user.email, verification_token)
+    except Exception:
+        app.logger.exception("Failed to resend email verification message for user %s", user.id)
+        return jsonify({
+            "success": False,
+            "code": "EMAIL_DELIVERY_FAILED",
+            "message": "Verification email could not be sent. Please try again later."
+        }), 503
+    return jsonify(response)
 
 
 # -----------------------------------------------------------------------------
-# 28. HEALTH CHECK
+# 28. GEOGRAPHY & AGRICULTURE DATA APIS
+# GET /api/geography/states - Get all 11 sugarcane-growing states
+# GET /api/geography/districts?state=<state> - Get districts for a state
+# GET /api/geography/varieties?state=<state> - Get varieties recommended for a state
+# -----------------------------------------------------------------------------
+
+# Load geography data once at startup
+INDIA_STATES_DISTRICTS_PATH = ROOT_DIR / "backend" / "data" / "india-states-districts.json"
+STATE_VARIETY_RECOMMENDATIONS_PATH = ROOT_DIR / "backend" / "data" / "state_variety_recommendations.json"
+
+try:
+    with open(INDIA_STATES_DISTRICTS_PATH, "r", encoding="utf-8") as f:
+        GEOGRAPHY_DATA = json.load(f)
+    print(f"✓ Loaded geography data: {len(GEOGRAPHY_DATA)} states")
+except Exception as e:
+    print(f"⚠ Warning: Could not load geography data: {e}")
+    GEOGRAPHY_DATA = []
+
+try:
+    with open(STATE_VARIETY_RECOMMENDATIONS_PATH, "r", encoding="utf-8") as f:
+        VARIETY_RECOMMENDATIONS_DATA = json.load(f)
+    VALID_SUGARCANE_STATES = list(VARIETY_RECOMMENDATIONS_DATA["states"].keys())
+    print(f"✓ Loaded variety recommendations: {len(VALID_SUGARCANE_STATES)} states")
+except Exception as e:
+    print(f"⚠ Warning: Could not load variety recommendations: {e}")
+    VARIETY_RECOMMENDATIONS_DATA = {"states": {}}
+    VALID_SUGARCANE_STATES = []
+
+
+@app.route("/api/geography/states", methods=["GET"])
+def get_states():
+    """Get list of 11 major sugarcane-growing states"""
+    states = [
+        {
+            "name": state_obj["state"],
+            "district_count": len(state_obj["districts"])
+        }
+        for state_obj in GEOGRAPHY_DATA
+        if state_obj["state"] in VALID_SUGARCANE_STATES
+    ]
+    
+    return jsonify({
+        "success": True,
+        "data": {
+            "states": states,
+            "count": len(states)
+        }
+    })
+
+
+@app.route("/api/geography/districts", methods=["GET"])
+def get_districts():
+    """Get districts for a specific state"""
+    state = request.args.get("state", "").strip()
+    
+    if not state:
+        return jsonify({
+            "success": False,
+            "message": "State parameter is required"
+        }), 400
+    
+    # Find state in geography data
+    state_data = next(
+        (s for s in GEOGRAPHY_DATA if s["state"] == state),
+        None
+    )
+    
+    if not state_data:
+        return jsonify({
+            "success": False,
+            "message": f"State '{state}' not found"
+        }), 404
+    
+    return jsonify({
+        "success": True,
+        "data": {
+            "state": state,
+            "districts": state_data["districts"],
+            "count": len(state_data["districts"])
+        }
+    })
+
+
+@app.route("/api/geography/varieties", methods=["GET"])
+def get_varieties_by_state():
+    """Get sugarcane varieties recommended for a specific state"""
+    state = request.args.get("state", "").strip()
+    
+    if not state:
+        # Return all varieties if no state specified
+        all_varieties = set()
+        for varieties_list in VARIETY_RECOMMENDATIONS_DATA["states"].values():
+            all_varieties.update(varieties_list)
+        
+        return jsonify({
+            "success": True,
+            "data": {
+                "varieties": sorted(list(all_varieties)),
+                "count": len(all_varieties),
+                "note": "All varieties across all states"
+            }
+        })
+    
+    # Get varieties for specific state
+    varieties = VARIETY_RECOMMENDATIONS_DATA["states"].get(state, [])
+    
+    if not varieties:
+        return jsonify({
+            "success": False,
+            "message": f"No varieties found for state '{state}'"
+        }), 404
+    
+    return jsonify({
+        "success": True,
+        "data": {
+            "state": state,
+            "varieties": varieties,
+            "count": len(varieties)
+        }
+    })
+
+
+# -----------------------------------------------------------------------------
+# 29. HEALTH CHECK
 # -----------------------------------------------------------------------------
 @app.route("/api/health", methods=["GET"])
 def health_check():
@@ -2720,4 +3542,8 @@ def health_check():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     print(f"🌾 Sugarcane Decision Support System Flask API running on port {port}...")
-    app.run(host="0.0.0.0", port=port, debug=False)
+    print(f"   Debug mode: False")
+    print(f"   Use Ctrl+C to stop")
+    print(f"   Access at: http://127.0.0.1:{port}")
+    # Run on localhost explicitly for Windows
+    app.run(host="127.0.0.1", port=port, debug=False, use_reloader=False, threaded=True)

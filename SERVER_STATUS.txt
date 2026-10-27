@@ -1,42 +1,22 @@
-================================================================
-  SUGARYIELD AI - SYSTEM STATUS: ONLINE & READY
-================================================================
+SugarYield AI local development status
+======================================
 
-[BACKEND SERVER]
-- Port: 5000
-- Status: RUNNING (PID active via nodemon)
-- URL: http://localhost:5000
-- Database: MySQL `majorlogin` (Connected)
-- Auth API: http://localhost:5000/api/auth
+This file records how to start the current Flask/Vite application. Server
+processes are not assumed to be running; ports and network addresses depend on
+the machine and the current session.
 
-[FRONTEND WEB APPLICATION]
-- Port: 5173
-- Status: RUNNING (Vite v6.4.3 with /api proxy)
-- Local URL:   http://localhost:5173
-- Mobile URL:  http://10.237.194.27:5173
+Backend API (Flask, port 5000), from the repository root:
 
-================================================================
-HOW TO ACCESS ON MOBILE & DESKTOP:
-================================================================
-1. On your computer:
-   Open: http://localhost:5173
+    python run_backend.py
 
-2. On your mobile phone (connected to same WiFi):
-   Open: http://10.237.194.27:5173
+Frontend (Vite, port 5173), from a second terminal:
 
-3. To Test Email Verification:
-   - Go to http://10.237.194.27:5173/signup on mobile or laptop.
-   - Enter your name, email, and password.
-   - Click the verification link sent to your email.
-   - The link will open and verify smoothly without network errors!
-
-================================================================
-START / STOP / RESTART COMMANDS:
-================================================================
-To stop or restart manually:
-- Backend:
-    cd backend
-    npm run dev
-- Frontend:
     cd frontend
     npm run dev
+
+Open http://localhost:5173. The frontend's Vite configuration proxies /api to
+the Flask API at http://127.0.0.1:5000. Check the API at
+http://127.0.0.1:5000/api/health.
+
+See HOW_TO_RUN.md for Python dependencies, environment setup, and optional
+SQLite/MySQL configuration. Do not rely on old process IDs or LAN addresses.

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   AreaChart,
@@ -19,11 +19,11 @@ import {
   AlertTriangle,
   Droplets,
   Calendar,
-  Map,
+  Map as MapIcon,
+  Globe,
   Filter,
   ArrowRight,
   BarChart3,
-  Sliders,
   Layers,
   Dna,
   FileText,
@@ -48,6 +48,8 @@ export default function NewDashboardPage() {
   const [farmsList, setFarmsList] = useState([]);
   const [selectedFarmId, setSelectedFarmId] = useState('all');
   const [selectedFieldId, setSelectedFieldId] = useState('all');
+  const [selectedSeason, setSelectedSeason] = useState('all');
+  const localScopeChange = useRef(false);
 
   const [advisorData, setAdvisorData] = useState([]);
   const [irrigation, setIrrigation] = useState(null);
@@ -61,26 +63,21 @@ export default function NewDashboardPage() {
       dashboardApi.getSummary(),
       dashboardApi.getMultiFarm(),
       farmApi.list(),
-      irrigationApi.decisionSupport(),
       alertApi.generate(),
-    ]).then(async ([dashRes, mfRes, farmRes, irrRes, alertRes]) => {
+    ]).then(async ([dashRes, mfRes, farmRes, alertRes]) => {
       if (dashRes.status === 'fulfilled' && dashRes.value?.data) {
         setData(dashRes.value.data);
       } else if (dashRes.status === 'rejected') {
         setError(dashRes.reason?.message || 'Unable to connect to dashboard service.');
       }
 
-      if (mfRes.status === 'fulfilled' && mfRes.value?.data?.data) {
-        setMultiFarm(mfRes.value.data.data);
+      if (mfRes.status === 'fulfilled' && mfRes.value?.data) {
+        setMultiFarm(mfRes.value.data);
       }
 
       if (farmRes.status === 'fulfilled') {
         const list = farmRes.value.data?.farms || [];
         setFarmsList(list);
-      }
-
-      if (irrRes.status === 'fulfilled' && irrRes.value?.data?.data) {
-        setIrrigation(irrRes.value.data.data);
       }
 
       if (alertRes.status === 'fulfilled' && alertRes.value?.data?.alerts) {
@@ -97,15 +94,34 @@ export default function NewDashboardPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Sync selected farm/field with FieldContext if set
   useEffect(() => {
-    if (selectedFarm && selectedFarmId === 'all') {
-      setSelectedFarmId(String(selectedFarm.id));
-      if (selectedField) {
-        setSelectedFieldId(String(selectedField.id));
-      }
+    if (localScopeChange.current) {
+      localScopeChange.current = false;
+      return;
     }
-  }, [selectedFarm, selectedField]);
+    if (selectedField?.id) {
+      setSelectedFarmId(String(selectedField.farm_id));
+      setSelectedFieldId(String(selectedField.id));
+    } else if (selectedFarm?.id) {
+      setSelectedFarmId(String(selectedFarm.id));
+      setSelectedFieldId('all');
+    } else {
+      setSelectedFarmId('all');
+      setSelectedFieldId('all');
+    }
+  }, [selectedFarm?.id, selectedField?.id]);
+
+  useEffect(() => {
+    const params = {};
+    if (selectedFieldId !== 'all') {
+      params.field_id = selectedFieldId;
+    } else if (selectedFarmId !== 'all') {
+      params.farm_id = selectedFarmId;
+    }
+    irrigationApi.decisionSupport(Object.keys(params).length ? params : undefined)
+      .then(res => setIrrigation(res.data || null))
+      .catch(() => setIrrigation(null));
+  }, [selectedFarmId, selectedFieldId]);
 
   // Load advisor suggestions whenever active field changes
   useEffect(() => {
@@ -121,95 +137,105 @@ export default function NewDashboardPage() {
 
   const firstName = user?.name?.split(' ')[0] || 'Grower';
 
+  const predictionPath = () => {
+    const params = new URLSearchParams();
+    const activeFieldId = selectedFieldId !== 'all' ? selectedFieldId : selectedField?.id;
+    const activeFarmId = selectedFarmId !== 'all' ? selectedFarmId : selectedField?.farm_id || selectedFarm?.id;
+    if (activeFarmId) params.set('farm_id', String(activeFarmId));
+    if (activeFieldId) params.set('field_id', String(activeFieldId));
+    const query = params.toString();
+    return query ? `/prediction?${query}` : '/prediction';
+  };
+
   // Handle farm change
   const handleFarmFilterChange = (e) => {
     const fid = e.target.value;
     setSelectedFarmId(fid);
     setSelectedFieldId('all');
-    if (fid !== 'all') {
-      selectFarm(Number(fid));
-    }
+    localScopeChange.current = String(selectedFarm?.id || '') !== (fid === 'all' ? '' : fid)
+      || Boolean(selectedField);
+    selectFarm(fid === 'all' ? '' : Number(fid));
   };
 
   // Handle field change
   const handleFieldFilterChange = (e) => {
     const flid = e.target.value;
     setSelectedFieldId(flid);
-    if (flid !== 'all') {
-      selectField(Number(flid));
-    }
+    localScopeChange.current = String(selectedField?.id || '') !== (flid === 'all' ? '' : flid);
+    selectField(flid === 'all' ? '' : Number(flid));
   };
 
   // Available farms and fields for dropdowns
   const effectiveFarms = farmsList.length > 0 ? farmsList : (ctxFarms || []);
   const activeFarmObj = effectiveFarms.find(f => String(f.id) === String(selectedFarmId));
-  const availableFields = activeFarmObj ? (activeFarmObj.fields || []) : effectiveFarms.flatMap(f => f.fields || []);
+  const availableFields = activeFarmObj
+    ? (activeFarmObj.fields || [])
+    : effectiveFarms.flatMap(f => (f.fields || []).map(field => ({ ...field, farm_name: f.name })));
 
   // Multi-farm dynamic calculations
   const calculatedMetrics = useMemo(() => {
-    if (selectedFarmId === 'all') {
-      // All farms
-      const totalFarms = effectiveFarms.length || multiFarm?.total_farms || 4;
-      const allFlds = effectiveFarms.flatMap(f => f.fields || []);
-      const totalFields = allFlds.length || multiFarm?.total_fields || 6;
-      const totalArea = effectiveFarms.reduce((sum, f) => sum + Number(f.total_area || 0), 0) || multiFarm?.total_area || 24.5;
-      const avgYield = multiFarm?.average_predicted_yield_tha || 91.2;
-      const totalExpectedProduction = (totalArea * avgYield);
-      const highRisk = multiFarm?.high_risk_fields_count ?? 1;
-      const normalFields = Math.max(0, totalFields - highRisk);
-      const avgConfidence = multiFarm?.average_confidence_pct || 90.5;
-
-      return {
-        totalFarms,
-        totalFields,
-        totalArea,
-        totalExpectedProduction,
-        avgYield,
-        highRisk,
-        normalFields,
-        avgConfidence
-      };
-    } else {
-      // Specific Farm filtered
-      const f = activeFarmObj;
-      const flds = f?.fields || [];
-
-      if (selectedFieldId !== 'all') {
-        const fld = flds.find(x => String(x.id) === String(selectedFieldId));
-        const fldArea = Number(fld?.area || 2.5);
-        const fldYield = Number(fld?.predicted_yield || 92.4);
-        const isHigh = fld?.risk_level === 'High' || fld?.risk_level === 'Critical';
-
-        return {
-          totalFarms: 1,
-          totalFields: 1,
-          totalArea: fldArea,
-          totalExpectedProduction: fldArea * fldYield,
-          avgYield: fldYield,
-          highRisk: isHigh ? 1 : 0,
-          normalFields: isHigh ? 0 : 1,
-          avgConfidence: 92.0
-        };
+    const scopedFarms = selectedFarmId === 'all'
+      ? effectiveFarms
+      : effectiveFarms.filter(farm => String(farm.id) === String(selectedFarmId));
+    const allScopedFields = scopedFarms.flatMap(farm => farm.fields || []);
+    const fields = selectedFieldId === 'all'
+      ? allScopedFields
+      : allScopedFields.filter(field => String(field.id) === String(selectedFieldId));
+    const ids = new Set(fields.map(field => String(field.id)));
+    const assessments = new Map((multiFarm?.field_breakdown || []).map(item => [String(item.field_id), item]));
+    const predicted = fields.map(field => ({ field, assessment: assessments.get(String(field.id)) }))
+      .filter(item => item.assessment?.predicted_yield != null);
+    const area = fields.reduce((sum, field) => sum + (Number(field.area) || 0), 0);
+    const predictedArea = predicted.reduce((sum, item) => sum + (Number(item.field.area) || 0), 0);
+    const production = predicted.reduce((sum, item) => sum + (Number(item.field.area) || 0) * Number(item.assessment.predicted_yield), 0);
+    let highRisk = 0;
+    let normalFields = 0;
+    for (const field of fields) {
+      const assessment = assessments.get(String(field.id));
+      const risk = String(assessment?.risk_level || '').toLowerCase();
+      const riskTimestamp = assessment?.risk_assessed_at ? new Date(assessment.risk_assessed_at).getTime() : NaN;
+      const riskAge = Date.now() - riskTimestamp;
+      const riskIsCurrent = Number.isFinite(riskTimestamp) && riskAge >= 0 && riskAge <= 30 * 86400000;
+      if (riskIsCurrent && ['high', 'critical'].includes(risk)) {
+        highRisk += 1;
+        continue;
       }
+      if (riskIsCurrent && risk === 'low') {
+        normalFields += 1;
+        continue;
+      }
+      if (riskIsCurrent && risk) continue;
 
-      const totalArea = Number(f?.total_area || flds.reduce((acc, fl) => acc + Number(fl.area || 0), 0) || 5.0);
-      const fldCount = flds.length || 1;
-      const avgYield = 91.8;
-      const highRisk = flds.filter(fl => fl.risk_level === 'High' || fl.risk_level === 'Critical').length;
-      const normalFields = Math.max(0, fldCount - highRisk);
-
-      return {
-        totalFarms: 1,
-        totalFields: fldCount,
-        totalArea: totalArea,
-        totalExpectedProduction: totalArea * avgYield,
-        avgYield: avgYield,
-        highRisk: highRisk,
-        normalFields: normalFields,
-        avgConfidence: 91.0
-      };
+      const measuredAt = field.soil_moisture_recorded_at ? new Date(field.soil_moisture_recorded_at).getTime() : NaN;
+      const moisture = field.soil_moisture == null ? NaN : Number(field.soil_moisture);
+      const measurementAge = Date.now() - measuredAt;
+      if (!Number.isFinite(measuredAt) || measurementAge < 0 || measurementAge > 30 * 86400000 || !Number.isFinite(moisture)) continue;
+      if (moisture < 45 || moisture > 80) highRisk += 1;
+      else if (moisture >= 60 && moisture <= 75) normalFields += 1;
     }
-  }, [selectedFarmId, selectedFieldId, effectiveFarms, activeFarmObj, multiFarm]);
+    return {
+      totalFarms: selectedFieldId === 'all' ? scopedFarms.length : (fields.length ? 1 : 0),
+      totalFields: fields.length,
+      totalArea: area,
+      totalExpectedProduction: predicted.length ? production : null,
+      avgYield: predictedArea ? production / predictedArea : null,
+      highRisk,
+      normalFields,
+      avgConfidence: predicted.length && predicted.some(item => item.assessment.confidence != null)
+        ? predicted.filter(item => item.assessment.confidence != null).reduce((sum, item) => sum + Number(item.assessment.confidence), 0) / predicted.filter(item => item.assessment.confidence != null).length
+        : null
+    };
+  }, [selectedFarmId, selectedFieldId, effectiveFarms, multiFarm]);
+
+  const filteredYieldHistory = useMemo(() => (multiFarm?.yield_history || []).filter(row => {
+    const farmMatches = selectedFarmId === 'all' || (row.farm_ids || []).some(id => String(id) === String(selectedFarmId));
+    const fieldMatches = selectedFieldId === 'all' || (row.field_ids || []).some(id => String(id) === String(selectedFieldId));
+    return farmMatches && fieldMatches;
+  }), [multiFarm, selectedFarmId, selectedFieldId]);
+  const availableSeasons = [...new Set(filteredYieldHistory.map(row => row.label).filter(Boolean))].sort();
+  const visibleYieldHistory = selectedSeason === 'all'
+    ? filteredYieldHistory
+    : filteredYieldHistory.filter(row => String(row.label) === String(selectedSeason));
 
   const severityColor = { info: '#38bdf8', low: '#10b981', medium: '#f59e0b', high: '#f97316', critical: '#ef4444' };
 
@@ -254,10 +280,10 @@ export default function NewDashboardPage() {
           </div>
           <div className="header-actions" style={{ display: 'flex', gap: 10 }}>
             <button className="btn-outline" onClick={() => navigate('/farm-map')}>
-              <Map size={16} />
+              <MapIcon size={16} />
               <span>Interactive Map</span>
             </button>
-            <button className="btn-primary" onClick={() => navigate('/prediction')}>
+            <button className="btn-primary" onClick={() => navigate(predictionPath())}>
               <Sparkles size={16} />
               <span>Predict Yield</span>
             </button>
@@ -304,12 +330,11 @@ export default function NewDashboardPage() {
                   style={{ padding: '7px 12px', fontSize: 13, minWidth: 180 }}
                   value={selectedFieldId}
                   onChange={handleFieldFilterChange}
-                  disabled={selectedFarmId === 'all'}
                 >
-                  <option value="all">🌱 All Fields in Farm</option>
+                  <option value="all">🌱 All Fields</option>
                   {availableFields.map(fld => (
                     <option key={fld.id} value={String(fld.id)}>
-                      {fld.name} ({fld.sugarcane_variety || 'Co 86032'})
+                      {fld.name}{selectedFarmId === 'all' && fld.farm_name ? ` · ${fld.farm_name}` : ''} ({fld.sugarcane_variety || 'Variety unavailable'})
                     </option>
                   ))}
                 </select>
@@ -319,7 +344,12 @@ export default function NewDashboardPage() {
                 <button
                   className="btn-outline"
                   style={{ padding: '6px 12px', fontSize: 12 }}
-                  onClick={() => { setSelectedFarmId('all'); setSelectedFieldId('all'); }}
+                  onClick={() => {
+                    setSelectedFarmId('all');
+                    setSelectedFieldId('all');
+                    localScopeChange.current = Boolean(selectedFarm || selectedField);
+                    selectFarm('');
+                  }}
                 >
                   <RefreshCw size={12} />
                   <span>Reset Scope</span>
@@ -359,27 +389,26 @@ export default function NewDashboardPage() {
           <StatCard
             icon={TrendingUp}
             label="Expected Production"
-            value={Math.round(calculatedMetrics.totalExpectedProduction).toLocaleString('en-IN')}
+            value={calculatedMetrics.totalExpectedProduction == null ? 'Not available' : Math.round(calculatedMetrics.totalExpectedProduction).toLocaleString('en-IN')}
             unit="Tonnes"
             color="#047857"
             subtitle="Forecasted regional tonnage"
-            onClick={() => navigate('/prediction')}
+            onClick={() => navigate(predictionPath())}
           />
           <StatCard
             icon={Sparkles}
             label="Avg Predicted Yield"
-            value={calculatedMetrics.avgYield.toFixed(1)}
+            value={calculatedMetrics.avgYield == null ? 'Not available' : calculatedMetrics.avgYield.toFixed(1)}
             unit="t/ha"
-            change="+18% vs benchmark"
-            changeUp
+            change={undefined}
             color="#10b981"
             subtitle="Dual-model calibrated forecast"
-            onClick={() => navigate('/prediction')}
+            onClick={() => navigate(predictionPath())}
           />
           <StatCard
             icon={BarChart3}
             label="Model Confidence"
-            value={`${Math.round(calculatedMetrics.avgConfidence)}%`}
+            value={calculatedMetrics.avgConfidence == null ? 'Not available' : `${Math.round(calculatedMetrics.avgConfidence)}%`}
             color="#8b5cf6"
             subtitle="Ensemble consensus score"
             onClick={() => navigate('/insights')}
@@ -389,7 +418,7 @@ export default function NewDashboardPage() {
             label="Normal Fields"
             value={calculatedMetrics.normalFields}
             color="#10b981"
-            subtitle="Nominal moisture & temperature"
+            subtitle="Fields with a current normal assessment"
             onClick={() => navigate('/farms')}
           />
           <StatCard
@@ -397,7 +426,7 @@ export default function NewDashboardPage() {
             label="High-Risk Fields"
             value={calculatedMetrics.highRisk}
             color={calculatedMetrics.highRisk > 0 ? '#ef4444' : '#64748b'}
-            subtitle={calculatedMetrics.highRisk > 0 ? 'Urgent attention required' : 'No acute hazards identified'}
+            subtitle={calculatedMetrics.highRisk > 0 ? 'Urgent attention required' : calculatedMetrics.normalFields > 0 ? 'Current high-risk assessments' : 'No high-risk assessments recorded'}
             onClick={() => navigate('/yield-loss')}
           />
         </div>
@@ -418,21 +447,32 @@ export default function NewDashboardPage() {
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                     <strong style={{ fontSize: 15, color: 'var(--text-primary)' }}>Irrigation Decision Support</strong>
-                    <Badge variant={irrigation.status === 'Normal' ? 'success' : irrigation.status === 'Monitor' ? 'warning' : 'critical'} dot>
-                      {irrigation.status || 'Normal'}
+                    <Badge variant={irrigation.status === 'Normal' ? 'success' : irrigation.status === 'Monitor' ? 'warning' : irrigation.status === 'Attention Required' ? 'critical' : 'default'} dot>
+                      {irrigation.status || 'Unavailable'}
                     </Badge>
                   </div>
                   <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: 0 }}>
-                    {irrigation.recommendation || 'Soil moisture is optimal. Continue scheduled furrow monitoring.'}
+                    {irrigation.advice || irrigation.recommendation || 'Recommendation unavailable.'}
                   </p>
+                  {irrigation.counts && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginTop: 8, fontSize: 12, color: 'var(--text-secondary)' }}>
+                      <span>Normal <strong>{irrigation.counts.Normal}</strong></span>
+                      <span>Monitor <strong>{irrigation.counts.Monitor}</strong></span>
+                      <span>Critical <strong>{irrigation.counts.Critical}</strong></span>
+                      <span>Unavailable <strong>{irrigation.counts.Unavailable}</strong></span>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: 18, fontSize: 12.5, color: 'var(--text-secondary)', background: 'var(--bg-panel)', padding: '8px 16px', borderRadius: 10, border: '1px solid var(--border)' }}>
-                <div>Moisture: <strong style={{ color: '#0284c7' }}>{irrigation.soil_moisture || 62}%</strong></div>
-                <div>Precipitation: <strong style={{ color: '#10b981' }}>{irrigation.rainfall_mm || 1220} mm</strong></div>
-                <div>Temp: <strong style={{ color: '#f59e0b' }}>{irrigation.temperature_c || 28.5}°C</strong></div>
-              </div>
+              {!irrigation.counts && (
+                <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', fontSize: 12.5, color: 'var(--text-secondary)', background: 'var(--bg-panel)', padding: '8px 16px', borderRadius: 10, border: '1px solid var(--border)' }}>
+                  <div>Moisture: <strong style={{ color: '#0284c7' }}>{irrigation.soil_moisture_pct ?? 'Unavailable'}{irrigation.soil_moisture_pct != null ? '%' : ''}</strong></div>
+                  <div>Precipitation: <strong style={{ color: '#10b981' }}>{irrigation.recent_rainfall_mm ?? 'Unavailable'}{irrigation.recent_rainfall_mm != null ? ' mm' : ''}</strong></div>
+                  <div>Temp: <strong style={{ color: '#f59e0b' }}>{irrigation.ambient_temperature_c ?? 'Unavailable'}{irrigation.ambient_temperature_c != null ? '°C' : ''}</strong></div>
+                  <div>Source: <strong>{irrigation.data_source || 'Unavailable'}</strong></div>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -517,17 +557,21 @@ export default function NewDashboardPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <div>
                 <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700 }}>Multi-Season Yield Telemetry</h3>
-                <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Historical vs benchmark cane output</span>
+                <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Stored predictions; actual yield and benchmarks appear only when recorded</span>
               </div>
+              <select className="form-control" value={selectedSeason} onChange={e => setSelectedSeason(e.target.value)} aria-label="Filter yield chart by season">
+                <option value="all">All seasons</option>
+                {availableSeasons.map(season => <option key={season} value={season}>{season}</option>)}
+              </select>
               <button className="btn-outline" onClick={() => navigate('/analytics')} style={{ padding: '4px 10px', fontSize: 12 }}>
                 <span>Analytics</span>
                 <ArrowRight size={12} />
               </button>
             </div>
 
-            {data?.yieldTrend?.length ? (
+            {visibleYieldHistory.some(row => row.historical_yield != null || row.predicted_yield != null || row.benchmark_yield != null) ? (
               <ResponsiveContainer width="100%" height={220}>
-                <AreaChart data={data.yieldTrend} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
+                <AreaChart data={visibleYieldHistory} margin={{ top: 10, right: 10, bottom: 0, left: -20 }}>
                   <defs>
                     <linearGradient id="dashYieldGrad" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#10b981" stopOpacity={0.4} />
@@ -538,15 +582,16 @@ export default function NewDashboardPage() {
                   <XAxis dataKey="label" tick={{ fontSize: 11, fill: 'var(--text-muted)' }} />
                   <YAxis tick={{ fontSize: 11, fill: 'var(--text-muted)' }} />
                   <Tooltip contentStyle={{ borderRadius: 10 }} formatter={(v) => [`${v} t/ha`, 'Yield']} />
-                  <Area type="monotone" dataKey="yield" stroke="#10b981" fill="url(#dashYieldGrad)" strokeWidth={2.5} dot={{ r: 4, fill: '#10b981' }} />
-                  <Area type="monotone" dataKey="benchmark" stroke="#94a3b8" fill="none" strokeDasharray="4 4" strokeWidth={1.5} />
+                  {visibleYieldHistory.some(row => row.historical_yield != null) && <Area type="monotone" dataKey="historical_yield" name="Recorded actual yield" stroke="#0ea5e9" fill="transparent" strokeWidth={2} dot={{ r: 3 }} connectNulls={false} />}
+                  <Area type="monotone" dataKey="predicted_yield" name="Recorded predicted yield" stroke="#10b981" fill="url(#dashYieldGrad)" strokeWidth={2.5} dot={{ r: 4, fill: '#10b981' }} connectNulls={false} />
+                  {visibleYieldHistory.some(row => row.benchmark_yield != null) && <Area type="monotone" dataKey="benchmark_yield" name="Recorded benchmark" stroke="#f59e0b" fill="transparent" strokeWidth={2} strokeDasharray="5 4" dot={false} connectNulls={false} />}
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
               <div style={{ textAlign: 'center', padding: '36px 16px', color: 'var(--text-muted)' }}>
                 <BarChart3 size={36} style={{ color: 'var(--primary)', margin: '0 auto 10px' }} />
                 <p style={{ margin: '0 0 14px', fontSize: 13.5 }}>Run predictions to see multi-season yield comparisons.</p>
-                <button className="btn-primary" onClick={() => navigate('/prediction')}>
+                <button className="btn-primary" onClick={() => navigate(predictionPath())}>
                   Forecast First Field
                 </button>
               </div>
@@ -609,21 +654,23 @@ export default function NewDashboardPage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 10 }}>
             {[
+              { icon: Warehouse, label: 'Register Farm', path: '/farms' },
+              { icon: Sprout, label: 'Add Field', path: '/farms' },
               { icon: Sparkles, label: 'Predict Yield',   path: '/prediction' },
-              { icon: Sliders, label: 'What-If Sim',     path: '/simulator' },
-              { icon: Map, label: 'Interactive Map',     path: '/farm-map' },
-              { icon: Sprout, label: 'Crop Intel',       path: '/crop-intel' },
+              { icon: MapIcon, label: 'Interactive Map', path: '/farm-map' },
+              { icon: Globe, label: 'NDVI Health',       path: '/crop-health' },
+              { icon: Sprout, label: 'Crop Monitoring', path: '/crop-intelligence' },
               { icon: Layers, label: 'Soil Analysis',    path: '/soil' },
               { icon: Dna, label: 'Variety Compare',     path: '/varieties' },
               { icon: FileText, label: 'Agri Reports',   path: '/reports' },
-              { icon: MessageSquare, label: 'AI Chat',    path: '/chat' },
+              { icon: BarChart3, label: 'Yield Analytics',path: '/analytics' },
             ].map(a => {
               const ActionIcon = a.icon;
               return (
                 <button
                   key={a.label}
                   className="btn-outline"
-                  onClick={() => navigate(a.path)}
+                  onClick={() => navigate(a.path === '/prediction' ? predictionPath() : a.path)}
                   style={{
                     padding: '10px 12px',
                     display: 'flex',

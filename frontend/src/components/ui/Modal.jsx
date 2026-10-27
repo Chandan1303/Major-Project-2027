@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 
 export default function Modal({
@@ -6,6 +7,7 @@ export default function Modal({
   onClose,
   title,
   subtitle,
+  description,
   children,
   maxWidth = '560px',
   footer
@@ -28,7 +30,9 @@ export default function Modal({
 
   if (!isOpen) return null;
 
-  return (
+  const subText = subtitle || description;
+
+  const modalMarkup = (
     <div className="modal-backdrop" onClick={onClose} role="dialog" aria-modal="true">
       <div
         className="modal-box"
@@ -38,7 +42,7 @@ export default function Modal({
         <div className="modal-header">
           <div>
             {title && <h3 className="modal-title">{title}</h3>}
-            {subtitle && <p className="modal-subtitle">{subtitle}</p>}
+            {subText && <p className="modal-subtitle">{subText}</p>}
           </div>
           <button
             className="modal-close-btn"
@@ -61,4 +65,6 @@ export default function Modal({
       </div>
     </div>
   );
+
+  return createPortal(modalMarkup, document.body);
 }

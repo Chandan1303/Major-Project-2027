@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  Legend, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis
+  Legend, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Cell
 } from 'recharts';
 import AppLayout from '../components/AppLayout';
 import { varietyApi, farmApi } from '../services/api';

@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import AppLayout from '../components/AppLayout';
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/+$/, '');
+const buildApiUrl = (path) => {
+  const base = API_BASE_URL.endsWith('/api') ? API_BASE_URL : `${API_BASE_URL}/api`;
+  return `${base}${path}`;
+};
 
 // States and districts - ALL NOW HAVE NDVI DATA ✅
 const INDIA_GEOGRAPHY = [
@@ -52,23 +56,6 @@ const INDIA_GEOGRAPHY = [
   }
 ];
 
-// Keep existing mock data as fallback
-const vigorHistory = [
-  { month: 'Apr 26', vigor: 62, health: 'Moderate', stage: 'Germination' },
-  { month: 'May 26', vigor: 74, health: 'Good', stage: 'Tillering' },
-  { month: 'Jun 26', vigor: 82, health: 'Good', stage: 'Tillering' },
-  { month: 'Jul 26', vigor: 89, health: 'Healthy', stage: 'Grand Growth' },
-  { month: 'Aug 26', vigor: 94, health: 'Healthy', stage: 'Grand Growth' },
-  { month: 'Sep 26', vigor: 91, health: 'Healthy', stage: 'Grand Growth' },
-];
-
-const zones = [
-  { id: 'Z1', name: 'North Block',  area: '4.5 ha', vigor: 92, health: 'Healthy',  soilMoisture: 65, ph: 7.2 },
-  { id: 'Z2', name: 'South Plot',   area: '2.8 ha', vigor: 84, health: 'Good',     soilMoisture: 58, ph: 6.8 },
-  { id: 'Z3', name: 'East Field',   area: '6.1 ha', vigor: 68, health: 'Moderate', soilMoisture: 48, ph: 6.5 },
-  { id: 'Z4', name: 'West Block',   area: '3.3 ha', vigor: 95, health: 'Healthy',  soilMoisture: 68, ph: 7.4 },
-];
-
 function healthColor(h) {
   if (h === 'Healthy' || h === 'Excellent') return '#16a34a';
   if (h === 'Good')    return '#65a30d';
@@ -78,7 +65,6 @@ function healthColor(h) {
 }
 
 export default function CropHealthPage() {
-  const [activeZone, setActiveZone] = useState('Z1');
   const [ndviData, setNdviData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -86,7 +72,6 @@ export default function CropHealthPage() {
   const [selectedDistrict, setSelectedDistrict] = useState('Belagavi');
   const [healthThresholds, setHealthThresholds] = useState([]);
   
-  const zone = zones.find(z => z.id === activeZone);
   
   // Get districts for selected state
   const availableDistricts = INDIA_GEOGRAPHY.find(s => s.state === selectedState)?.districts || [];
@@ -116,9 +101,11 @@ export default function CropHealthPage() {
 
   const fetchHealthThresholds = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/ndvi/health-thresholds`);
+      const response = await axios.get(buildApiUrl('/ndvi/health-thresholds'));
       if (response.data.success) {
-        setHealthThresholds(response.data.data.thresholds);
+        setHealthThresholds(response.data.data.thresholds || []);
+      } else {
+        setHealthThresholds([]);
       }
     } catch (err) {
       console.error('Failed to fetch health thresholds:', err);
@@ -130,14 +117,14 @@ export default function CropHealthPage() {
     setError(null);
     
     try {
-      const response = await axios.get(`${API_BASE_URL}/ndvi/current`, {
+      const response = await axios.get(buildApiUrl('/ndvi/current'), {
         params: {
           state: selectedState,
           district: selectedDistrict,
           days_back: 30
         }
       });
-      
+
       if (response.data.success) {
         setNdviData(response.data.data);
       } else {
@@ -156,23 +143,23 @@ export default function CropHealthPage() {
 
   // Get current NDVI health if available
   const currentNDVIHealth = ndviData?.ndvi_data?.average_health || null;
-  const currentNDVIValue = currentNDVIHealth?.ndvi_value || null;
-  const currentVigor = currentNDVIValue ? ndviToVigor(currentNDVIValue) : 91;
-  const currentHealthStatus = currentNDVIHealth?.category || 'Healthy';
-  const currentHealthColor = currentNDVIHealth?.color || '#16a34a';
+  const currentNDVIValue = currentNDVIHealth?.ndvi_value ?? null;
+  const currentVigor = currentNDVIValue == null ? null : ndviToVigor(Number(currentNDVIValue));
+  const currentHealthStatus = currentNDVIHealth?.category || 'Unavailable';
+  const currentHealthColor = currentNDVIHealth?.color || '#64748b';
 
   return (
     <AppLayout>
-      <div className="page-container">
+      <div className="page-container crop-health-page">
         <div className="page-header">
           <div>
-            <p className="eyebrow">NDVI Satellite Monitoring + Ground Telemetry</p>
+            <p className="eyebrow">Regional NDVI Monitoring</p>
             <h1 className="page-title">Crop Health & Vegetation Analysis</h1>
             <p className="page-subtitle">
-              Real-time vegetation index monitoring via Sentinel-2 satellite imagery and ground sensor telemetry.
+              District-level historical vegetation averages. Live Sentinel-2 readings are unavailable because Google Earth Engine is not configured.
             </p>
           </div>
-          <span className="badge badge-green">🛰️ Sentinel-2 NDVI + Ground Sensors</span>
+          <span className="badge badge-green">{ndviData?.data_source === 'realtime' ? '🛰️ Live Sentinel-2' : '📊 Historical regional data'}</span>
         </div>
 
         {/* Location Selector */}
@@ -223,7 +210,7 @@ export default function CropHealthPage() {
           </div>
           
           {error && (
-            <div style={{ 
+            <div className="ndvi-error-callout" style={{ 
               margin: '0 24px 16px', 
               padding: 12, 
               background: '#fef2f2', 
@@ -255,7 +242,7 @@ export default function CropHealthPage() {
             <div className="sc-icon">{currentNDVIHealth?.icon || '💚'}</div>
             <div className="sc-body">
               <span className="sc-label">Crop Health Status</span>
-              <span className="sc-value" style={{ color: currentHealthColor }}>
+              <span className={`sc-value crop-health-status ndvi-status-${currentHealthStatus.toLowerCase().replace(/\s+/g, '-')}`} style={{ color: currentHealthColor }}>
                 {currentHealthStatus}
               </span>
             </div>
@@ -265,7 +252,7 @@ export default function CropHealthPage() {
             <div className="sc-icon">🌿</div>
             <div className="sc-body">
               <span className="sc-label">Vegetation Vigor</span>
-              <span className="sc-value">{currentVigor}%</span>
+              <span className="sc-value">{currentVigor == null ? '—' : `${currentVigor}%`}</span>
             </div>
           </div>
 
@@ -273,7 +260,7 @@ export default function CropHealthPage() {
             <div className="sc-icon">📈</div>
             <div className="sc-body">
               <span className="sc-label">Growth Stage</span>
-              <span className="sc-value">Grand Growth</span>
+              <span className="sc-value">Not provided</span>
             </div>
           </div>
 
@@ -282,7 +269,7 @@ export default function CropHealthPage() {
             <div className="sc-body">
               <span className="sc-label">Last Observation</span>
               <span className="sc-value" style={{ fontSize: 14 }}>
-                {ndviData?.ndvi_data?.observation_date || 'Today'}
+                {ndviData?.ndvi_data?.observation_date || (ndviData ? 'Date not provided' : 'No reading loaded')}
               </span>
             </div>
           </div>
@@ -293,7 +280,7 @@ export default function CropHealthPage() {
           <div className="dash-panel" style={{ marginBottom: 24 }}>
             <div className="dash-panel-header">
               <h3>🔍 Current Health Analysis</h3>
-              <span className="badge" style={{ background: currentHealthColor, color: 'white' }}>
+              <span className={`badge crop-health-status-badge ndvi-status-${currentHealthStatus.toLowerCase().replace(/\s+/g, '-')}`} style={{ background: currentHealthColor, color: 'white' }}>
                 {currentHealthStatus}
               </span>
             </div>
@@ -309,7 +296,7 @@ export default function CropHealthPage() {
                   </div>
                   
                   {currentNDVIHealth.action_required && (
-                    <div style={{ 
+                    <div className="ndvi-action-callout" style={{ 
                       padding: 12, 
                       background: '#fef3c7', 
                       border: '1px solid #fbbf24',
@@ -332,17 +319,17 @@ export default function CropHealthPage() {
 
                 {/* Visual NDVI Gauge */}
                 <div style={{ flex: 1, textAlign: 'center' }}>
-                  <div style={{ 
+                  <div className="ndvi-gauge-track" style={{ 
                     width: 150, 
                     height: 150, 
                     borderRadius: '50%',
-                    background: `conic-gradient(${currentHealthColor} ${currentVigor}%, #e5e7eb ${currentVigor}%)`,
+                    background: `conic-gradient(${currentHealthColor} ${currentVigor}%, var(--ndvi-gauge-track, #e5e7eb) ${currentVigor}%)`,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     margin: '0 auto 12px'
                   }}>
-                    <div style={{ 
+                    <div className="ndvi-gauge-center" style={{ 
                       width: 120, 
                       height: 120, 
                       borderRadius: '50%', 
@@ -352,13 +339,13 @@ export default function CropHealthPage() {
                       alignItems: 'center',
                       justifyContent: 'center'
                     }}>
-                      <div style={{ fontSize: 32, fontWeight: 'bold', color: currentHealthColor }}>
+                      <div className="ndvi-gauge-value" style={{ fontSize: 32, fontWeight: 'bold', color: currentHealthColor }}>
                         {currentVigor}%
                       </div>
-                      <div style={{ fontSize: 12, color: '#666' }}>Vigor</div>
+                    <div className="ndvi-gauge-caption" style={{ fontSize: 12, color: '#666' }}>Vigor</div>
                     </div>
                   </div>
-                  <div style={{ fontSize: 13, color: '#666' }}>
+                  <div className="ndvi-gauge-caption" style={{ fontSize: 13, color: '#666' }}>
                     NDVI: {currentNDVIValue?.toFixed(3)}
                   </div>
                 </div>
@@ -368,36 +355,14 @@ export default function CropHealthPage() {
         )}
 
         <div className="dash-two-col">
-          {/* Parcel Vigor Map - Keep existing */}
+          {/* The API provides regional averages only, not parcel or sensor readings. */}
           <div className="dash-panel">
             <div className="dash-panel-header">
-              <h3>Field Parcel Health Matrix</h3>
-              <div style={{ display: 'flex', gap: 8 }}>
-                <span className="badge badge-blue">Ground Sensors</span>
-                <span className="badge badge-green">Season 2026</span>
-              </div>
+              <h3>Field-level NDVI</h3>
             </div>
-            <div className="ndvi-map-visual">
-              <div className="ndvi-map-grid">
-                {zones.map(z => (
-                  <div
-                    key={z.id}
-                    className={`map-zone ${activeZone === z.id ? 'map-zone-active' : ''}`}
-                    style={{ background: `${healthColor(z.health)}22`, borderColor: healthColor(z.health) }}
-                    onClick={() => setActiveZone(z.id)}
-                  >
-                    <span className="map-zone-label">{z.name}</span>
-                    <span className="map-zone-ndvi" style={{ color: healthColor(z.health) }}>Vigor {z.vigor}%</span>
-                    <span className={`status-badge status-${z.health.toLowerCase()}`}>{z.health}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="ndvi-map-legend">
-                <span style={{ color: '#16a34a' }}>■</span> Excellent (&gt;85%)
-                <span style={{ color: '#65a30d', marginLeft: 12 }}>■</span> Good (75–85%)
-                <span style={{ color: '#ca8a04', marginLeft: 12 }}>■</span> Moderate (60–75%)
-                <span style={{ color: '#dc2626', marginLeft: 12 }}>■</span> Stressed (&lt;60%)
-              </div>
+            <div style={{ padding: '18px 24px', color: '#64748b', lineHeight: 1.6 }}>
+              {selectedDistrict}, {selectedState}: {currentNDVIValue == null ? 'no reading loaded' : `regional mean NDVI ${Number(currentNDVIValue).toFixed(3)}`}.
+              {' '}The current data source does not include per-field zones or ground-sensor readings. Changing the district updates this regional average; it does not provide live satellite refreshes.
             </div>
           </div>
 
@@ -410,7 +375,7 @@ export default function CropHealthPage() {
               {healthThresholds.length > 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                   {healthThresholds.map(threshold => (
-                    <div 
+                    <div className={`ndvi-threshold-row${threshold.category === currentHealthStatus ? ' active' : ''}`}
                       key={threshold.category}
                       style={{ 
                         display: 'flex', 
@@ -439,7 +404,7 @@ export default function CropHealthPage() {
                         <div style={{ fontWeight: 600, marginBottom: 4 }}>
                           {threshold.category}
                         </div>
-                        <div style={{ fontSize: 13, color: '#666' }}>
+                        <div className="ndvi-threshold-range" style={{ fontSize: 13, color: '#666' }}>
                           NDVI: {threshold.ndvi_range.min.toFixed(2)} - {threshold.ndvi_range.max.toFixed(2)}
                         </div>
                       </div>
@@ -469,25 +434,25 @@ export default function CropHealthPage() {
             <div style={{ padding: '16px 24px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 16 }}>
                 <div>
-                  <div style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Source</div>
+                  <div className="ndvi-meta-label" style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Source</div>
                   <div style={{ fontWeight: 500 }}>
                     {ndviData.data_source === 'realtime' ? '🛰️ Sentinel-2 Satellite' : '📊 Historical Database'}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Location</div>
+                  <div className="ndvi-meta-label" style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Location</div>
                   <div style={{ fontWeight: 500 }}>
                     {ndviData.location.district}, {ndviData.location.state}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Resolution</div>
+                  <div className="ndvi-meta-label" style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Resolution</div>
                   <div style={{ fontWeight: 500 }}>
                     {ndviData.ndvi_data?.resolution_meters ? `${ndviData.ndvi_data.resolution_meters}m` : 'Regional Average'}
                   </div>
                 </div>
                 <div>
-                  <div style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Last Updated</div>
+                  <div className="ndvi-meta-label" style={{ fontSize: 12, color: '#666', marginBottom: 4 }}>Retrieved</div>
                   <div style={{ fontWeight: 500 }}>
                     {new Date(ndviData.timestamp).toLocaleString()}
                   </div>

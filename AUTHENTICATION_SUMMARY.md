@@ -1,67 +1,28 @@
-# Authentication System - Quick Summary
+# Authentication System
 
-## ✅ Status: ALL WORKING CORRECTLY
+## Current behavior
 
-The authentication system has been thoroughly audited and is **production-ready** with no critical issues found.
+- Public registration creates standard user accounts only.
+- Registration sends a 24-hour email verification link. Unverified accounts cannot sign in.
+- Login issues a seven-day HTTP-only JWT cookie after checking the password, account verification status, and selected portal.
+- Password reset links are sent by email, expire after 30 minutes, and can be used once.
+- Passwords must contain at least 10 characters, including lowercase, uppercase, and numeric characters.
+- Admin and officer API endpoints enforce their required roles on the backend. Frontend route checks are an additional usability layer.
+- Admin accounts must be provisioned through a trusted administrative process; the public signup form cannot assign elevated roles.
 
-## What Was Fixed
+## Email setup
 
-### 1. API Service Duplicate Definitions ✅
-**File:** `frontend/src/services/api.js`
+Set `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASSWORD`, `EMAIL_FROM`, and `FRONTEND_URL` in `backend/.env`. Use a verified sender address and an SMTP app password where required. Registration and password recovery return an explicit delivery error when mail sending fails; users can retry verification from the resend-verification page.
 
-- **Issue:** Duplicate method definitions in authApi object
-- **Fix:** Removed duplicate lines (login and register appeared twice)
-- **Impact:** Prevents potential syntax errors in strict environments
+## Auth endpoints
 
-## Authentication Features Working
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/logout`
+- `GET /api/auth/me`
+- `GET /api/auth/verify-email/<token>`
+- `POST /api/auth/resend-verification`
+- `POST /api/auth/forgot-password`
+- `POST /api/auth/reset-password`
 
-✅ **Registration** - Creates account, sends verification email  
-✅ **Email Verification** - 64-char token, 24-hour expiration  
-✅ **Resend Verification** - Generates new token and email  
-✅ **Login** - Role-based (User/Admin), checks verification  
-✅ **Forgot Password** - Privacy-preserving, sends reset link  
-✅ **Reset Password** - 30-min expiration, prevents reuse  
-✅ **Email Service** - Beautiful templates, smart URL detection  
-✅ **Security** - SHA-256 hashing, rate limiting, HttpOnly cookies  
-
-## Demo Accounts
-
-### User Account
-- Email: `farmer@sugarcane.ai`
-- Password: `password123`
-- Access: User dashboard, farms, predictions
-
-### Admin Account
-- Email: `admin@sugarcane.ai`
-- Password: `password123`
-- Access: Admin console, system management
-
-## Testing Results
-
-✅ Build completed without errors  
-✅ No TypeScript/ESLint issues  
-✅ All authentication flows operational  
-✅ Email templates working correctly  
-✅ Token generation and validation working  
-✅ Rate limiting active  
-✅ Role-based access control functioning  
-
-## Security Features
-
-🔒 **Token Security:** SHA-256 hashing, cryptographically random  
-🔒 **Password Requirements:** 10+ chars, uppercase, lowercase, number  
-🔒 **Rate Limiting:** 10 attempts per 15 minutes  
-🔒 **Session Security:** HttpOnly cookies, SameSite protection  
-🔒 **Privacy:** No user enumeration possible  
-
-## Files Modified
-
-1. `frontend/src/services/api.js` - Removed duplicate authApi methods
-2. `AUTHENTICATION_FIXES_AUDIT.md` - Created comprehensive audit document
-3. `AUTHENTICATION_SUMMARY.md` - This quick reference
-
-## Next Steps
-
-The authentication system is ready for production use. No additional fixes required.
-
-For detailed information, see `AUTHENTICATION_FIXES_AUDIT.md`.
+There are no built-in demo accounts. Provision test or administrator accounts only in a controlled environment.

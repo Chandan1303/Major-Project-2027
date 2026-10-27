@@ -33,6 +33,13 @@ export default function ReportsPage() {
   const [previewReport, setPreviewReport] = useState(null);
   const printRef = useRef(null);
 
+  const printReport = () => {
+    const cleanup = () => document.body.classList.remove('print-agronomic-report');
+    document.body.classList.add('print-agronomic-report');
+    window.addEventListener('afterprint', cleanup, { once: true });
+    window.print();
+  };
+
   useEffect(() => {
     Promise.allSettled([
       farmApi.list(),
@@ -75,7 +82,7 @@ export default function ReportsPage() {
       if (downloadFormat === 'CSV') {
         downloadCsvFile(repData);
       } else if (downloadFormat === 'PDF') {
-        setTimeout(() => window.print(), 300);
+        setTimeout(printReport, 300);
       }
     } catch (e) {
       toast.error(e.message || 'Failed to compile report');
@@ -132,12 +139,12 @@ export default function ReportsPage() {
         {/* Page Header */}
         <div className="page-header" style={{ marginBottom: 24 }}>
           <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '4px 10px', borderRadius: 20, background: 'rgba(99, 102, 241, 0.1)', color: '#6366f1', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8 }}>
-              <FileText size={13} /> Official Agricultural Intelligence Dossiers
+            <div className="reports-eyebrow">
+              <FileText size={13} /> Reports & exports
             </div>
-            <h1 className="page-title" style={{ margin: '0 0 6px' }}>Agronomic Dossiers & Report Exports</h1>
+            <h1 className="page-title" style={{ margin: '0 0 6px' }}>Farm reports</h1>
             <p className="page-subtitle" style={{ margin: 0, color: 'var(--text-secondary)' }}>
-              Generate enterprise-grade audit reports across yield predictions, soil biochemistry, crop phenology, and loss analysis.
+              Create, review, and export field reports for yield, soil, weather, and crop growth.
             </p>
           </div>
           <div className="header-actions" style={{ display: 'flex', gap: 10 }}>
@@ -145,7 +152,7 @@ export default function ReportsPage() {
               <Download size={15} /> Export CSV
             </button>
             <button className="btn-primary" onClick={() => handleGenerate('PDF')} disabled={generating} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Printer size={15} /> Print / Save PDF
+              <Printer size={15} /> Save as PDF
             </button>
           </div>
         </div>
@@ -286,7 +293,7 @@ export default function ReportsPage() {
         {/* Dossier Preview Document */}
         {previewReport && (
           <div
-            className="printable-report"
+            className="printable-report report-document"
             ref={printRef}
             style={{
               background: 'var(--card-bg)',
@@ -298,12 +305,12 @@ export default function ReportsPage() {
             }}
           >
             {/* Dossier Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16, paddingBottom: 20, borderBottom: '2px solid var(--primary)', marginBottom: 24 }}>
+            <div className="report-document-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 16, paddingBottom: 20, borderBottom: '2px solid var(--primary)', marginBottom: 24 }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                   <Sprout size={20} color="var(--primary)" />
                   <span style={{ fontSize: 13, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--primary)' }}>
-                    SugarYield AI · Agricultural Decision Support
+                    SugarYield AI · Farm report
                   </span>
                 </div>
                 <h2 style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-primary)', margin: 0 }}>
@@ -315,7 +322,7 @@ export default function ReportsPage() {
               </div>
 
               <div style={{ textAlign: 'right' }}>
-                <Badge variant="success">Official Verification ID: {previewReport.report_id || `AGR-${previewReport.id || 101}`}</Badge>
+                <Badge variant="success">Report ID: {previewReport.report_id || `AGR-${previewReport.id || 101}`}</Badge>
                 <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 4 }}>
                   <Clock size={12} /> {previewReport.generated_at || new Date().toLocaleString('en-IN')}
                 </div>
@@ -323,10 +330,10 @@ export default function ReportsPage() {
             </div>
 
             {/* Executive Summary */}
-            <div style={{ background: 'var(--primary-glow)', border: '1px solid var(--primary)', padding: 18, borderRadius: 12, marginBottom: 24 }}>
+            <div className="report-executive-summary" style={{ background: 'var(--primary-glow)', border: '1px solid var(--primary)', padding: 18, borderRadius: 12, marginBottom: 24 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
                 <CheckCircle2 size={16} color="var(--primary)" />
-                <strong style={{ fontSize: 14, color: 'var(--primary)' }}>Executive Agronomic Summary</strong>
+                <strong style={{ fontSize: 14, color: 'var(--primary)' }}>Summary</strong>
               </div>
               <p style={{ margin: 0, fontSize: 14, color: 'var(--text-primary)', lineHeight: 1.5 }}>
                 {previewReport.summary || `Comprehensive evaluation of ${selectedFarm?.name || 'holding'} covering yield projections, soil chemistry, climate impact, and harvest timelines.`}
@@ -334,7 +341,7 @@ export default function ReportsPage() {
             </div>
 
             {/* Core Metrics */}
-            <div className="dashboard-stats" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', marginBottom: 24 }}>
+            <div className="dashboard-stats report-document-metrics" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', marginBottom: 24 }}>
               <StatCard
                 label="Predicted Yield"
                 value={previewReport.report_data?.sections?.['ML Yield Forecast']?.predicted_yield_tha ?? 88.5}
@@ -371,9 +378,9 @@ export default function ReportsPage() {
 
             {/* Detailed Dynamic Sections */}
             {previewReport.report_data?.sections && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 24 }}>
+              <div className="report-document-sections" style={{ display: 'flex', flexDirection: 'column', gap: 16, marginBottom: 24 }}>
                 {Object.entries(previewReport.report_data.sections).map(([secName, secContent]) => (
-                  <div key={secName} style={{ border: '1px solid var(--border-color)', borderRadius: 12, padding: 18, background: 'var(--bg-secondary)' }}>
+                  <div className="report-document-section" key={secName} style={{ border: '1px solid var(--border-color)', borderRadius: 12, padding: 18, background: 'var(--bg-secondary)' }}>
                     <h4 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 12px', borderBottom: '1px solid var(--border-color)', paddingBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
                       <Layers size={15} color="var(--primary)" /> {secName}
                     </h4>
@@ -399,7 +406,7 @@ export default function ReportsPage() {
             )}
 
             {/* Directives & Prescriptions */}
-            <div style={{ background: 'var(--bg-secondary)', padding: 20, borderRadius: 12, border: '1px solid var(--border-color)', marginBottom: 24 }}>
+            <div className="report-document-recommendations" style={{ background: 'var(--bg-secondary)', padding: 20, borderRadius: 12, border: '1px solid var(--border-color)', marginBottom: 24 }}>
               <h4 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-primary)', margin: '0 0 12px', display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Sprout size={16} color="var(--primary)" /> Actionable Agronomic Directives
               </h4>
@@ -415,12 +422,12 @@ export default function ReportsPage() {
             </div>
 
             {/* Export Toolbar */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
+            <div className="report-export-toolbar" style={{ display: 'flex', justifyContent: 'flex-end', gap: 10 }}>
               <button className="btn-outline" onClick={() => downloadCsvFile(previewReport)} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 <Download size={15} /> Export Dataset (CSV)
               </button>
               <button className="btn-primary" onClick={() => window.print()} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <Printer size={15} /> Print / Save Dossier (PDF)
+                <Printer size={15} /> Save report as PDF
               </button>
             </div>
           </div>

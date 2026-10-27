@@ -19,9 +19,9 @@ import FarmsPage       from './pages/FarmsPage';
 import FarmMapPage     from './pages/FarmMapPage';
 import PredictionPage  from './pages/PredictionPage';
 import SimulatorPage   from './pages/SimulatorPage';
-import CropIntelPage   from './pages/CropIntelPage';
-import InsightsPage    from './pages/InsightsPage';
-import EnvironmentPage  from './pages/EnvironmentPage';
+import CropHealthPage   from './pages/CropHealthPage';
+import CropIntelligencePage from './crop-intelligence/CropIntelligencePage';
+import VarietyGrowingGuidePage from './pages/VarietyGrowingGuidePage';
 import WeatherPage      from './pages/WeatherPage';
 import SoilPage         from './pages/SoilPage';
 import VarietiesPage    from './pages/VarietiesPage';
@@ -41,21 +41,10 @@ function Protected({ children }) {
 }
 
 function UserRoute({ children }) {
-  const { user } = useAuth();
-  if (user?.role === 'admin') {
-    return <Navigate to="/dashboard" replace />;
-  }
   return <Protected>{children}</Protected>;
 }
 
 function DashboardRouter() {
-  const { user } = useAuth();
-  if (user?.role === 'admin') {
-    return <AdminDashboardPage />;
-  }
-  if (user?.role === 'officer') {
-    return <OfficerDashboardPage />;
-  }
   return <NewDashboardPage />;
 }
 
@@ -73,10 +62,10 @@ export default function App() {
       <Route path="/terms-of-use"        element={<TermsOfUsePage />} />
       <Route path="/privacy-policy"      element={<PrivacyPolicyPage />} />
 
-      {/* Main Dashboard (renders Admin Dashboard for Admin, Officer Dashboard for Officer, User Dashboard for Farmer) */}
+      {/* Main Dashboard */}
       <Route path="/dashboard"   element={<Protected><DashboardRouter /></Protected>} />
-      <Route path="/admin"       element={<Protected><AdminDashboardPage /></Protected>} />
-      <Route path="/officer"     element={<Protected><OfficerDashboardPage /></Protected>} />
+      <Route path="/admin"       element={<Navigate to="/dashboard" replace />} />
+      <Route path="/officer"     element={<Navigate to="/dashboard" replace />} />
 
       {/* User & Agro Intelligence Pages */}
       <Route path="/home"        element={<UserRoute><HomePage /></UserRoute>} />
@@ -84,10 +73,10 @@ export default function App() {
       <Route path="/farm-map"    element={<UserRoute><FarmMapPage /></UserRoute>} />
       <Route path="/prediction"  element={<UserRoute><PredictionPage /></UserRoute>} />
       <Route path="/simulator"   element={<UserRoute><SimulatorPage /></UserRoute>} />
-      <Route path="/crop-intel"  element={<UserRoute><CropIntelPage /></UserRoute>} />
-      <Route path="/insights"    element={<UserRoute><InsightsPage defaultTab="explain" /></UserRoute>} />
-      <Route path="/ml-performance" element={<UserRoute><InsightsPage defaultTab="performance" /></UserRoute>} />
-      <Route path="/environment" element={<UserRoute><EnvironmentPage /></UserRoute>} />
+      <Route path="/environment" element={<Navigate to="/weather" replace />} />
+      <Route path="/crop-health" element={<UserRoute><CropHealthPage /></UserRoute>} />
+      <Route path="/crop-intelligence" element={<UserRoute><CropIntelligencePage /></UserRoute>} />
+      <Route path="/growing-guide" element={<UserRoute><VarietyGrowingGuidePage /></UserRoute>} />
       <Route path="/weather"     element={<UserRoute><WeatherPage /></UserRoute>} />
       <Route path="/soil"        element={<UserRoute><SoilPage /></UserRoute>} />
       <Route path="/varieties"   element={<UserRoute><VarietiesPage /></UserRoute>} />

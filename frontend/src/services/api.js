@@ -21,6 +21,7 @@ export async function request(method, path, data) {
     return (await api({ method, url: path, data })).data;
   } catch (err) {
     const msg = err.response?.data?.message
+      || err.response?.data?.error
       || (err.code === 'ERR_NETWORK' ? 'Unable to connect to the server.' : err.message || 'Something went wrong.');
     const e = new Error(msg);
     e.code   = err.response?.data?.code;
@@ -56,18 +57,25 @@ export const farmApi = {
   update:      (id, d)     => request('patch',  `/farms/${id}`, d),
   remove:      (id)        => request('delete', `/farms/${id}`),
   getFields:   (farmId)    => request('get',    `/farms/${farmId}/fields`),
+  getFieldHistory: (fieldId) => request('get', `/fields/${fieldId}/history`),
   addField:    (farmId, d) => request('post',   `/farms/${farmId}/fields`, d),
   updateField: (farmId, fieldId, d) => request('patch',  `/farms/${farmId}/fields/${fieldId}`, d),
   removeField: (farmId, fieldId)    => request('delete', `/farms/${farmId}/fields/${fieldId}`),
 };
 
+export const geographyApi = {
+  getStates:    ()      => request('get', '/geography/states'),
+  getDistricts: (state) => request('get', `/geography/districts?state=${encodeURIComponent(state)}`),
+  getVarieties: (state) => request('get', `/geography/varieties?state=${encodeURIComponent(state)}`),
+};
+
 // ─── ML / Predictions ──────────────────────────────────────────────────
 export const mlApi = {
   predict:      (d) => request('post', '/ml/predict', d),
-  whatIf:       (d) => request('post', '/ml/what-if', d),
   explain:      (d) => request('post', '/ml/explain', d),
   dataQuality:  (d) => request('post', '/ml/data-quality', d),
   performance:  ()  => request('get',  '/ml/performance'),
+  whatIf:       (d) => request('post', '/ml/what-if', d),
 };
 
 export const predictionApi = {
@@ -81,10 +89,6 @@ export const predictionApi = {
 
 export const yieldLossApi = {
   analyze: (predId) => request('get', `/yield-loss/analysis${predId ? `?prediction_id=${predId}` : ''}`),
-};
-
-export const cropIntelApi = {
-  tracker: (fieldId) => request('get', `/crop-records/${fieldId}/tracker`),
 };
 
 export const irrigationApi = {

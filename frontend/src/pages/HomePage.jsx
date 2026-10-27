@@ -63,24 +63,6 @@ export default function HomePage() {
       badge: '94% Consensus'
     },
     {
-      icon: Sprout,
-      title: 'Crop Growth Intelligence',
-      desc: 'Track sugarcane phenology across 6 developmental stages: Planting, Germination, Tillering, Grand Growth, Maturity, and Harvest.',
-      path: '/crop-intel',
-      color: '#059669',
-      tag: 'Phenology Engine',
-      badge: '6 Stages'
-    },
-    {
-      icon: CloudSun,
-      title: 'Meteorological Risk Engine',
-      desc: 'Modular weather engine analyzing temperature degree days, precipitation deficits, and humidity impacts on sugarcane biomass growth.',
-      path: '/environment',
-      color: '#0284c7',
-      tag: 'Modular Weather',
-      badge: '7-Day Forecast'
-    },
-    {
       icon: Layers,
       title: 'Soil Health & Suitability',
       desc: 'Physicochemical soil profiling, pH compatibility, moisture holding capacity, and sugarcane soil health indexing with NPK analysis.',

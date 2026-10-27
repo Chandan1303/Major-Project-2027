@@ -1,5 +1,7 @@
 # Authentication System Audit & Fixes
 
+> Historical notes below do not describe the current implementation. Public admin registration is disabled, auth routes have been updated, and the current behavior is documented in [AUTHENTICATION_SUMMARY.md](./AUTHENTICATION_SUMMARY.md).
+
 ## Overview
 Comprehensive audit and fixes for the authentication flow including login, registration, email verification, password reset, and resend verification.
 

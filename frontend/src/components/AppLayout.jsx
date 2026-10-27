@@ -6,26 +6,16 @@ import {
   MapPin,
   Map,
   Sparkles,
-  Brain,
-  Sliders,
   Sprout,
-  Cpu,
-  Globe,
   CloudSun,
   Layers,
   Dna,
   TrendingDown,
+  BookOpen,
   LineChart,
   FileText,
-  MessageSquare,
-  Bell,
   User,
   Info,
-  Shield,
-  Landmark,
-  AlertTriangle,
-  Users,
-  Activity,
   LogOut,
   ChevronLeft,
   ChevronRight,
@@ -38,9 +28,8 @@ import { useAuth } from '../context/AuthContext';
 import { useField } from '../context/FieldContext';
 import { useTheme } from '../context/ThemeContext';
 import Brand from './Brand';
-import { alertApi } from '../services/api';
 
-// Navigation for Standard Farmers / Users
+// Navigation for Sugarcane Yield Decision Support System
 const USER_NAV = [
   { group: 'Main', items: [
     { label: 'Home',             path: '/home',        icon: Home },
@@ -52,13 +41,11 @@ const USER_NAV = [
   ]},
   { group: 'AI & Intelligence', items: [
     { label: 'AI Yield Predict', path: '/prediction',  icon: Sparkles, highlight: true },
-    { label: 'Explainable AI',   path: '/insights',    icon: Brain },
-    { label: 'What-If Simulator',path: '/simulator',   icon: Sliders },
-    { label: 'Crop Intelligence',path: '/crop-intel',  icon: Sprout },
-    { label: 'ML Performance',   path: '/ml-performance', icon: Cpu },
+    { label: 'Crop Growth Monitor', path: '/crop-intelligence', icon: Sprout },
+    { label: 'Variety Growing Guide', path: '/growing-guide', icon: BookOpen },
   ]},
   { group: 'Environment', items: [
-    { label: 'Environment Hub',  path: '/environment', icon: Globe },
+    { label: 'NDVI Crop Health', path: '/crop-health', icon: Sprout },
     { label: 'Weather Forecast', path: '/weather',     icon: CloudSun },
     { label: 'Soil Analysis',    path: '/soil',        icon: Layers },
   ]},
@@ -66,11 +53,7 @@ const USER_NAV = [
     { label: 'Variety Intel',    path: '/varieties',   icon: Dna },
     { label: 'Loss & Risk',      path: '/yield-loss',  icon: TrendingDown },
     { label: 'Yield Analytics',  path: '/analytics',   icon: LineChart },
-  ]},
-  { group: 'Advisory & Tools', items: [
     { label: 'Agri Reports',     path: '/reports',     icon: FileText },
-    { label: 'AI Chat Assistant',path: '/chat',        icon: MessageSquare },
-    { label: 'Early Warnings',   path: '/alerts',      icon: Bell },
   ]},
   { group: 'Account', items: [
     { label: 'Profile Settings', path: '/profile',     icon: User },
@@ -78,62 +61,17 @@ const USER_NAV = [
   ]},
 ];
 
-// Navigation for Agricultural Extension Officers
-const OFFICER_NAV = [
-  { group: 'Extension Oversight', items: [
-    { label: 'Officer Dashboard', path: '/officer',                    icon: Landmark },
-    { label: 'High-Risk Fields',  path: '/officer?tab=high_risk',      icon: AlertTriangle },
-    { label: 'Regional Farms',    path: '/farms',                      icon: MapPin },
-    { label: 'Interactive Map',   path: '/farm-map',                   icon: Map },
-  ]},
-  { group: 'Agronomic Analytics', items: [
-    { label: 'Yield Predictions', path: '/prediction',                 icon: Sparkles },
-    { label: 'Loss & Risk Audit', path: '/yield-loss',                 icon: TrendingDown },
-    { label: 'Variety Intel',     path: '/varieties',                  icon: Dna },
-    { label: 'ML Benchmarks',     path: '/ml-performance',             icon: Cpu },
-    { label: 'Territory Trends',  path: '/analytics',                  icon: LineChart },
-    { label: 'Field Dossiers',    path: '/reports',                    icon: FileText },
-  ]},
-  { group: 'Account', items: [
-    { label: 'Officer Profile',   path: '/profile',                    icon: User },
-    { label: 'System Info',       path: '/about',                      icon: Info },
-  ]},
-];
-
-// Navigation for Administrators
-const ADMIN_NAV = [
-  { group: 'Administration', items: [
-    { label: 'Admin Dashboard',   path: '/dashboard',                   icon: LayoutDashboard, tab: 'overview' },
-    { label: 'User Management',   path: '/dashboard?tab=users',         icon: Users, tab: 'users' },
-    { label: 'ML Benchmarks',     path: '/dashboard?tab=ml',            icon: Cpu, tab: 'ml' },
-    { label: 'Varieties Registry',path: '/dashboard?tab=varieties',     icon: Dna, tab: 'varieties' },
-    { label: 'Predictions Audit', path: '/dashboard?tab=predictions',   icon: Activity, tab: 'predictions' },
-    { label: 'System Alerts',     path: '/dashboard?tab=alerts',        icon: Bell, tab: 'alerts' },
-  ]},
-  { group: 'Account', items: [
-    { label: 'Admin Profile',     path: '/profile',                     icon: User },
-    { label: 'System Info',       path: '/about',                       icon: Info },
-  ]},
-];
-
 export default function AppLayout({ children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
-  const { allFields, selectedFieldId, selectField } = useField();
+  const { farms, selectedFarm, selectedField, selectedFieldId, selectField } = useField();
   const { theme, toggleTheme, isDark } = useTheme();
   const sidebarRef = useRef(null);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [unread, setUnread] = useState(0);
   const [collapsed, setCollapsed] = useState(false);
 
-  const isAdmin = user?.role === 'admin';
-  const isOfficer = user?.role === 'officer';
-  const navItems = isAdmin ? ADMIN_NAV : isOfficer ? OFFICER_NAV : USER_NAV;
-
-  useEffect(() => {
-    alertApi.list().then(r => setUnread(r.data?.unread_count || 0)).catch(() => {});
-  }, [location.pathname]);
+  const navItems = USER_NAV;
 
   useEffect(() => {
     const sidebar = sidebarRef.current;
@@ -155,7 +93,16 @@ export default function AppLayout({ children }) {
     if (sidebar) {
       sidebar.dataset.scrollTop = String(sidebar.scrollTop);
     }
-    navigate(path);
+    if (path === '/prediction') {
+      const params = new URLSearchParams();
+      const farmId = selectedField?.farm_id || selectedFarm?.id;
+      if (farmId) params.set('farm_id', String(farmId));
+      if (selectedField?.id) params.set('field_id', String(selectedField.id));
+      const query = params.toString();
+      navigate(query ? `/prediction?${query}` : path);
+    } else {
+      navigate(path);
+    }
     setMobileOpen(false);
   };
 
@@ -175,14 +122,14 @@ export default function AppLayout({ children }) {
     return location.pathname === itemPath;
   };
 
-  const roleColor = isAdmin ? '#8b5cf6' : isOfficer ? '#0284c7' : '#10b981';
-  const roleBadgeBg = isAdmin ? 'rgba(139, 92, 246, 0.12)' : isOfficer ? 'rgba(2, 132, 199, 0.12)' : 'rgba(16, 185, 129, 0.12)';
-  const roleBadgeBorder = isAdmin ? 'rgba(139, 92, 246, 0.25)' : isOfficer ? 'rgba(2, 132, 199, 0.25)' : 'rgba(16, 185, 129, 0.25)';
-  const roleTitle = isAdmin ? 'Administrator' : isOfficer ? 'Extension Officer' : 'Sugarcane Grower';
-  const RoleIcon = isAdmin ? Shield : isOfficer ? Landmark : Sprout;
+  const roleColor = '#10b981';
+  const roleBadgeBg = 'rgba(16, 185, 129, 0.12)';
+  const roleBadgeBorder = 'rgba(16, 185, 129, 0.25)';
+  const roleTitle = 'Sugarcane Grower';
+  const RoleIcon = Sprout;
 
   return (
-    <div className={`app-shell ${collapsed ? 'sidebar-collapsed' : ''} ${isAdmin ? 'admin-shell' : ''}`}>
+    <div className={`app-shell ${collapsed ? 'sidebar-collapsed' : ''}`}>
       {/* ── Sidebar ── */}
       <aside ref={sidebarRef} className={`sidebar ${mobileOpen ? 'sidebar-open' : ''}`} aria-label="Main Navigation">
         <div className="sidebar-brand">
@@ -229,9 +176,6 @@ export default function AppLayout({ children }) {
                       <ItemIcon size={17} strokeWidth={active ? 2.2 : 1.8} />
                     </span>
                     {!collapsed && <span className="sidebar-label">{item.label}</span>}
-                    {item.path === '/alerts' && unread > 0 && (
-                      <span className="nav-badge animate-pulse">{unread}</span>
-                    )}
                     {item.highlight && !collapsed && (
                       <span className="nav-ai-pill">AI</span>
                     )}
@@ -252,7 +196,7 @@ export default function AppLayout({ children }) {
                   boxShadow: `0 0 12px ${roleColor}40`
                 }}
               >
-                {user?.name?.[0]?.toUpperCase() || (isAdmin ? 'A' : isOfficer ? 'O' : 'U')}
+                {user?.name?.[0]?.toUpperCase() || 'U'}
               </div>
               <div className="sidebar-user-info">
                 <span className="sidebar-user-name">{user?.name || roleTitle}</span>
@@ -293,7 +237,7 @@ export default function AppLayout({ children }) {
             </div>
 
             {/* Global Active Field Connection Selector */}
-            {!isAdmin && allFields.length > 0 && (
+            {farms.length > 0 && (
               <div className="topbar-field-selector" title="Active field propagates across all intelligence & analytics modules">
                 <div className="tfs-icon-wrap">
                   <MapPin size={13} className="text-emerald-500" />
@@ -304,10 +248,15 @@ export default function AppLayout({ children }) {
                   onChange={(e) => selectField(e.target.value)}
                   className="tfs-select"
                 >
-                  {allFields.map(fld => (
-                    <option key={fld.id} value={fld.id}>
-                      {fld.farm_name} › {fld.name} ({fld.sugarcane_variety || 'Co 86032'})
-                    </option>
+                  <option value="">No active field</option>
+                  {farms.map(farm => (
+                    <optgroup key={farm.id} label={farm.name}>
+                      {(farm.fields || []).map(field => (
+                        <option key={field.id} value={field.id}>
+                          {field.name} ({field.sugarcane_variety || 'Variety unavailable'})
+                        </option>
+                      ))}
+                    </optgroup>
                   ))}
                 </select>
               </div>
@@ -325,28 +274,6 @@ export default function AppLayout({ children }) {
               {isDark ? <Sun size={17} className="text-amber-400" /> : <Moon size={17} className="text-slate-600" />}
             </button>
 
-            {isAdmin && (
-              <span className="status-badge admin-badge">
-                <span className="pulsing-dot purple" /> Admin Console
-              </span>
-            )}
-            {isOfficer && (
-              <span className="status-badge officer-badge">
-                <span className="pulsing-dot blue" /> Extension Officer
-              </span>
-            )}
-
-            {/* Alerts Center Button */}
-            <button
-              className="topbar-icon-btn topbar-alert-btn"
-              onClick={() => navigate(isAdmin ? '/dashboard?tab=alerts' : '/alerts')}
-              title="Alerts Center"
-              aria-label="Alerts Center"
-            >
-              <Bell size={18} />
-              {unread > 0 && <span className="topbar-badge">{unread}</span>}
-            </button>
-
             {/* User Profile Avatar */}
             <button
               className="topbar-user"
@@ -357,7 +284,7 @@ export default function AppLayout({ children }) {
                 background: `linear-gradient(135deg, ${roleColor}, #059669)`,
               }}
             >
-              <span>{user?.name?.[0]?.toUpperCase() || (isAdmin ? 'A' : isOfficer ? 'O' : 'U')}</span>
+              <span>{user?.name?.[0]?.toUpperCase() || 'U'}</span>
             </button>
           </div>
         </header>

@@ -6,11 +6,17 @@ Usage: python run_backend.py
 import os
 import sys
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Add project root to sys.path
 ROOT_DIR = Path(__file__).resolve().parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
+
+# Load environment files before importing the Flask app so its
+# database, JWT, CORS, and optional integration settings are available at setup.
+load_dotenv(ROOT_DIR / "backend" / ".env")
+load_dotenv(ROOT_DIR / ".env")
 
 # Ensure UTF-8 output on Windows
 if sys.stdout.encoding and sys.stdout.encoding.lower() != 'utf-8':

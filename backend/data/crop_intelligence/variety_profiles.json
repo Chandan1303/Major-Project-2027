@@ -1,0 +1,168 @@
+{
+  "Co 86032": {
+    "official_identifier": "Co 86032",
+    "origin": "Developed by ICAR-Sugarcane Breeding Institute, Coimbatore; notified for field cultivation in 2000.",
+    "regions": "ICAR-SBI and the S. Nijalingappa Sugar Institute document Co 86032 in tropical and peninsular India, including Karnataka. Karnataka recommendations vary by region and planting season.",
+    "planting_systems": "Variety-specific planting system reference unavailable.",
+    "seasons": "The S. Nijalingappa Sugar Institute lists August from the first week for Southern, Coastal and North Karnataka. ICAR's impact review reports October and January–February planting suitability in tropical India.",
+    "maturity": "Mid-late maturity. The S. Nijalingappa Sugar Institute lists 12–14 months to harvest for its Karnataka regional recommendations.",
+    "duration_short": "12–14 months (Karnataka)",
+    "yield_range": "An AICRP tropical-zone notification table reports 102 t/ha cane yield and 20.1% sucrose for the evaluation entry. In Karnataka, a Mandya trial reported higher plant and ratoon yields than its Co 86032 comparison; results depend on site and management.",
+    "sucrose_recovery": "The AICRP tropical-zone table reports 20.1% sucrose in its evaluation. The S. Nijalingappa Sugar Institute lists expected recovery of 11.0–12.0% in Southern, Coastal and North Karnataka, and 12.0–12.5% in its Central/North Karnataka row.",
+    "drought_tolerance": "The AICRP tropical-zone notification table classifies Co 86032 as drought tolerant and field tolerant to red rot.",
+    "water_nutrients": "The ICAR impact review reports high quality juice retained beyond 12 months and good ratooning up to three ratoon crops. Apply local soil-test and irrigation guidance; the cited profile sources do not establish a universal fertilizer dose.",
+    "morphology": "A Karnataka research trial reports Co 86032 plant-height observations at 90, 120, 150, and 270 DAP under a specific water-stress and recovery protocol. These are trial comparison bands (mean ± 1 SD), not ideal or healthy thresholds.",
+    "growth_reference_ranges": [
+      {"metric":"plant_height_cm","start_day":90,"end_day":90,"low":140.47,"high":143.53,"unit":"cm","region":"Belagavi","conditions":"Yaragatti Farm, S. Nijalingappa Sugarcane Institute, Belagavi, Karnataka; trial irrigated through 60 DAP, water withheld from 60–120 DAP, then normal irrigation through harvest. Published mean ± 1 standard deviation; informational trial comparator only, not an optimum or health threshold.","method":"Total plant height measured from the tip of the leaf to the bottom of the bud; three replications.","evidence_class":"trial_mean_plus_minus_one_sd","source":{"title":"Morphological responses of sugarcane cultivars against water deficit stress in northern Karnataka region of India","organization":"Plant Archives","year":2021,"url":"https://www.plantarchives.org/article/MORPHOLOGICAL%E2%80%93RESPONSES%E2%80%93OF%E2%80%93SUGARCANE%E2%80%93CULTIVARS%E2%80%93AGAINST%E2%80%93WATER%E2%80%93DEFICIT%E2%80%93STRESS%E2%80%93IN%E2%80%93NORTHERN%E2%80%93KARNATAKA%E2%80%93REGION%E2%80%93OF%E2%80%93INDIA.pdf","verified":"2026-10-16"}},
+      {"metric":"plant_height_cm","start_day":120,"end_day":120,"low":142.92,"high":147.08,"unit":"cm","region":"Belagavi","conditions":"Yaragatti Farm, S. Nijalingappa Sugarcane Institute, Belagavi, Karnataka; trial irrigated through 60 DAP, water withheld from 60–120 DAP, then normal irrigation through harvest. Published mean ± 1 standard deviation; informational trial comparator only, not an optimum or health threshold.","method":"Total plant height measured from the tip of the leaf to the bottom of the bud; three replications.","evidence_class":"trial_mean_plus_minus_one_sd","source":{"title":"Morphological responses of sugarcane cultivars against water deficit stress in northern Karnataka region of India","organization":"Plant Archives","year":2021,"url":"https://www.plantarchives.org/article/MORPHOLOGICAL%E2%80%93RESPONSES%E2%80%93OF%E2%80%93SUGARCANE%E2%80%93CULTIVARS%E2%80%93AGAINST%E2%80%93WATER%E2%80%93DEFICIT%E2%80%93STRESS%E2%80%93IN%E2%80%93NORTHERN%E2%80%93KARNATAKA%E2%80%93REGION%E2%80%93OF%E2%80%93INDIA.pdf","verified":"2026-10-16"}},
+      {"metric":"plant_height_cm","start_day":150,"end_day":150,"low":251.42,"high":260.58,"unit":"cm","region":"Belagavi","conditions":"Yaragatti Farm, S. Nijalingappa Sugarcane Institute, Belagavi, Karnataka; trial irrigated through 60 DAP, water withheld from 60–120 DAP, then normal irrigation through harvest. Published mean ± 1 standard deviation; informational trial comparator only, not an optimum or health threshold.","method":"Total plant height measured from the tip of the leaf to the bottom of the bud; three replications.","evidence_class":"trial_mean_plus_minus_one_sd","source":{"title":"Morphological responses of sugarcane cultivars against water deficit stress in northern Karnataka region of India","organization":"Plant Archives","year":2021,"url":"https://www.plantarchives.org/article/MORPHOLOGICAL%E2%80%93RESPONSES%E2%80%93OF%E2%80%93SUGARCANE%E2%80%93CULTIVARS%E2%80%93AGAINST%E2%80%93WATER%E2%80%93DEFICIT%E2%80%93STRESS%E2%80%93IN%E2%80%93NORTHERN%E2%80%93KARNATAKA%E2%80%93REGION%E2%80%93OF%E2%80%93INDIA.pdf","verified":"2026-10-16"}},
+      {"metric":"plant_height_cm","start_day":270,"end_day":270,"low":361.32,"high":384.68,"unit":"cm","region":"Belagavi","conditions":"Yaragatti Farm, S. Nijalingappa Sugarcane Institute, Belagavi, Karnataka; trial irrigated through 60 DAP, water withheld from 60–120 DAP, then normal irrigation through harvest. Published mean ± 1 standard deviation; informational trial comparator only, not an optimum or health threshold.","method":"Total plant height measured from the tip of the leaf to the bottom of the bud; three replications.","evidence_class":"trial_mean_plus_minus_one_sd","source":{"title":"Morphological responses of sugarcane cultivars against water deficit stress in northern Karnataka region of India","organization":"Plant Archives","year":2021,"url":"https://www.plantarchives.org/article/MORPHOLOGICAL%E2%80%93RESPONSES%E2%80%93OF%E2%80%93SUGARCANE%E2%80%93CULTIVARS%E2%80%93AGAINST%E2%80%93WATER%E2%80%93DEFICIT%E2%80%93STRESS%E2%80%93IN%E2%80%93NORTHERN%E2%80%93KARNATAKA%E2%80%93REGION%E2%80%93OF%E2%80%93INDIA.pdf","verified":"2026-10-16"}}
+    ],
+      "water_nutrients": "Co 86032-specific water and nutrient quantities are unavailable here; use local soil-test and extension recommendations.",
+    "pest_disease": "The AICRP tropical-zone table classifies Co 86032 as resistant to smut and field tolerant to red rot. Use healthy seed cane and follow current local disease advisories.",
+    "sources": [
+      {"title":"Morphological responses of sugarcane cultivars against water deficit stress in northern Karnataka region of India","organization":"Plant Archives","year":2021,"url":"https://www.plantarchives.org/article/MORPHOLOGICAL%E2%80%93RESPONSES%E2%80%93OF%E2%80%93SUGARCANE%E2%80%93CULTIVARS%E2%80%93AGAINST%E2%80%93WATER%E2%80%93DEFICIT%E2%80%93STRESS%E2%80%93IN%E2%80%93NORTHERN%E2%80%93KARNATAKA%E2%80%93REGION%E2%80%93OF%E2%80%93INDIA.pdf","region":"Yaragatti Farm, Belagavi, northern Karnataka","supports":"Reports Co 86032 plant-height means and standard deviations at 90, 120, 150, and 270 DAP in a trial with irrigation withheld between 60 and 120 DAP. Configured values are trial mean ±1 SD for informational comparison only; not healthy/optimal ranges. Measurement: total plant height from leaf tip to bottom of bud."},
+      {"title":"Economic Impact of ICAR Research: Co-86032 (Nayana)","organization":"ICAR-National Centre for Agricultural Economics and Policy Research","url":"https://ncap.res.in/pdf/other-publication/Economic%20Impact%20of%20ICAR%20Research.pdf","region":"Tropical / peninsular India","supports":"Release, October and January–February planting, wide-row planting, quality retention, ratooning, and adoption context."},
+      {"title":"Sugarcane Breeding: Important varieties and their features for Karnataka","organization":"S. Nijalingappa Sugar Institute, Belagavi","url":"https://www.nijalingappasugar.com/sugarbreeding.html","region":"Karnataka","supports":"Lists regional planting windows, harvest age, and expected recovery for Co 86032."},
+      {"title":"Importance of New Varieties of sugarcane suitable for tropical India","organization":"ICAR-Sugarcane Breeding Institute","year":2017,"url":"https://epubs.icar.org.in/index.php/IndFarm/article/download/73604/31020/186096","region":"Peninsular zone","supports":"AICRP notification table reports yield, sucrose, maturity group, and drought and red-rot response."},
+      {"title": "Importance of New Varieties of sugarcane suitable for tropical India", "organization": "ICAR-Sugarcane Breeding Institute", "year": 2017, "url": "https://epubs.icar.org.in/index.php/IndFarm/article/view/73604", "region": "Tropical India", "supports": "Co 86032 is a major variety for tropical India; publication includes variety trial summary."},
+      {"title": "ICAR-SBI Vision 2050", "organization": "ICAR-Sugarcane Breeding Institute", "year": 2015, "url": "https://icar.gov.in/sites/default/files/inline-files/ICAR-SBIVision2050.pdf", "region": "Tropical India", "supports": "Describes Co 86032 as an important variety developed for tropical India."}
+    ]
+  },
+  "CoM 0265": {
+    "official_identifier": "CoM 0265",
+    "origin": "Phule 0265 was developed at the Central Sugarcane Research Station, Padegaon, MPKV Rahuri. The app also records Vasantdada Sugar Institute as a reference institution.",
+    "regions": "MPKV reports the variety in Maharashtra production systems; the app's state configuration also lists it for Karnataka. Verify district, seed availability and mill acceptance locally.",
+    "soil_suitability": "MPKV describes medium to deep, fertile, well-drained black soil and notes it can also grow in saline soil.",
+    "weather_suitability": "MPKV describes warm, sunny establishment and tillering, warm humid grand growth with sufficient rainfall, and cool dry conditions at maturity. It also reports drought tolerance.",
+    "seasons": "MPKV lists Adsali planting from 15 July to 15 August, preseason from 15 October to 15 November, and Suru from 15 January to 15 February in Maharashtra.",
+    "maturity": "Mid-late maturing in the MPKV variety description.",
+    "duration_short": "12–16 months (Karnataka)",
+    "duration": "Adsali: 16–18 months; preseason: 14–16 months; Suru: 12–14 months in MPKV's Maharashtra reference.",
+    "yield_range": "MPKV reports 200 t/ha for Adsali, 164 t/ha for preseason and 150 t/ha for Suru. These are season-specific institute figures, not a guaranteed range.",
+    "sucrose_recovery": "The app's variety dataset records 13.9% sucrose. This is a variety-content figure; mill recovery varies by crop and factory.",
+    "morphology": "MPKV describes profuse tillering, sparse flowering, easy detrashing and good ratoonability. It reports 15–20% higher cane and commercial cane sugar yield than Co 86032 under its reference conditions.",
+    "water_nutrients": "The DARE-ICAR subsurface drip fertigation result is limited to the stated Deccan canal tract conditions. It does not provide a general dose in this profile.",
+    "pest_disease": "MPKV describes moderate resistance to smut, red rot and wilt. Follow current local disease advisories and use healthy seed cane.",
+    "drought_tolerance": "MPKV describes CoM 0265 as drought tolerant; field performance still depends on soil, crop stage and water availability.",
+    "sources": [
+      {"title":"Information about Cropwise Improved / Hybrid Varieties of Sugarcane","organization":"Mahatma Phule Krishi Vidyapeeth, Rahuri","year":2024,"url":"https://mpkv.ac.in/Uploads/Research/09%20-%20Sugarcane_20241016022335.pdf","region":"Maharashtra","supports":"CoM 0265 origin, soils, seasons, duration, reported seasonal productivity, ratooning, drought and salinity response, and disease features."},
+      {"title":"DARE-ICAR Significant Achievements 2021-22","organization":"Department of Agricultural Research and Education / ICAR","year":2022,"url":"https://icar.gov.in/sites/default/files/2025-11/DARE%20ICAR%20Achievements%202021-22%20%281%29.pdf","region":"Deccan canal tract, western Maharashtra; medium-deep black soil","supports":"Reports development of a subsurface drip fertigation schedule for CoM 0265 under the stated conditions."}
+    ]
+  },
+  "Co 94012": {
+    "official_identifier": "Co 94012",
+    "origin": "Developed at the Central Sugarcane Research Station, Padegaon, MPKV, Rahuri; released in 2004 as Phule Savitri.",
+    "regions": "The S. Nijalingappa Sugar Institute lists Co 94012 for Central and North Karnataka. MPKV records it for Maharashtra production systems. Confirm district and mill acceptance locally.",
+    "soil_suitability": "MPKV describes medium to deep, fertile, well-drained black soil for its Maharashtra production setting.",
+    "weather_suitability": "MPKV describes warm, sunny establishment and tillering, warm humid grand growth, and cool dry conditions at maturity for its Maharashtra production setting.",
+    "seasons": "MPKV lists preseason planting from 15 October to 15 November and Suru planting from 15 January to 15 February in Maharashtra. The S. Nijalingappa Sugar Institute lists October–January for Central and North Karnataka, and June–February for North Karnataka.",
+    "maturity": "Early maturing.",
+    "duration_short": "12–14 months (Suru/Karnataka); 14–16 months (preseason)",
+    "duration": "Suru: 12–14 months; preseason: 14–16 months in MPKV's Maharashtra reference. Karnataka regional recommendations list 12–14 months to harvest.",
+    "yield_range": "MPKV reports 135 t/ha for preseason and 98 t/ha for Suru in its Maharashtra reference. These are season-specific reported productivities, not a guaranteed range.",
+    "sucrose_recovery": "MPKV reports 14.24% CCS for the variety. The S. Nijalingappa Sugar Institute lists expected sugar recovery of 12.0–12.5% in Central and North Karnataka; CCS and factory recovery are different measures.",
+    "pest_disease": "MPKV describes Co 94012 as moderately resistant to smut and red rot. Maintain disease-free planting material and follow current local advisories.",
+    "drought_tolerance": "MPKV describes the variety as drought tolerant; performance still depends on soil, crop stage, and water availability.",
+    "sources": [
+      {"title": "Information about Cropwise Improved / Hybrid Varieties of Sugarcane", "organization": "Mahatma Phule Krishi Vidyapeeth, Rahuri", "year": 2024, "url": "https://mpkv.ac.in/Uploads/Research/09%20-%20Sugarcane_20241016022335.pdf", "region": "Maharashtra", "supports": "Co 94012 origin and release year, soil, seasonal planting dates, duration, productivity, CCS, drought response, and disease response."},
+      {"title": "Sugarcane Breeding: Important varieties and their features for Karnataka", "organization": "S. Nijalingappa Sugar Institute, Belagavi", "url": "https://www.nijalingappasugar.com/sugarbreeding.html", "region": "Central and North Karnataka", "supports": "Lists Co 94012 by Karnataka region, planting season, harvest age, expected sugar recovery, and ratoonability."},
+      {"title": "ICAR Kharif Agro-Advisories for Farmers 2025", "organization": "Indian Council of Agricultural Research", "year": 2025, "url": "https://icar.gov.in/en/icar-kharif-agro-advisories-farmers-2025-1", "region": "India; follow state and district advisories", "supports": "Includes Co 94012 among varieties in general sugarcane Kharif advisory context."}
+    ]
+  },
+  "Co 419": {
+    "official_identifier": "Co 419",
+    "origin": "Developed by ICAR-Sugarcane Breeding Institute, Coimbatore.",
+    "regions": "ICAR-SBI records Co 419 as an historically important variety in tropical India. Its presence in the app's Karnataka recommendations is a dataset reference; check current district and mill guidance before selecting it.",
+    "maturity": "Mid-late maturing in MPKV's Maharashtra variety reference.",
+    "duration": "12–16 months in the Karnataka package of practices reported by NABARD. MPKV lists Suru crops at 12–14 months and Adsali crops at 16–18 months in Maharashtra.",
+    "soil_suitability": "MPKV describes medium to deep, fertile, well-drained black soil for its Maharashtra production setting.",
+    "weather_suitability": "MPKV describes hot, sunny establishment and tillering, warm humid grand growth, and cool dry conditions at maturity for its Maharashtra production setting.",
+    "seasons": "NABARD's Karnataka package lists June–August, October–November and January–February. MPKV lists Adsali in July–August and Suru in January–February in Maharashtra.",
+    "yield_range": "MPKV reports 154 t/ha for Adsali and 122 t/ha for Suru in Maharashtra. An ICAR-NIAP historical review reports a high yield record of 136.46 t/ha and historical sugar recovery of 12.51%. These are regional and historical results, not a current farm expectation.",
+    "morphology": "MPKV describes medium-thick canes that turn purple in sunlight, good rationing ability, no pith formation, sparse flowering and excellent jaggery quality.",
+    "sources": [
+      {"title":"Information about Cropwise Improved / Hybrid Varieties of Sugarcane","organization":"Mahatma Phule Krishi Vidyapeeth, Rahuri","year":2024,"url":"https://mpkv.ac.in/Uploads/Research/09%20-%20Sugarcane_20241016022335.pdf","region":"Maharashtra","supports":"Describes Co 419 as mid-late maturing and reports crop duration by planting season."},
+      {"title":"Economics of Sugarcane","organization":"National Bank for Agriculture and Rural Development","url":"https://www.nabard.org/auth/writereaddata/tender/2501185214OP-54-Economics%20of%20Sugarcane.pdf","region":"Karnataka","supports":"Reports 12–16 month duration for Co 419 and 12–14 months for Co 62175, with planting season guidance from the Mandya package of practices."},
+      {"title":"ICAR-Sugarcane Breeding Institute: Sugarcane varieties","organization":"ICAR-Sugarcane Breeding Institute","url":"https://sugarcane.res.in/?page_id=4456","region":"India","supports":"Lists Co 419 among historically successful varieties bred by the institute."},
+      {"title":"Policy Paper 55: Sugarcane breeding and varietal development","organization":"ICAR-National Institute of Agricultural Economics and Policy Research","url":"https://niap.res.in/pdf/publication/policy-paper/Policy-Paper-55.pdf","region":"Tropical India; historical record","supports":"Reports historic Co 419 yield and sugar recovery records; figures should not be treated as current local expectations."}
+    ]
+  },
+  "Co 62175": {
+    "official_identifier": "Co 62175",
+    "origin": "University of Agricultural Sciences, Bengaluru lists Co 62175 among its sugarcane varieties released in 1975.",
+    "regions": "The S. Nijalingappa Sugar Institute lists Co 62175 for Central Karnataka and documents it as a predominant high-cane-yield variety in the region.",
+    "seasons": "The S. Nijalingappa Sugar Institute lists June, July, August, October and November as Central Karnataka planting months and 12–14 months to harvest.",
+    "maturity": "Mid-late variety.",
+    "duration_short": "12–14 months",
+    "duration": "12–14 months in the UAS Bengaluru profile and Karnataka regional package of practices.",
+    "yield_range": "The UAS Bengaluru profile gives zone-specific yield bands of 40–68 t/acre (Zone 6), 32–52 (Zone 7) and 40–45 (Zone 10). A separate Cauvery Command Area trial reported 149.40 t/ha in plant crop and 103.19 t/ha in ratoon. These are regional results, not a universal yield range.",
+    "sucrose_recovery": "The S. Nijalingappa Sugar Institute lists 13.0% sucrose and expected factory recovery of 11.0–11.5% in Central Karnataka. These are different measures.",
+    "morphology": "The UAS Bengaluru profile describes Co 62175 as mid-late, with high ratooning capacity and low apical dominance that encourages bud sprouting. A Karnataka trial also recorded taller, thicker canes and greater tillering than the Co 86032 comparison.",
+    "drought_tolerance": "The UAS Bengaluru variety profile classifies Co 62175 as susceptible to drought. Match it to local water availability and extension advice.",
+    "water_nutrients": "The Dharwad study compared nutrient-management practices in plant and ratoon crops; use its findings only in the Cauvery Command Area context and base fertilizer rates on local soil tests.",
+    "sources": [
+      {"title":"Sugarcane Breeding: Important varieties and their features for Karnataka","organization":"S. Nijalingappa Sugar Institute, Belagavi","url":"https://www.nijalingappasugar.com/sugarbreeding.html","region":"Central Karnataka","supports":"Regional planting months, harvest age, sucrose, expected recovery, and variety placement."},
+      {"title":"F1. Sugarcane: Varieties released from UAS Bangalore","organization":"University of Agricultural Sciences, Bengaluru","url":"https://www.uasbangalore.edu.in/wp-content/uploads/2025/10/Varities-Book.pdf","region":"Karnataka","supports":"Lists Co 62175 among varieties released by UAS Bangalore, in 1975."},
+      {"title":"Effect of organic and integrated nutrient management practices on growth, yield and quality of sugarcane and jaggery in Cauvery Command Area","organization":"University of Agricultural Sciences, Dharwad","year":2011,"url":"https://krishikosh.egranth.ac.in/server/api/core/bitstreams/a66d48d3-d0b7-44bf-a247-cb794145279e/content","region":"Cauvery Command Area, Karnataka","supports":"Reports plant and ratoon trial results and growth traits comparing Co 62175 with Co 86032."}
+    ]
+  },
+  "Co 0238": {
+    "official_identifier": "Co 0238",
+    "origin": "Co 0238 (Karan 4) was developed at ICAR-Sugarcane Breeding Institute, Regional Centre, Karnal, from Co LK 8102 × Co 775 and released in 2009 for the North-West Zone.",
+    "regions": "The release recommendation covers Haryana, Punjab, western and central Uttar Pradesh, Uttarakhand and Rajasthan. ICAR records later expansion into other areas, but that does not replace current local recommendations.",
+    "planting_systems": "Variety-specific planting system reference unavailable.",
+    "seasons": "Variety-specific verified planting window unavailable.",
+    "maturity": "Early maturing; released for commercial cultivation in the North-West Zone.",
+    "yield_range": "In AICRP evaluation at seven North-West Zone locations (2006–08), Co 0238 ranked first for cane yield at 81 t/ha. This is a historical multi-location trial result, not a farm guarantee.",
+    "sucrose_recovery": "ICAR describes the variety as high-sugar. One mill in Sitapur recorded 12.1% sugar recovery in December 2015; mill recovery varies with location, harvest date and processing.",
+    "morphology": "Variety-specific height, tiller population, canopy, and internode reference ranges by crop age are unavailable.",
+    "water_nutrients": "Variety-specific water and nutrient guidance unavailable.",
+    "pest_disease": "ICAR reports moderate resistance to prevalent red-rot races. Use healthy seed cane and follow current local disease advisories.",
+    "sources": [
+      {"title":"Co 0238 – The Wonder Variety of Sugarcane","organization":"Indian Council of Agricultural Research","url":"https://icar.gov.in/node/4869","region":"North-West Zone / subtropical India","supports":"Parentage, centre and year of release, early maturity, release region, seven-location AICRP yield evaluation, juice quality and red-rot response."},
+      {"title":"Economic Impact of ICAR Research","organization":"ICAR-National Centre for Agricultural Economics and Policy Research","url":"https://ncap.res.in/pdf/other-publication/Economic%20Impact%20of%20ICAR%20Research.pdf","region":"Subtropical India","supports":"Documents historical adoption and effects of Co 0238 on sugarcane yield and recovery."}
+    ]
+  },
+  "CoC 671": {
+    "official_identifier": "CoC 671",
+    "origin": "CoC 671 was developed from Q 63 × Co 775 at Sugarcane Research Station, Cuddalore. Vasantdada Sugar Institute lists the release year as 1994.",
+    "regions": "Historically grown in tropical states including Tamil Nadu, Karnataka and Maharashtra. The S. Nijalingappa Sugar Institute includes it in Karnataka regional variety schedules; confirm current local recommendations before planting.",
+    "planting_systems": "Variety-specific planting system reference unavailable.",
+    "seasons": "The S. Nijalingappa Sugar Institute lists October–January for Central and North Karnataka and June–February for North Karnataka. Vasantdada Sugar Institute describes it as suitable for early crushing.",
+    "maturity": "Early maturing.",
+    "duration_short": "10 months (TNAU); 12–14 months (Karnataka)",
+    "duration": "10 months in TNAU's variety performance table; 12–14 months in the S. Nijalingappa Sugar Institute's Karnataka regional guide.",
+    "yield_range": "TNAU reports 123.5 t/ha cane yield and 17.5 t/ha commercial cane sugar yield in its variety table. Vasantdada Sugar Institute reports 151 t/ha for preseason planting. These are source- and season-specific results.",
+    "sucrose_recovery": "TNAU reports 14.20% CCS for the variety. The Karnataka regional table lists 12.0–12.5% expected factory recovery in Central and North Karnataka; these measures differ.",
+    "soil_suitability": "Vasantdada Sugar Institute reports good results in well-drained soils.",
+    "morphology": "TNAU describes broad green leaves with spines and thick canes with green and purple colouring. Vasantdada Sugar Institute also describes it as a thick-caned early variety.",
+    "water_nutrients": "Variety-specific water and nutrient guidance unavailable.",
+    "pest_disease": "Vasantdada Sugar Institute reports moderate resistance to internode borer and grassy shoot disease. ICAR's historical review also documents red-rot outbreaks in CoC 671; use healthy seed cane and current local disease advisories.",
+    "sources": [
+      {"title":"Sugarcane variety: CoC 671","organization":"Vasantdada Sugar Institute","url":"https://www.vsisugar.com/vsi_admin/images/sugarcane_breeding_gallery/CoC%20671.pdf","region":"Maharashtra","supports":"Parentage, release year, early maturity, seasonal cane yield, well-drained soil, early crushing, and pest response."},
+      {"title":"Expert System for Sugarcane: Varieties","organization":"Tamil Nadu Agricultural University","url":"https://agritech.tnau.ac.in/expert_system/sugar/season%26varieties.html","region":"India and Karnataka references","supports":"CoC 671 duration, cane and CCS yield, CCS percentage, morphological traits, and Karnataka regional recommendations."},
+      {"title":"Sugarcane Breeding: Important varieties and their features for Karnataka","organization":"S. Nijalingappa Sugar Institute, Belagavi","url":"https://www.nijalingappasugar.com/sugarbreeding.html","region":"Karnataka","supports":"Regional planting periods, harvest age, sucrose and expected sugar recovery."},
+      {"title":"Importance of New Varieties of sugarcane suitable for tropical India","organization":"ICAR-Sugarcane Breeding Institute","year":2017,"url":"https://epubs.icar.org.in/index.php/IndFarm/article/download/73604/31020/186096","region":"Tropical India","supports":"Historical adoption and red-rot outbreak context for CoC 671."}
+    ]
+  },
+  "Co 99004": {
+    "official_identifier": "Co 99004",
+    "origin": "Co 99004 (Damodar) was developed by ICAR-Sugarcane Breeding Institute from Co 62175 × Co 86250 and released in 2007.",
+    "regions": "TNAU describes Co 99004 as a mid-late variety for peninsular India, including Karnataka, Tamil Nadu, Andhra Pradesh, Maharashtra, Gujarat and Kerala.",
+    "planting_systems": "Variety-specific planting system reference unavailable.",
+    "seasons": "Variety-specific verified planting window unavailable.",
+    "maturity": "Mid-late maturity group appears in ICAR-SBI trial summaries; actual harvest timing is region and season dependent.",
+    "duration_short": "12 months in TNAU evaluation",
+    "yield_range": "TNAU reports mean cane yield of 116.69 t/ha and mean sugar yield of 16.83 t/ha. ICAR's AICRP notification table reports 115.5 t/ha cane yield and 19.54% sucrose. Results are source-specific evaluation figures, not farm guarantees.",
+    "sucrose_recovery": "TNAU reports mean juice sucrose of 18.76% at 12 months. This is juice sucrose, not factory recovery.",
+    "morphology": "TNAU describes erect growth, early vigorous growth, dark-green foliage and tall canes without spines or splits; it also notes shy flowering and A1-quality jaggery.",
+    "drought_tolerance": "TNAU reports drought and salinity tolerance for Co 99004. Local performance depends on soil, rainfall, crop stage and irrigation.",
+    "water_nutrients": "Variety-specific water and nutrient guidance unavailable.",
+    "pest_disease": "TNAU reports resistance to red rot and wilt and tolerance to internode borer.",
+    "sources": [
+      {"title":"Expert System for Sugarcane: Varieties","organization":"Tamil Nadu Agricultural University","url":"https://agritech.tnau.ac.in/expert_system/sugar/season%26varieties.html","region":"Peninsular India","supports":"Release year, parentage, regional suitability, yield and sucrose results, maturity group, disease response, stress tolerance, and field characteristics."},
+      {"title":"Importance of New Varieties of sugarcane suitable for tropical India","organization":"ICAR-Sugarcane Breeding Institute","year":2017,"url":"https://epubs.icar.org.in/index.php/IndFarm/article/download/73604/31020/186096","region":"Peninsular zone","supports":"AICRP notification table reports Co 99004 yield, sucrose, maturity group and red-rot response."}
+    ]
+  }
+}

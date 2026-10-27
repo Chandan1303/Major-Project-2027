@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { farmApi, weatherApi } from '../services/api';
+import { useAuth } from './AuthContext';
 
 const FieldContext = createContext(null);
 
@@ -8,6 +9,7 @@ const STORAGE_KEY_FIELD = 'sugaryield_active_field_id';
 const STORAGE_KEY_PRED = 'sugaryield_active_prediction';
 
 export function FieldProvider({ children }) {
+  const { user, loading: authLoading } = useAuth();
   const [farms, setFarms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedFarmId, setSelectedFarmId] = useState(() => localStorage.getItem(STORAGE_KEY_FARM) || '');
@@ -25,42 +27,44 @@ export function FieldProvider({ children }) {
 
   // Load farms and initialize active selection
   const refreshFarms = useCallback(async () => {
+    if (!user) {
+      setFarms([]);
+      setLoading(false);
+      return;
+    }
+
     try {
       const res = await farmApi.list();
       const farmList = res.data?.farms || [];
       setFarms(farmList);
 
-      if (farmList.length > 0) {
-        // If current selection is invalid or empty, pick first farm
-        let curFarm = farmList.find(f => String(f.id) === String(selectedFarmId));
-        if (!curFarm) {
-          curFarm = farmList[0];
-          setSelectedFarmId(String(curFarm.id));
-          localStorage.setItem(STORAGE_KEY_FARM, String(curFarm.id));
+      const savedField = farmList.flatMap(farm => (farm.fields || []).map(field => ({ ...field, farm })))
+        .find(item => String(item.id) === String(selectedFieldId));
+      if (selectedFieldId && savedField) {
+        if (String(savedField.farm.id) !== String(selectedFarmId)) {
+          setSelectedFarmId(String(savedField.farm.id));
+          localStorage.setItem(STORAGE_KEY_FARM, String(savedField.farm.id));
         }
-
-        // Check field
-        if (curFarm.fields && curFarm.fields.length > 0) {
-          const curField = curFarm.fields.find(f => String(f.id) === String(selectedFieldId));
-          if (!curField) {
-            setSelectedFieldId(String(curFarm.fields[0].id));
-            localStorage.setItem(STORAGE_KEY_FIELD, String(curFarm.fields[0].id));
-          }
-        } else {
-          setSelectedFieldId('');
-          localStorage.removeItem(STORAGE_KEY_FIELD);
-        }
+      } else if (selectedFieldId) {
+        setSelectedFieldId('');
+        localStorage.removeItem(STORAGE_KEY_FIELD);
       }
     } catch (e) {
       console.error('Failed to load farms in FieldContext:', e);
     } finally {
       setLoading(false);
     }
-  }, [selectedFarmId, selectedFieldId]);
+  }, [selectedFarmId, selectedFieldId, user]);
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      setFarms([]);
+      setLoading(false);
+      return;
+    }
     refreshFarms();
-  }, []);
+  }, [authLoading, user]);
 
   // Update selected farm
   const selectFarm = (farmId) => {
@@ -69,11 +73,8 @@ export function FieldProvider({ children }) {
     localStorage.setItem(STORAGE_KEY_FARM, fIdStr);
 
     const farmObj = farms.find(f => String(f.id) === fIdStr);
-    if (farmObj && farmObj.fields && farmObj.fields.length > 0) {
-      const firstFieldId = String(farmObj.fields[0].id);
-      setSelectedFieldId(firstFieldId);
-      localStorage.setItem(STORAGE_KEY_FIELD, firstFieldId);
-    } else {
+    const currentFieldBelongs = farmObj?.fields?.some(field => String(field.id) === String(selectedFieldId));
+    if (!currentFieldBelongs) {
       setSelectedFieldId('');
       localStorage.removeItem(STORAGE_KEY_FIELD);
     }
@@ -82,6 +83,11 @@ export function FieldProvider({ children }) {
   // Update selected field
   const selectField = (fieldId) => {
     const fldIdStr = String(fieldId);
+    if (!fldIdStr) {
+      setSelectedFieldId('');
+      localStorage.removeItem(STORAGE_KEY_FIELD);
+      return;
+    }
     setSelectedFieldId(fldIdStr);
     localStorage.setItem(STORAGE_KEY_FIELD, fldIdStr);
 
@@ -110,31 +116,40 @@ export function FieldProvider({ children }) {
   };
 
   // Computed objects
-  const selectedFarm = farms.find(f => String(f.id) === String(selectedFarmId)) || (farms.length > 0 ? farms[0] : null);
+  const selectedFarm = farms.find(f => String(f.id) === String(selectedFarmId)) || null;
   const allFields = farms.flatMap(f => (f.fields || []).map(fld => ({ ...fld, farm_name: f.name, farm_location: f.location })));
-  const selectedField = allFields.find(f => String(f.id) === String(selectedFieldId)) || (selectedFarm?.fields?.[0] || null);
+  const selectedField = allFields.find(f => String(f.id) === String(selectedFieldId)) || null;
 
   // Fetch live weather when active farm/location changes
   useEffect(() => {
-    const loc = selectedFarm?.location || selectedFarm?.district || 'Kolhapur';
+    if (!user || authLoading) return;
+    if (!selectedFarm) { setActiveWeather(null); return; }
+    const loc = selectedFarm.location || selectedFarm.district;
     weatherApi.current(loc)
       .then(res => {
         if (res.data) setActiveWeather(res.data);
       })
       .catch(() => {});
-  }, [selectedFarmId]);
+  }, [selectedFarmId, user, authLoading]);
 
   // Aggregate multi-farm stats
+  const freshMoistureFields = allFields.filter(field => {
+    const recordedAt = field.soil_moisture_recorded_at ? new Date(field.soil_moisture_recorded_at).getTime() : NaN;
+    const age = Date.now() - recordedAt;
+    return field.soil_moisture != null && Number.isFinite(Number(field.soil_moisture))
+      && Number.isFinite(recordedAt) && age >= 0 && age <= 30 * 86400000;
+  });
+  const measuredPhFields = allFields.filter(field => field.soil_ph != null && Number.isFinite(Number(field.soil_ph)));
   const multiFarmStats = {
     totalFarms: farms.length,
     totalFields: allFields.length,
     totalArea: Number(allFields.reduce((sum, f) => sum + (Number(f.area) || 0), 0).toFixed(1)),
-    avgSoilMoisture: allFields.length
-      ? Number((allFields.reduce((sum, f) => sum + (Number(f.soil_moisture) || 60), 0) / allFields.length).toFixed(1))
-      : 60.0,
-    avgSoilPh: allFields.length
-      ? Number((allFields.reduce((sum, f) => sum + (Number(f.soil_ph) || 7.0), 0) / allFields.length).toFixed(2))
-      : 7.0,
+    avgSoilMoisture: freshMoistureFields.length
+      ? Number((freshMoistureFields.reduce((sum, field) => sum + Number(field.soil_moisture), 0) / freshMoistureFields.length).toFixed(1))
+      : null,
+    avgSoilPh: measuredPhFields.length
+      ? Number((measuredPhFields.reduce((sum, field) => sum + Number(field.soil_ph), 0) / measuredPhFields.length).toFixed(2))
+      : null,
     varieties: [...new Set(allFields.map(f => f.sugarcane_variety).filter(Boolean))]
   };
 

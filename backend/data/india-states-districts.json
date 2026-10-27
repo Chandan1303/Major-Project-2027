@@ -9,12 +9,14 @@
       "Bareilly",
       "Lakhimpur Kheri",
       "Deoria",
-      "Basti",
-      "Gonda",
+      "Bulandshahr",
+      "Moradabad",
       "Gorakhpur",
-      "Pilibhit",
-      "Shahjahanpur",
-      "Bulandshahr"
+      "Gonda",
+      "Basti",
+      "Sultanpur",
+      "Ballia",
+      "Shahjahanpur"
     ]
   },
   {
@@ -30,7 +32,9 @@
       "Jalgaon",
       "Dhule",
       "Nandurbar",
+      "Aurangabad",
       "Beed",
+      "Latur",
       "Osmanabad"
     ]
   },
@@ -38,17 +42,19 @@
     "state": "Karnataka",
     "districts": [
       "Belagavi",
+      "Bagalkot",
+      "Vijayapura",
       "Mandya",
       "Mysuru",
-      "Bagalkot",
+      "Chamrajanagar",
       "Shivamogga",
-      "Vijayapura",
-      "Chikkamagaluru",
-      "Davangere",
+      "Uttara Kannada",
+      "Bidar",
       "Raichur",
       "Bellary",
+      "Davangere",
       "Chitradurga",
-      "Uttara Kannada"
+      "Hassan"
     ]
   },
   {
@@ -60,12 +66,14 @@
       "Thanjavur",
       "Tiruchirappalli",
       "Cuddalore",
-      "Tirunelveli",
-      "Thoothukudi",
       "Villupuram",
+      "Tiruvannamalai",
+      "Vellore",
       "Namakkal",
       "Karur",
-      "Perambalur"
+      "Pudukkottai",
+      "Nagapattinam",
+      "Tiruvarur"
     ]
   },
   {
@@ -77,8 +85,10 @@
       "Visakhapatnam",
       "Guntur",
       "Prakasam",
-      "Chittoor",
-      "Nellore"
+      "Nellore",
+      "Vizianagaram",
+      "Srikakulam",
+      "Chittoor"
     ]
   },
   {
@@ -89,9 +99,9 @@
       "Bharuch",
       "Valsad",
       "Tapi",
-      "Narmada",
-      "Ahmedabad",
-      "Kheda"
+      "Vadodara",
+      "Kheda",
+      "Anand"
     ]
   },
   {
@@ -99,7 +109,10 @@
     "districts": [
       "Yamuna Nagar",
       "Karnal",
-      "Kurukshetra"
+      "Kurukshetra",
+      "Ambala",
+      "Panipat",
+      "Rohtak"
     ]
   },
   {
@@ -107,7 +120,11 @@
     "districts": [
       "Jalandhar",
       "Gurdaspur",
-      "Amritsar"
+      "Amritsar",
+      "Ludhiana",
+      "Patiala",
+      "Sangrur",
+      "Ferozepur"
     ]
   },
   {
@@ -117,9 +134,10 @@
       "Siwan",
       "Gopalganj",
       "Muzaffarpur",
-      "Saran",
       "Darbhanga",
-      "Vaishali"
+      "Samastipur",
+      "Vaishali",
+      "Saran"
     ]
   },
   {
@@ -128,10 +146,17 @@
       "Nizamabad",
       "Medak",
       "Karimnagar",
-      "Khammam",
-      "Warangal",
       "Nalgonda",
-      "Sangareddy"
+      "Khammam",
+      "Warangal"
+    ]
+  },
+  {
+    "state": "Uttarakhand",
+    "districts": [
+      "Haridwar",
+      "Dehradun",
+      "Udham Singh Nagar"
     ]
   }
 ]

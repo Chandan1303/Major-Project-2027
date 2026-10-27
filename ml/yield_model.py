@@ -27,11 +27,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 MODELS_DIR = BASE_DIR / "models"
 ML_RESULTS_DIR = BASE_DIR / "ml_results"
 
+# Import season intelligence
+try:
+    from ml.variety_season_intelligence import VarietySeasonIntelligence
+    SEASON_INTELLIGENCE_AVAILABLE = True
+except ImportError:
+    SEASON_INTELLIGENCE_AVAILABLE = False
+
 
 class YieldPredictionEngine:
     def __init__(self, models_dir=None):
         self.models_dir = Path(models_dir) if models_dir else MODELS_DIR
         self._load_models()
+        
+        # Initialize season intelligence engine
+        if SEASON_INTELLIGENCE_AVAILABLE:
+            self.season_intel = VarietySeasonIntelligence()
+        else:
+            self.season_intel = None
 
     def _load_models(self):
         def _read_pkl(filename):
@@ -169,19 +182,49 @@ class YieldPredictionEngine:
         return "Critical"
 
     def predict(self, raw_input: dict) -> dict:
-        """Runs real ML inference using trained Random Forest and XGBoost models"""
+        """
+        Runs real ML inference using trained Random Forest and XGBoost models.
+        Applies season intelligence multipliers for variety-season optimization.
+        Returns dual-model comparison with automatic best selection.
+        """
         X = self.encode_input(raw_input)
 
-        rf_val = float(self.rf_model.predict(X)[0])
-        xgb_val = float(self.xgb_model.predict(X)[0])
+        # Get base predictions from both models
+        rf_base = float(self.rf_model.predict(X)[0])
+        xgb_base = float(self.xgb_model.predict(X)[0])
 
-        # Primary prediction from best model (Random Forest R2=0.80), and ensemble
-        primary_val = round(rf_val if self.best_model_name == "random_forest" else xgb_val, 2)
+        # Apply season intelligence multipliers
+        variety = str(raw_input.get("variety", "Co 86032")).strip()
+        season = str(raw_input.get("season", "Kharif")).strip()
+        
+        season_multiplier = 1.0
+        if self.season_intel:
+            season_multiplier = self.season_intel.get_season_multiplier(variety, season)
+        
+        # Season-adjusted predictions
+        rf_val = rf_base * season_multiplier
+        xgb_val = xgb_base * season_multiplier
+
+        # Use the higher of the two trained model estimates as the forecast.
+        # Keep both outputs and their weighted blend available for comparison.
+        if xgb_val > rf_val:
+            selected_model = "XGBoost"
+            selected_val = xgb_val
+        else:
+            selected_model = "Random Forest"
+            selected_val = rf_val
+
+        primary_val = round(selected_val, 2)
         ensemble_val = round((rf_val * 0.55 + xgb_val * 0.45), 2)
 
-        variety = str(raw_input.get("variety", "Co 86032")).strip()
-        ref_yield = self.variety_potentials.get(variety, 90.0)
+        # Calculate model agreement
+        if rf_val > 0 and xgb_val > 0:
+            agreement_pct = 100.0 - (abs(rf_val - xgb_val) / ((rf_val + xgb_val) / 2) * 100.0)
+            model_agreement = round(max(0, min(100, agreement_pct)), 1)
+        else:
+            model_agreement = 0.0
 
+        ref_yield = self.variety_potentials.get(variety, 90.0)
         expected_loss_t = max(0.0, ref_yield - primary_val)
         expected_loss_pct = round((expected_loss_t / ref_yield) * 100.0, 1)
 
@@ -191,8 +234,8 @@ class YieldPredictionEngine:
         confidence = self.calculate_confidence(rf_val, xgb_val, raw_input)
         risk = self.calculate_risk(expected_loss_pct)
 
-        # Feature importances from production model
-        model_obj = self.rf_model if self.best_model_name == "random_forest" else self.xgb_model
+        # Feature importances from selected model
+        model_obj = self.xgb_model if selected_model == "XGBoost" else self.rf_model
         raw_importances = dict(zip(self.feature_names, model_obj.feature_importances_.tolist()))
         top_factors = sorted(raw_importances.items(), key=lambda x: x[1], reverse=True)
 
@@ -203,13 +246,16 @@ class YieldPredictionEngine:
             else "Stressed"
         )
 
-        # Expected range bounds (based on model MAE ~8.8 t/ha)
+        # Expected range bounds
         mae = self.metadata.get("metrics", {}).get(self.best_model_name, {}).get("MAE", 8.84)
         low_bound = round(max(30.0, primary_val - (mae * 0.9)), 2)
         high_bound = round(primary_val + (mae * 0.9), 2)
 
         return {
             "predicted_yield": primary_val,
+            "selected_model": selected_model,
+            "model_agreement": model_agreement,
+            "season_adjustment": round(season_multiplier, 2),
             "ensemble_yield": ensemble_val,
             "expected_production": total_production,
             "confidence": confidence,
@@ -223,10 +269,13 @@ class YieldPredictionEngine:
                 "low": low_bound,
                 "high": high_bound
             },
-            "model_used": self.best_model_name.replace("_", " ").title(),
+            "model_used": selected_model,  # For backward compatibility
             "models_comparison": {
                 "random_forest": round(rf_val, 2),
                 "xgboost": round(xgb_val, 2),
+                "selected": primary_val,
+                "rf_base": round(rf_base, 2),
+                "xgb_base": round(xgb_base, 2),
                 "ensemble": ensemble_val
             },
             "feature_importance": [
@@ -288,9 +337,15 @@ class YieldPredictionEngine:
         Shows positive factors, negative factors, confidence reasons, and feature importance.
         """
         X = self.encode_input(raw_input)
-        primary = float(self.best_model.predict(X)[0])
         rf_val = float(self.rf_model.predict(X)[0])
         xgb_val = float(self.xgb_model.predict(X)[0])
+        variety = str(raw_input.get("variety", "Co 86032")).strip()
+        season = str(raw_input.get("season", "Kharif")).strip()
+        if self.season_intel:
+            season_multiplier = self.season_intel.get_season_multiplier(variety, season)
+            rf_val *= season_multiplier
+            xgb_val *= season_multiplier
+        primary = max(rf_val, xgb_val)
         confidence = self.calculate_confidence(rf_val, xgb_val, raw_input)
 
         positives = []
@@ -416,7 +471,7 @@ class YieldPredictionEngine:
             confidence_reasons.append("One or more parameters deviate toward marginal ranges of the training corpus.")
 
         # Top feature importances
-        model_obj = self.rf_model if self.best_model_name == "random_forest" else self.xgb_model
+        model_obj = self.xgb_model if xgb_val > rf_val else self.rf_model
         raw_importances = dict(zip(self.feature_names, model_obj.feature_importances_.tolist()))
         sorted_factors = sorted(raw_importances.items(), key=lambda x: x[1], reverse=True)
 

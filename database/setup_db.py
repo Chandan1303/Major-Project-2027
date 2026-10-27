@@ -85,6 +85,68 @@ def upgrade_existing_tables(cursor):
         print("➕ Adding 'variety_id' column to 'fields' table...")
         cursor.execute("ALTER TABLE `fields` ADD COLUMN `variety_id` INT UNSIGNED NULL AFTER `sugarcane_variety`;")
 
+    # Check description column on farms
+    cursor.execute("""
+        SELECT COUNT(*) FROM information_schema.COLUMNS 
+        WHERE TABLE_SCHEMA = %s AND TABLE_NAME = 'farms' AND COLUMN_NAME = 'description';
+    """, (DB_NAME,))
+    if cursor.fetchone()[0] == 0:
+        print("➕ Adding 'description' column to 'farms' table...")
+        cursor.execute("ALTER TABLE `farms` ADD COLUMN `description` TEXT NULL AFTER `longitude`;")
+
+    # Check latitude on fields
+    cursor.execute("""
+        SELECT COUNT(*) FROM information_schema.COLUMNS 
+        WHERE TABLE_SCHEMA = %s AND TABLE_NAME = 'fields' AND COLUMN_NAME = 'latitude';
+    """, (DB_NAME,))
+    if cursor.fetchone()[0] == 0:
+        print("➕ Adding 'latitude' column to 'fields' table...")
+        cursor.execute("ALTER TABLE `fields` ADD COLUMN `latitude` DECIMAL(10, 7) NULL AFTER `soil_moisture`;")
+
+    # Check longitude on fields
+    cursor.execute("""
+        SELECT COUNT(*) FROM information_schema.COLUMNS 
+        WHERE TABLE_SCHEMA = %s AND TABLE_NAME = 'fields' AND COLUMN_NAME = 'longitude';
+    """, (DB_NAME,))
+    if cursor.fetchone()[0] == 0:
+        print("➕ Adding 'longitude' column to 'fields' table...")
+        cursor.execute("ALTER TABLE `fields` ADD COLUMN `longitude` DECIMAL(10, 7) NULL AFTER `latitude`;")
+
+    # Check irrigation_method on fields
+    cursor.execute("""
+        SELECT COUNT(*) FROM information_schema.COLUMNS 
+        WHERE TABLE_SCHEMA = %s AND TABLE_NAME = 'fields' AND COLUMN_NAME = 'irrigation_method';
+    """, (DB_NAME,))
+    if cursor.fetchone()[0] == 0:
+        print("➕ Adding 'irrigation_method' column to 'fields' table...")
+        cursor.execute("ALTER TABLE `fields` ADD COLUMN `irrigation_method` VARCHAR(80) NULL DEFAULT 'Drip Irrigation' AFTER `longitude`;")
+
+    # Check notes on fields
+    cursor.execute("""
+        SELECT COUNT(*) FROM information_schema.COLUMNS 
+        WHERE TABLE_SCHEMA = %s AND TABLE_NAME = 'fields' AND COLUMN_NAME = 'notes';
+    """, (DB_NAME,))
+    if cursor.fetchone()[0] == 0:
+        print("➕ Adding 'notes' column to 'fields' table...")
+        cursor.execute("ALTER TABLE `fields` ADD COLUMN `notes` TEXT NULL AFTER `irrigation_method`;")
+
+    # Check boundary_geojson on fields
+    cursor.execute("""
+        SELECT COUNT(*) FROM information_schema.COLUMNS 
+        WHERE TABLE_SCHEMA = %s AND TABLE_NAME = 'fields' AND COLUMN_NAME = 'boundary_geojson';
+    """, (DB_NAME,))
+    if cursor.fetchone()[0] == 0:
+        print("➕ Adding 'boundary_geojson' column to 'fields' table...")
+        cursor.execute("ALTER TABLE `fields` ADD COLUMN `boundary_geojson` LONGTEXT NULL AFTER `notes`;")
+
+    # Preserve records while allowing unknown planting dates and soil readings.
+    cursor.execute("""
+        ALTER TABLE `fields`
+        MODIFY COLUMN `soil_ph` DECIMAL(4, 2) NULL,
+        MODIFY COLUMN `soil_moisture` DECIMAL(5, 2) NULL,
+        MODIFY COLUMN `planting_date` DATE NULL;
+    """)
+
     try:
         cursor.execute("ALTER TABLE `sugarcane_varieties` MODIFY COLUMN `disease_resistance` TEXT NOT NULL;")
     except Exception as e:

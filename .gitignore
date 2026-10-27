@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 dist/
+.venv/
+.pnpm-store/
+frontend/.npm-cache/
 
 # Environment variables
 .env
@@ -9,6 +12,18 @@ dist/
 
 # Logs
 *.log
+
+# Local databases and runtime files
+*.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Generated runtime output
+outputs/
+ml_results/
+ml_models/
+SugarYieldAI-Project/
 
 # API folders (don't push to GitHub)
 mdapi/
@@ -52,3 +67,7 @@ reports/AGR-*
 # Excel workbooks
 *.xlsx
 !sugarcane_varieties_master.xlsx
+
+# Consolidated evaluator-facing dataset copies
+!datasets/
+!datasets/**

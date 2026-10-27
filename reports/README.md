@@ -5,4 +5,3 @@ This directory stores generated agronomic decision support reports and exported 
 ## Supported Formats
 - JSON Data Reports (`.json`)
 - PDF / Printable summaries
-- CSV Crop Intelligence Exports

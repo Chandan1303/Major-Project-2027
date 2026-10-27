@@ -1,0 +1,130 @@
+﻿        # Map districts to NDVI regions (all 105+ districts)
+        district_to_region_file = {
+            # Uttar Pradesh (15 districts)
+            "Muzaffarnagar": "NDVI_muzaffarnagar_cleaned.csv",
+            "Meerut": "NDVI_meerut_cleaned.csv",
+            "Bijnor": "NDVI_bijnor_cleaned.csv",
+            "Saharanpur": "NDVI_saharanpur_cleaned.csv",
+            "Bareilly": "NDVI_bareilly_cleaned.csv",
+            "Lakhimpur Kheri": "NDVI_lakhimpur_kheri_cleaned.csv",
+            "Deoria": "NDVI_deoria_cleaned.csv",
+            "Bulandshahr": "NDVI_bulandshahr_cleaned.csv",
+            "Moradabad": "NDVI_moradabad_cleaned.csv",
+            "Gorakhpur": "NDVI_gorakhpur_cleaned.csv",
+            "Gonda": "NDVI_gonda_cleaned.csv",
+            "Basti": "NDVI_basti_cleaned.csv",
+            "Sultanpur": "NDVI_sultanpur_cleaned.csv",
+            "Ballia": "NDVI_ballia_cleaned.csv",
+            "Shahjahanpur": "NDVI_shahjahanpur_cleaned.csv",
+
+            # Maharashtra (14 districts)
+            "Kolhapur": "NDVI_kolhapur_cleaned.csv",
+            "Sangli": "NDVI_sangli_cleaned.csv",
+            "Satara": "NDVI_satara_cleaned.csv",
+            "Ahmednagar": "NDVI_ahmednagar_cleaned.csv",
+            "Pune": "NDVI_pune_cleaned.csv",
+            "Solapur": "NDVI_solapur_cleaned.csv",
+            "Nashik": "NDVI_nashik_cleaned.csv",
+            "Jalgaon": "NDVI_jalgaon_cleaned.csv",
+            "Dhule": "NDVI_dhule_cleaned.csv",
+            "Nandurbar": "NDVI_nandurbar_cleaned.csv",
+            "Aurangabad": "NDVI_aurangabad_cleaned.csv",
+            "Beed": "NDVI_beed_cleaned.csv",
+            "Latur": "NDVI_latur_cleaned.csv",
+            "Osmanabad": "NDVI_osmanabad_cleaned.csv",
+
+            # Karnataka (14 districts)
+            "Belagavi": "NDVI_belagavi_cleaned.csv",
+            "Bagalkot": "NDVI_bagalkot_cleaned.csv",
+            "Vijayapura": "NDVI_vijayapura_cleaned.csv",
+            "Mandya": "NDVI_mandya_cleaned.csv",
+            "Mysuru": "NDVI_mysuru_cleaned.csv",
+            "Chamrajanagar": "NDVI_chamrajanagar_cleaned.csv",
+            "Shivamogga": "NDVI_shivamogga_cleaned.csv",
+            "Uttara Kannada": "NDVI_uttara_kannada_cleaned.csv",
+            "Bidar": "NDVI_bidar_cleaned.csv",
+            "Raichur": "NDVI_raichur_cleaned.csv",
+            "Bellary": "NDVI_bellary_cleaned.csv",
+            "Davangere": "NDVI_davangere_cleaned.csv",
+            "Chitradurga": "NDVI_chitradurga_cleaned.csv",
+            "Hassan": "NDVI_hassan_cleaned.csv",
+
+            # Tamil Nadu (14 districts)
+            "Coimbatore": "NDVI_coimbatore_cleaned.csv",
+            "Erode": "NDVI_erode_cleaned.csv",
+            "Salem": "NDVI_salem_cleaned.csv",
+            "Thanjavur": "NDVI_thanjavur_cleaned.csv",
+            "Tiruchirappalli": "NDVI_tiruchirappalli_cleaned.csv",
+            "Cuddalore": "NDVI_cuddalore_cleaned.csv",
+            "Villupuram": "NDVI_villupuram_cleaned.csv",
+            "Tiruvannamalai": "NDVI_tiruvannamalai_cleaned.csv",
+            "Vellore": "NDVI_vellore_cleaned.csv",
+            "Namakkal": "NDVI_namakkal_cleaned.csv",
+            "Karur": "NDVI_karur_cleaned.csv",
+            "Pudukkottai": "NDVI_pudukkottai_cleaned.csv",
+            "Nagapattinam": "NDVI_nagapattinam_cleaned.csv",
+            "Tiruvarur": "NDVI_tiruvarur_cleaned.csv",
+
+            # Andhra Pradesh (10 districts)
+            "East Godavari": "NDVI_east_godavari_cleaned.csv",
+            "West Godavari": "NDVI_west_godavari_cleaned.csv",
+            "Krishna": "NDVI_krishna_cleaned.csv",
+            "Visakhapatnam": "NDVI_visakhapatnam_cleaned.csv",
+            "Guntur": "NDVI_guntur_cleaned.csv",
+            "Prakasam": "NDVI_prakasam_cleaned.csv",
+            "Nellore": "NDVI_nellore_cleaned.csv",
+            "Vizianagaram": "NDVI_vizianagaram_cleaned.csv",
+            "Srikakulam": "NDVI_srikakulam_cleaned.csv",
+            "Chittoor": "NDVI_chittoor_cleaned.csv",
+
+            # Gujarat (8 districts)
+            "Surat": "NDVI_surat_cleaned.csv",
+            "Navsari": "NDVI_navsari_cleaned.csv",
+            "Bharuch": "NDVI_bharuch_cleaned.csv",
+            "Valsad": "NDVI_valsad_cleaned.csv",
+            "Tapi": "NDVI_tapi_cleaned.csv",
+            "Vadodara": "NDVI_vadodara_cleaned.csv",
+            "Kheda": "NDVI_kheda_cleaned.csv",
+            "Anand": "NDVI_anand_cleaned.csv",
+
+            # Haryana (6 districts)
+            "Yamuna Nagar": "NDVI_yamuna_nagar_cleaned.csv",
+            "Karnal": "NDVI_karnal_cleaned.csv",
+            "Kurukshetra": "NDVI_kurukshetra_cleaned.csv",
+            "Ambala": "NDVI_ambala_cleaned.csv",
+            "Panipat": "NDVI_panipat_cleaned.csv",
+            "Rohtak": "NDVI_rohtak_cleaned.csv",
+
+            # Punjab (7 districts)
+            "Jalandhar": "NDVI_jalandhar_cleaned.csv",
+            "Gurdaspur": "NDVI_gurdaspur_cleaned.csv",
+            "Amritsar": "NDVI_amritsar_cleaned.csv",
+            "Ludhiana": "NDVI_ludhiana_cleaned.csv",
+            "Patiala": "NDVI_patiala_cleaned.csv",
+            "Sangrur": "NDVI_sangrur_cleaned.csv",
+            "Ferozepur": "NDVI_ferozepur_cleaned.csv",
+
+            # Bihar (8 districts)
+            "Champaran": "NDVI_champaran_cleaned.csv",
+            "Siwan": "NDVI_siwan_cleaned.csv",
+            "Gopalganj": "NDVI_gopalganj_cleaned.csv",
+            "Muzaffarpur": "NDVI_muzaffarpur_cleaned.csv",
+            "Darbhanga": "NDVI_darbhanga_cleaned.csv",
+            "Samastipur": "NDVI_samastipur_cleaned.csv",
+            "Vaishali": "NDVI_vaishali_cleaned.csv",
+            "Saran": "NDVI_saran_cleaned.csv",
+
+            # Telangana (6 districts)
+            "Nizamabad": "NDVI_nizamabad_cleaned.csv",
+            "Medak": "NDVI_medak_cleaned.csv",
+            "Karimnagar": "NDVI_karimnagar_cleaned.csv",
+            "Nalgonda": "NDVI_nalgonda_cleaned.csv",
+            "Khammam": "NDVI_khammam_cleaned.csv",
+            "Warangal": "NDVI_warangal_cleaned.csv",
+
+            # Uttarakhand (3 districts)
+            "Haridwar": "NDVI_haridwar_cleaned.csv",
+            "Dehradun": "NDVI_dehradun_cleaned.csv",
+            "Udham Singh Nagar": "NDVI_udham_singh_nagar_cleaned.csv",
+
+        }

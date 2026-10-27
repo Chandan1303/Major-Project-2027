@@ -7,6 +7,7 @@ import { FieldProvider } from './context/FieldContext';
 import { ThemeProvider } from './context/ThemeContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import './styles.css';
+import './theme-overrides.css';
 
 createRoot(document.getElementById('root')).render(
   <ErrorBoundary>

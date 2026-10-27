@@ -1,0 +1,79 @@
+{
+  "leaf_yellowing": {
+    "problem": "Reported leaf yellowing",
+    "symptoms": ["Yellowing or pale leaves reported by farmer"],
+    "possible_causes": ["Nutrient availability, water stress, natural leaf ageing, pest damage, or disease are possibilities; this report alone cannot distinguish them."],
+    "investigate": ["Record whether older or younger leaves are affected", "Photograph the affected plant and a healthy comparison plant", "Check whether symptoms are spreading", "Review soil moisture, irrigation, drainage, and any recent inputs"],
+    "immediate_actions": ["Mark affected plants and repeat observations in 3–7 days", "Avoid applying fertilizer or pesticide until the cause and local guidance are checked"],
+    "avoid": ["Do not diagnose a nutrient deficiency from leaf colour alone", "Do not apply pesticide or fertilizer solely from this alert"],
+    "follow_up_days": 7,
+    "expert_help": "Contact a local agricultural extension officer if symptoms spread, many plants are affected, or disease is suspected.",
+    "source": {"organization":"ICAR / local agricultural extension", "title":"Symptom report is a scouting prompt; diagnosis requires field assessment", "url":"https://icar.gov.in/en/technologies-and-knowledge-resources", "verified":"2026-10-15", "evidence_class":"general scouting guidance; no diagnosis"}
+  },
+  "wilting": {
+    "problem": "Reported wilting or possible water stress",
+    "symptoms": ["Wilting reported by farmer"],
+    "possible_causes": ["Low available soil moisture, interrupted irrigation, root damage, waterlogging, heat, or disease are possibilities."],
+    "investigate": ["Check soil moisture in the root zone", "Inspect irrigation delivery and recent rainfall", "Look for standing water or damaged roots", "Record whether wilting persists in cooler hours"],
+    "immediate_actions": ["Verify soil and irrigation conditions before changing water application", "Record a follow-up observation within 1–3 days"],
+    "avoid": ["Do not increase irrigation without checking for standing water and drainage", "Do not infer a disease from wilting alone"],
+    "follow_up_days": 3,
+    "expert_help": "Seek local extension advice if wilting persists after soil and irrigation checks or appears with stem/root symptoms.",
+    "source": {"organization":"ICAR / local agricultural extension", "title":"ICAR Kharif Agro-Advisories for Farmers 2025", "url":"https://icar.gov.in/en/icar-kharif-agro-advisories-farmers-2025-1", "verified":"2026-10-15", "evidence_class":"general water-management context; action requires local measurements"}
+  },
+  "waterlogging": {
+    "problem": "Reported standing water or possible waterlogging",
+    "symptoms": ["Standing water or poor drainage reported by farmer"],
+    "possible_causes": ["Blocked drainage, over-irrigation, local topography, or heavy rainfall are possibilities."],
+    "investigate": ["Record where and how long water remains", "Inspect field outlets and nearby low areas", "Check soil texture and recent rainfall/irrigation", "Photograph affected and unaffected areas"],
+    "immediate_actions": ["Inspect drainage and irrigation delivery; consult local guidance before altering field channels"],
+    "avoid": ["Do not prescribe a drainage redesign without field topography and soil assessment"],
+    "follow_up_days": 2,
+    "expert_help": "Seek local extension or irrigation advice if water remains or crop symptoms worsen.",
+    "source": {"organization":"ICAR / local agricultural extension", "title":"ICAR Kharif Agro-Advisories for Farmers 2025", "url":"https://icar.gov.in/en/icar-kharif-agro-advisories-farmers-2025-1", "verified":"2026-10-15", "evidence_class":"general guidance; site-specific assessment required"}
+  },
+  "suspected_pest": {
+    "problem": "Suspected pest damage",
+    "symptoms": ["Pest symptoms reported by farmer"],
+    "possible_causes": ["Insect feeding or other physical damage are possibilities; pest identity is unconfirmed."],
+    "investigate": ["Record affected plant parts and the number of plants affected", "Photograph the symptom and any insect or frass without disturbing it", "Check whether damage is spreading and record the date"],
+    "immediate_actions": ["Continue scouting and preserve a clear photo/sample for local diagnosis", "Use a locally validated integrated-pest-management recommendation after identification"],
+    "avoid": ["Do not apply pesticide before identifying the pest and checking current local registration and label directions"],
+    "follow_up_days": 3,
+    "expert_help": "Contact a local agricultural extension officer or plant-protection specialist for identification and current control advice.",
+    "source": {"organization":"ICAR / local agricultural extension", "title":"ICAR Integrated Pest Management knowledge resources", "url":"https://icar.gov.in/en/technologies-and-knowledge-resources", "verified":"2026-10-15", "evidence_class":"scouting guidance; suspected pest only"}
+  },
+  "suspected_disease": {
+    "problem": "Possible disease symptoms",
+    "symptoms": ["Disease-like symptoms reported by farmer"],
+    "possible_causes": ["Disease, nutrient or water stress, and physical injury can produce overlapping symptoms; diagnosis is unconfirmed."],
+    "investigate": ["Photograph affected leaves, stalks, and a healthy comparison", "Record the plant part, symptom pattern, spread, and recent weather", "Note whether symptoms are clustered or scattered"],
+    "immediate_actions": ["Avoid moving planting material from affected plants until the symptom is assessed", "Arrange expert identification when symptoms spread"],
+    "avoid": ["Do not diagnose or prescribe chemical treatment from one symptom or photograph"],
+    "follow_up_days": 3,
+    "expert_help": "Seek local extension or plant pathology advice, especially if stalk symptoms or rapid spread are present.",
+    "source": {"organization":"ICAR / local agricultural extension", "title":"ICAR Integrated Pest Management knowledge resources", "url":"https://icar.gov.in/en/technologies-and-knowledge-resources", "verified":"2026-10-15", "evidence_class":"scouting guidance; diagnosis requires expert assessment"}
+  },
+  "tiller_decline": {
+    "problem": "Tiller count decreased between comparable observations",
+    "symptoms": ["A recorded tiller count is lower than the previous count for the same cycle and sample area."],
+    "possible_causes": ["Sampling variation, crop damage, competition, moisture conditions, or natural tiller survival are possibilities."],
+    "investigate": ["Confirm the same area, row length, and counting method were used", "Repeat the count in a nearby marked area", "Inspect for crop damage, weeds, soil moisture, and drainage"],
+    "immediate_actions": ["Verify the count before changing inputs", "Record the repeat count and field conditions"],
+    "avoid": ["Do not apply additional fertilizer automatically from a single declining count"],
+    "follow_up_days": 7,
+    "expert_help": "Seek local advice if a verified decline continues or accompanies visible crop stress.",
+    "source": {"organization":"ICAR-SBI / local agricultural extension", "title":"Importance of New Varieties of sugarcane suitable for tropical India", "url":"https://epubs.icar.org.in/index.php/IndFarm/article/view/73604", "verified":"2026-10-15", "evidence_class":"trend-triggered scouting prompt; not a validated diagnostic threshold"}
+  },
+  "height_decline": {
+    "problem": "Recorded plant height decreased between observations",
+    "symptoms": ["A height measurement is lower than the previous measurement."],
+    "possible_causes": ["Different sampled plants, measurement method, lodging, breakage, or data-entry error are possibilities."],
+    "investigate": ["Check that the same height definition and unit were used", "Repeat measurements on representative plants", "Inspect for lodging, breakage, and visible damage"],
+    "immediate_actions": ["Correct the record if it was a measurement or entry error; otherwise document the affected plants"],
+    "avoid": ["Do not interpret a lower sample mean as proof of disease or poor growth"],
+    "follow_up_days": 7,
+    "expert_help": "Seek local advice if repeated measurements confirm damage or abnormal symptoms.",
+    "source": {"organization":"Local agricultural extension", "title":"Measurement verification prompt", "url":"https://icar.gov.in/en/technologies-and-knowledge-resources", "verified":"2026-10-15", "evidence_class":"rule-based data-quality and scouting prompt"}
+  }
+}

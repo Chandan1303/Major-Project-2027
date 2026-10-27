@@ -12,7 +12,7 @@ Includes agronomic impact assessments for sugarcane:
 import os
 import requests
 from abc import ABC, abstractmethod
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, timezone
 
 class ModularWeatherProvider(ABC):
     """Abstract interface for all weather providers"""
@@ -43,6 +43,10 @@ class OpenWeatherProvider(ModularWeatherProvider):
         data = res.json()
         return {
             "location": data.get("name", location),
+            "latitude": (data.get("coord") or {}).get("lat"),
+            "longitude": (data.get("coord") or {}).get("lon"),
+            "observed_at": datetime.fromtimestamp(data["dt"], timezone.utc).isoformat() if data.get("dt") is not None else None,
+            "source": "OpenWeatherMap",
             "temperature": round(data["main"]["temp"], 1),
             "feels_like": round(data["main"]["feels_like"], 1),
             "humidity": data["main"]["humidity"],
@@ -97,18 +101,23 @@ class LocalDatabaseWeatherProvider(ModularWeatherProvider):
     for Indian sugarcane belts (Kolhapur, Mandya, Meerut, Pune, Belagavi).
     """
     LOCATION_DEFAULTS = {
-        "kolhapur": {"temp": 28.5, "humidity": 74, "rain": 12.0, "wind": 11.0, "desc": "Partly Cloudy"},
-        "mandya":   {"temp": 28.0, "humidity": 68, "rain": 15.0, "wind": 13.0, "desc": "Mild Breeze"},
-        "belagavi": {"temp": 27.5, "humidity": 75, "rain": 25.0, "wind": 14.0, "desc": "Scattered Showers"},
+        "kolhapur": {"temp": 28.5, "humidity": 74, "rain": 12.0, "wind": 11.0, "desc": "Partly Cloudy", "lat": 16.7050, "lon": 74.2433},
+        "mandya":   {"temp": 28.0, "humidity": 68, "rain": 15.0, "wind": 13.0, "desc": "Mild Breeze", "lat": 12.5218, "lon": 76.8951},
+        "belagavi": {"temp": 27.5, "humidity": 75, "rain": 25.0, "wind": 14.0, "desc": "Scattered Showers", "lat": 15.8497, "lon": 74.4977},
         "meerut":   {"temp": 31.0, "humidity": 60, "rain": 5.0,  "wind": 9.0,  "desc": "Clear Sky"},
-        "pune":     {"temp": 29.0, "humidity": 70, "rain": 10.0, "wind": 12.0, "desc": "Sunny Intervals"},
+        "pune":     {"temp": 29.0, "humidity": 70, "rain": 10.0, "wind": 12.0, "desc": "Sunny Intervals", "lat": 18.5204, "lon": 73.8567},
     }
 
     def get_current(self, location: str) -> dict:
         key = (location or "Kolhapur").strip().lower()
-        base = self.LOCATION_DEFAULTS.get(key, {"temp": 29.0, "humidity": 72, "rain": 10.0, "wind": 10.5, "desc": "Partly Cloudy"})
+        matched_key = next((city for city in self.LOCATION_DEFAULTS if city in key), key)
+        base = self.LOCATION_DEFAULTS.get(matched_key, {"temp": 29.0, "humidity": 72, "rain": 10.0, "wind": 10.5, "desc": "Partly Cloudy"})
         return {
             "location": location.title() if location else "Kolhapur",
+            "latitude": base.get("lat"),
+            "longitude": base.get("lon"),
+            "observed_at": None,
+            "source": "Local agricultural climate baseline (demo)",
             "temperature": base["temp"],
             "feels_like": round(base["temp"] + 1.5, 1),
             "humidity": base["humidity"],

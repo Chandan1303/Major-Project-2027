@@ -74,7 +74,14 @@ export default function ProfilePage() {
   const changePassword = async () => {
     if (!pwForm.current_password || !pwForm.new_password) return toast.error('Fill in all password fields.');
     if (pwForm.new_password !== pwForm.confirm) return toast.error('New passwords do not match.');
-    if (pwForm.new_password.length < 10) return toast.error('New password must be at least 10 characters.');
+    if (
+      pwForm.new_password.length < 10 ||
+      !/[a-z]/.test(pwForm.new_password) ||
+      !/[A-Z]/.test(pwForm.new_password) ||
+      !/\d/.test(pwForm.new_password)
+    ) {
+      return toast.error('Use at least 10 characters with lowercase, uppercase, and a number.');
+    }
     setSaving(true);
     try {
       await profileApi.changePassword({ current_password: pwForm.current_password, new_password: pwForm.new_password });
@@ -420,6 +427,15 @@ export default function ProfilePage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: 12, borderRadius: 10, background: 'var(--bg-secondary)', fontSize: 12 }}>
                 <span style={{ color: pwForm.new_password.length >= 10 ? 'var(--primary)' : 'var(--text-muted)' }}>
                   {pwForm.new_password.length >= 10 ? '✓' : '○'} At least 10 characters
+                </span>
+                <span style={{ color: /[a-z]/.test(pwForm.new_password) ? 'var(--primary)' : 'var(--text-muted)' }}>
+                  {/[a-z]/.test(pwForm.new_password) ? '✓' : '○'} Lowercase letter
+                </span>
+                <span style={{ color: /[A-Z]/.test(pwForm.new_password) ? 'var(--primary)' : 'var(--text-muted)' }}>
+                  {/[A-Z]/.test(pwForm.new_password) ? '✓' : '○'} Uppercase letter
+                </span>
+                <span style={{ color: /\d/.test(pwForm.new_password) ? 'var(--primary)' : 'var(--text-muted)' }}>
+                  {/\d/.test(pwForm.new_password) ? '✓' : '○'} Number
                 </span>
                 <span style={{ color: pwForm.new_password === pwForm.confirm && pwForm.confirm ? 'var(--primary)' : 'var(--text-muted)' }}>
                   {pwForm.new_password === pwForm.confirm && pwForm.confirm ? '✓' : '○'} Passwords match

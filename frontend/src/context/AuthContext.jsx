@@ -1,9 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { request } from '../services/api';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+  const location = useLocation();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -19,8 +21,19 @@ export function AuthProvider({ children }) {
   };
 
   useEffect(() => {
+    const publicPaths = [
+      '/', '/login', '/signup', '/forgot-password', '/resend-verification',
+      '/terms-of-use', '/privacy-policy',
+    ];
+    const isPublicPath = publicPaths.includes(location.pathname)
+      || location.pathname.startsWith('/reset-password/')
+      || location.pathname.startsWith('/verify-email/');
+    if (isPublicPath) {
+      setLoading(false);
+      return;
+    }
     refresh();
-  }, []);
+  }, [location.pathname]);
 
   const value = {
     user,

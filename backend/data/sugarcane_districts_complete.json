@@ -1,0 +1,162 @@
+[
+  {
+    "state": "Uttar Pradesh",
+    "districts": [
+      "Muzaffarnagar",
+      "Meerut",
+      "Bijnor",
+      "Saharanpur",
+      "Bareilly",
+      "Lakhimpur Kheri",
+      "Deoria",
+      "Bulandshahr",
+      "Moradabad",
+      "Gorakhpur",
+      "Gonda",
+      "Basti",
+      "Sultanpur",
+      "Ballia",
+      "Shahjahanpur"
+    ]
+  },
+  {
+    "state": "Maharashtra",
+    "districts": [
+      "Kolhapur",
+      "Sangli",
+      "Satara",
+      "Ahmednagar",
+      "Pune",
+      "Solapur",
+      "Nashik",
+      "Jalgaon",
+      "Dhule",
+      "Nandurbar",
+      "Aurangabad",
+      "Beed",
+      "Latur",
+      "Osmanabad"
+    ]
+  },
+  {
+    "state": "Karnataka",
+    "districts": [
+      "Belagavi",
+      "Bagalkot",
+      "Vijayapura",
+      "Mandya",
+      "Mysuru",
+      "Chamrajanagar",
+      "Shivamogga",
+      "Uttara Kannada",
+      "Bidar",
+      "Raichur",
+      "Bellary",
+      "Davangere",
+      "Chitradurga",
+      "Hassan"
+    ]
+  },
+  {
+    "state": "Tamil Nadu",
+    "districts": [
+      "Coimbatore",
+      "Erode",
+      "Salem",
+      "Thanjavur",
+      "Tiruchirappalli",
+      "Cuddalore",
+      "Villupuram",
+      "Tiruvannamalai",
+      "Vellore",
+      "Namakkal",
+      "Karur",
+      "Pudukkottai",
+      "Nagapattinam",
+      "Tiruvarur"
+    ]
+  },
+  {
+    "state": "Andhra Pradesh",
+    "districts": [
+      "East Godavari",
+      "West Godavari",
+      "Krishna",
+      "Visakhapatnam",
+      "Guntur",
+      "Prakasam",
+      "Nellore",
+      "Vizianagaram",
+      "Srikakulam",
+      "Chittoor"
+    ]
+  },
+  {
+    "state": "Gujarat",
+    "districts": [
+      "Surat",
+      "Navsari",
+      "Bharuch",
+      "Valsad",
+      "Tapi",
+      "Vadodara",
+      "Kheda",
+      "Anand"
+    ]
+  },
+  {
+    "state": "Haryana",
+    "districts": [
+      "Yamuna Nagar",
+      "Karnal",
+      "Kurukshetra",
+      "Ambala",
+      "Panipat",
+      "Rohtak"
+    ]
+  },
+  {
+    "state": "Punjab",
+    "districts": [
+      "Jalandhar",
+      "Gurdaspur",
+      "Amritsar",
+      "Ludhiana",
+      "Patiala",
+      "Sangrur",
+      "Ferozepur"
+    ]
+  },
+  {
+    "state": "Bihar",
+    "districts": [
+      "Champaran",
+      "Siwan",
+      "Gopalganj",
+      "Muzaffarpur",
+      "Darbhanga",
+      "Samastipur",
+      "Vaishali",
+      "Saran"
+    ]
+  },
+  {
+    "state": "Telangana",
+    "districts": [
+      "Nizamabad",
+      "Medak",
+      "Karimnagar",
+      "Nalgonda",
+      "Khammam",
+      "Warangal"
+    ]
+  },
+  {
+    "state": "Uttarakhand",
+    "districts": [
+      "Haridwar",
+      "Dehradun",
+      "Udham Singh Nagar"
+    ]
+  }
+]

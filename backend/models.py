@@ -15,9 +15,13 @@ Plus predictions, alerts, and password reset tokens.
 from datetime import datetime, date
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import (
-    Column, Integer, String, Text, Numeric, Date, DateTime, Boolean, Enum, ForeignKey, Index
+    Column, Integer, String, Text, Numeric, Date, DateTime, Boolean, Enum, ForeignKey, Index,
 )
+from sqlalchemy.dialects.mysql import INTEGER as MySQL_INTEGER
 from sqlalchemy.orm import relationship
+
+UnsignedInt = Integer().with_variant(MySQL_INTEGER(unsigned=True), "mysql")
+
 
 db = SQLAlchemy()
 
@@ -100,13 +104,16 @@ class Farm(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     name = Column(String(120), nullable=False)
+    survey_number = Column(String(120), nullable=True)
     location = Column(String(200), nullable=False)
     address = Column(String(255), nullable=True)
     district = Column(String(120), nullable=False)
     state = Column(String(120), nullable=False)
     total_area = Column(Numeric(10, 2), nullable=False)
+    is_archived = Column(Boolean, default=False, nullable=False, index=True)
     latitude = Column(Numeric(10, 7), nullable=True)
     longitude = Column(Numeric(10, 7), nullable=True)
+    description = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
@@ -118,14 +125,16 @@ class Farm(db.Model):
             "id": self.id,
             "user_id": self.user_id,
             "name": self.name,
+            "survey_number": self.survey_number or "",
             "location": self.location,
             "address": self.address or self.location,
             "district": self.district,
             "state": self.state,
             "total_area": float(self.total_area) if self.total_area else 0.0,
-            "latitude": float(self.latitude) if self.latitude else None,
-            "longitude": float(self.longitude) if self.longitude else None,
-            "fields": [f.to_dict() for f in self.fields] if self.fields else [],
+            "latitude": float(self.latitude) if self.latitude is not None else None,
+            "longitude": float(self.longitude) if self.longitude is not None else None,
+            "description": self.description or "",
+            "fields": [f.to_dict() for f in self.fields if not f.is_archived] if self.fields else [],
             "created_at": self.created_at.isoformat() if self.created_at else None
         }
 
@@ -206,15 +215,21 @@ class Field(db.Model):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     farm_id = Column(Integer, ForeignKey("farms.id", ondelete="CASCADE"), nullable=False, index=True)
+    is_archived = Column(Boolean, default=False, nullable=False, index=True)
     name = Column(String(120), nullable=False)
     location = Column(String(200), nullable=False)
     area = Column(Numeric(10, 2), nullable=False)
     soil_type = Column(String(80), nullable=False)
-    soil_ph = Column(Numeric(4, 2), nullable=False)
-    soil_moisture = Column(Numeric(5, 2), nullable=False)
+    soil_ph = Column(Numeric(4, 2), nullable=True)
+    soil_moisture = Column(Numeric(5, 2), nullable=True)
     sugarcane_variety = Column(String(120), nullable=False, index=True)
     variety_id = Column(Integer, ForeignKey("sugarcane_varieties.id", ondelete="SET NULL"), nullable=True)
-    planting_date = Column(Date, nullable=False, index=True)
+    planting_date = Column(Date, nullable=True, index=True)
+    latitude = Column(Numeric(10, 7), nullable=True)
+    longitude = Column(Numeric(10, 7), nullable=True)
+    irrigation_method = Column(String(80), default="Drip Irrigation", nullable=True)
+    notes = Column(Text, nullable=True)
+    boundary_geojson = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
@@ -223,6 +238,11 @@ class Field(db.Model):
     crop_records = relationship("CropRecord", back_populates="field", cascade="all, delete-orphan")
 
     def to_dict(self):
+        latest_soil = max(
+            (record for record in self.soil_records if record.recorded_at),
+            key=lambda record: record.recorded_at,
+            default=None
+        )
         return {
             "id": self.id,
             "farm_id": self.farm_id,
@@ -231,10 +251,16 @@ class Field(db.Model):
             "location": self.location,
             "area": float(self.area) if self.area else 0.0,
             "soil_type": self.soil_type,
-            "soil_ph": float(self.soil_ph) if self.soil_ph else 7.0,
-            "soil_moisture": float(self.soil_moisture) if self.soil_moisture else 60.0,
+            "soil_ph": float(self.soil_ph) if self.soil_ph is not None else None,
+            "soil_moisture": float(self.soil_moisture) if self.soil_moisture is not None else None,
+            "soil_moisture_recorded_at": latest_soil.recorded_at.isoformat() if latest_soil else None,
             "sugarcane_variety": self.sugarcane_variety,
             "planting_date": self.planting_date.isoformat() if self.planting_date else None,
+            "latitude": float(self.latitude) if self.latitude is not None else None,
+            "longitude": float(self.longitude) if self.longitude is not None else None,
+            "irrigation_method": self.irrigation_method or "Drip Irrigation",
+            "notes": self.notes or "",
+            "boundary_geojson": self.boundary_geojson or None,
             "created_at": self.created_at.isoformat() if self.created_at else None
         }
 
@@ -808,4 +834,3 @@ class Report(db.Model):
             "is_demo": self.is_demo,
             "generated_at": self.generated_at.isoformat() if self.generated_at else None
         }
-
