@@ -56,6 +56,12 @@ const INITIAL_FORM_DATA = {
   humidity: '70.0', planting_date: '2025-10-15', crop_growth_stage: 'Grand Growth',
   historical_yield: '95.0'
 };
+// 2026-27 all-India FRP: ₹365/quintal at the 10.25% basic recovery rate.
+// SAP states may announce a higher state price; recovery premiums also apply.
+const BASE_CANE_FRP_PER_TONNE = 3650;
+const formatINR = value => new Intl.NumberFormat('en-IN', {
+  style: 'currency', currency: 'INR', maximumFractionDigits: 0
+}).format(value);
 
 const getYieldGapFactors = (forecast, inputs) => {
   const returnedFactors = forecast?.explainable_ai?.negative_factors;
@@ -658,6 +664,10 @@ export default function PredictionPage() {
   };
 
   const forecastYield = Number(result?.predicted_yield);
+  const expectedProduction = Number(result?.expected_production);
+  const estimatedCropValue = Number.isFinite(expectedProduction)
+    ? expectedProduction * BASE_CANE_FRP_PER_TONNE
+    : null;
   const referenceYield = Number(result?.reference_yield);
   const returnedYieldGapValue = result?.expected_loss_t ?? result?.expected_loss_tonnes;
   const returnedYieldGap = returnedYieldGapValue == null ? Number.NaN : Number(returnedYieldGapValue);
@@ -1251,6 +1261,17 @@ export default function PredictionPage() {
                       {result.expected_production} <span style={{ fontSize: 14, color: 'var(--text-muted)' }}>Tonnes</span>
                     </h3>
                     <small style={{ color: 'var(--text-muted)' }}>{result.predicted_yield} t/ha × {result.input_data?.area || formData.area} ha</small>
+                  </div>
+
+                  <div className="card" style={{ padding: 18 }}>
+                    <span style={{ fontSize: 12, color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>Estimated Cane Value · 2026–27 FRP</span>
+                    <h3 style={{ margin: '6px 0', fontSize: 22, color: 'var(--text-primary)' }}>
+                      {estimatedCropValue == null ? '—' : formatINR(estimatedCropValue)}
+                    </h3>
+                    <small style={{ color: 'var(--text-muted)' }}>
+                      {Number.isFinite(expectedProduction) ? `${expectedProduction.toLocaleString('en-IN')} t × ${formatINR(BASE_CANE_FRP_PER_TONNE)}/t · ${result.input_data?.state || formData.state} · ${result.input_data?.variety || result.variety || formData.variety}` : 'Production estimate unavailable'}
+                    </small>
+                    <small style={{ display: 'block', marginTop: 5, color: 'var(--text-muted)' }}>Based on all-India FRP at 10.25% recovery; state SAP and actual mill recovery can change the payable rate.</small>
                   </div>
 
                   <div className="card" style={{ padding: 18 }}>
