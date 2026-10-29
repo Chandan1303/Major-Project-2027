@@ -1,0 +1,236 @@
+{
+  "predicted_yield": 42.05,
+  "base_model_yield": 56.07,
+  "season_adjustment": 0.75,
+  "expected_production": 105.12,
+  "confidence": 98.0,
+  "risk": "Critical",
+  "risk_level": "Critical",
+  "expected_loss_t": 72.95,
+  "expected_loss_pct": 63.4,
+  "loss_percentage": 63.4,
+  "reference_yield": 115.0,
+  "expected_range": {
+    "low": 30.0,
+    "high": 54.3
+  },
+  "model_used": "XGBoost",
+  "algorithm": "Gradient Boosting (XGBoost)",
+  "feature_importance": [
+    {
+      "feature": "Yield 3Yr Avg",
+      "importance": 0.4712,
+      "pct": 47.1
+    },
+    {
+      "feature": "State",
+      "importance": 0.1472,
+      "pct": 14.7
+    },
+    {
+      "feature": "Yield 5Yr Avg",
+      "importance": 0.1086,
+      "pct": 10.9
+    },
+    {
+      "feature": "Prev Year Yield",
+      "importance": 0.0495,
+      "pct": 5.0
+    },
+    {
+      "feature": "Rainfall Mm",
+      "importance": 0.0471,
+      "pct": 4.7
+    },
+    {
+      "feature": "Variety Season",
+      "importance": 0.0361,
+      "pct": 3.6
+    },
+    {
+      "feature": "Area Hectare",
+      "importance": 0.0345,
+      "pct": 3.5
+    },
+    {
+      "feature": "Season",
+      "importance": 0.0254,
+      "pct": 2.5
+    },
+    {
+      "feature": "Temperature C",
+      "importance": 0.0211,
+      "pct": 2.1
+    },
+    {
+      "feature": "Sunlight Hours",
+      "importance": 0.0183,
+      "pct": 1.8
+    },
+    {
+      "feature": "Soil Phosphorus",
+      "importance": 0.0106,
+      "pct": 1.1
+    },
+    {
+      "feature": "Irrigation Frequency",
+      "importance": 0.008,
+      "pct": 0.8
+    },
+    {
+      "feature": "Variety",
+      "importance": 0.0066,
+      "pct": 0.7
+    },
+    {
+      "feature": "Soil Nitrogen",
+      "importance": 0.0065,
+      "pct": 0.6
+    },
+    {
+      "feature": "Ndvi Mean",
+      "importance": 0.0037,
+      "pct": 0.4
+    },
+    {
+      "feature": "Ndvi Max",
+      "importance": 0.0025,
+      "pct": 0.2
+    },
+    {
+      "feature": "Crop Duration Days",
+      "importance": 0.0011,
+      "pct": 0.1
+    },
+    {
+      "feature": "Ndvi Min",
+      "importance": 0.001,
+      "pct": 0.1
+    },
+    {
+      "feature": "Ndvi Std",
+      "importance": 0.0008,
+      "pct": 0.1
+    },
+    {
+      "feature": "Soil Potassium",
+      "importance": 0.0003,
+      "pct": 0.0
+    }
+  ],
+  "crop_health": "Stressed",
+  "variety_season_intelligence": {
+    "variety": "Co 94012",
+    "season": "Summer",
+    "season_suitability": {
+      "is_suitable": false,
+      "message": "\u274c Not recommended: Co 94012 performs poorly in Summer. Strongly recommend Kharif season instead.",
+      "yield_multiplier": 0.75,
+      "recommended_season": "Kharif"
+    },
+    "yield_optimization": {
+      "predicted_yield": 42.05,
+      "potential_yield_optimal_season": 67.28,
+      "potential_gain": 25.23,
+      "gain_percentage": 60.0
+    },
+    "optimal_conditions": {
+      "season_info": {
+        "season_name": "Summer",
+        "planting_window": "February - March",
+        "harvesting_window": "January - March (next year)",
+        "optimal_rainfall": {
+          "min": 600,
+          "max": 1000,
+          "ideal": 800
+        },
+        "optimal_temperature": {
+          "min": 25,
+          "max": 35,
+          "ideal": 30
+        },
+        "optimal_humidity": {
+          "min": 45,
+          "max": 65,
+          "ideal": 55
+        },
+        "optimal_soil_moisture": {
+          "min": 50,
+          "max": 65,
+          "ideal": 58
+        },
+        "irrigation": "Frequent (every 7-10 days)",
+        "advantages": [
+          "Early harvest in next year",
+          "Good for ratoon crops",
+          "Lower disease incidence"
+        ],
+        "challenges": [
+          "High water stress",
+          "Intensive irrigation required",
+          "Heat stress on crops",
+          "Increased evapotranspiration",
+          "Generally lower yields"
+        ]
+      },
+      "variety_specific": {}
+    },
+    "input_analysis": {
+      "rainfall": {
+        "value": 1200.0,
+        "status": "High",
+        "color": "red",
+        "message": "\u26a0 1200.0 mm is above optimal (max: 1000 mm)",
+        "optimal_range": "600-1000 mm",
+        "ideal": "800 mm"
+      },
+      "temperature": {
+        "value": 29.5,
+        "status": "Optimal",
+        "color": "green",
+        "message": "\u2713 29.5 \u00b0C is ideal",
+        "optimal_range": "25-35 \u00b0C",
+        "ideal": "30 \u00b0C"
+      },
+      "humidity": {
+        "value": 70.0,
+        "status": "High",
+        "color": "red",
+        "message": "\u26a0 70.0 % is above optimal (max: 65 %)",
+        "optimal_range": "45-65 %",
+        "ideal": "55 %"
+      },
+      "soil_moisture": {
+        "value": 62.0,
+        "status": "Acceptable",
+        "color": "yellow",
+        "message": "\u25cb 62.0 % is acceptable (ideal: 58 %)",
+        "optimal_range": "50-65 %",
+        "ideal": "58 %"
+      }
+    },
+    "recommendations": [
+      {
+        "category": "Season Selection",
+        "priority": "High",
+        "icon": "\ud83c\udf31",
+        "message": "Consider planting in Kharif season for optimal Co 94012 performance",
+        "impact": "High yield improvement"
+      },
+      {
+        "category": "Drainage",
+        "priority": "High",
+        "icon": "\ud83d\udeb0",
+        "message": "Ensure proper drainage - rainfall 1200mm exceeds optimal range",
+        "impact": "Prevent waterlogging"
+      },
+      {
+        "category": "Summer Season Management",
+        "priority": "Medium",
+        "icon": "\ud83d\udccb",
+        "message": "Key challenges: High water stress, Intensive irrigation required",
+        "impact": "Season-specific preparation"
+      }
+    ]
+  }
+}

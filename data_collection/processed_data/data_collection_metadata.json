@@ -1,0 +1,16 @@
+{
+  "collection_date": "2026-10-01T10:44:23.043315",
+  "date_range": "2018-2024",
+  "sources": [
+    "OpenWeather API",
+    "MOSDAC",
+    "Simulated NDVI",
+    "Existing Dataset"
+  ],
+  "records_collected": {
+    "weather": 44,
+    "mosdac": 112508,
+    "ndvi": 7700,
+    "existing": 18486
+  }
+}

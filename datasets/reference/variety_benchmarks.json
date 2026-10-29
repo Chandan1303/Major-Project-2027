@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-10-01",
+  "methodology": "85th percentile from clean training data, validated against agricultural research",
+  "data_source": "SUGARCANE_COMPLETE_ML_DATASET.csv (cleaned)",
+  "sample_size": 9287,
+  "varieties": {
+    "Co 0238": {
+      "benchmark_yield_t_ha": 90,
+      "sample_count": 2351,
+      "data_p75": 59.6,
+      "data_p85": 64.5,
+      "data_p90": 68.7,
+      "validation_source": "High Sucrose Variety"
+    },
+    "Co 86032": {
+      "benchmark_yield_t_ha": 102.5,
+      "sample_count": 5673,
+      "data_p75": 87.4,
+      "data_p85": 102.5,
+      "data_p90": 114.9,
+      "validation_source": "ICAR General Purpose Variety"
+    },
+    "Co 99004": {
+      "benchmark_yield_t_ha": 85.0,
+      "sample_count": 330,
+      "data_p75": 74.8,
+      "data_p85": 85.0,
+      "data_p90": 90.0,
+      "validation_source": "Standard Commercial Variety"
+    },
+    "CoH 160": {
+      "benchmark_yield_t_ha": 74.4,
+      "sample_count": 230,
+      "data_p75": 68.5,
+      "data_p85": 74.4,
+      "data_p90": 78.1,
+      "validation_source": "Data-driven"
+    },
+    "CoM 0265": {
+      "benchmark_yield_t_ha": 95,
+      "sample_count": 500,
+      "data_p75": 83.6,
+      "data_p85": 90.0,
+      "data_p90": 93.8,
+      "validation_source": "Drought Resistant, High Yield"
+    },
+    "CoPb 94": {
+      "benchmark_yield_t_ha": 75.0,
+      "sample_count": 203,
+      "data_p75": 70.0,
+      "data_p85": 75.0,
+      "data_p90": 79.1,
+      "validation_source": "Data-driven"
+    }
+  }
+}

@@ -1,0 +1,751 @@
+state,variety,area_hectare,soil_type,soil_ph,soil_moisture,rainfall_mm,temperature_c,humidity_pct,growth_stage,historical_yield,yield
+Karnataka,CoM 0265,4.86,Black Soil,6.95,48.0,983.4,32.1,72.9,Grand Growth,111.2,146.7
+Karnataka,CoM 0265,6.37,Saline Soil,7.5,74.8,856.4,31.4,83.2,Tillering,130.5,61.4
+Karnataka,CoM 0265,1.36,Black Soil,7.47,52.0,1324.8,27.2,56.4,Planting,131.0,55.0
+Karnataka,CoM 0265,9.67,Black Soil,6.57,73.5,846.5,29.9,60.1,Grand Growth,144.2,127.9
+Karnataka,CoM 0265,9.14,Saline Soil,8.0,46.0,1484.2,27.7,58.7,Maturity,106.0,168.4
+Karnataka,CoM 0265,9.43,Saline Soil,8.47,68.3,1320.1,29.1,60.5,Germination,150.2,55.0
+Karnataka,CoM 0265,6.07,Alkaline Soil,8.25,61.2,1320.8,34.5,80.3,Harvest,155.1,118.5
+Karnataka,CoM 0265,3.29,Black Soil,6.92,56.8,1096.3,24.1,55.5,Maturity,89.0,113.8
+Karnataka,CoM 0265,6.42,Alkaline Soil,7.62,70.9,1571.3,23.0,65.8,Tillering,111.0,55.0
+Karnataka,CoM 0265,7.28,Black Soil,6.97,48.6,1529.6,30.3,81.6,Harvest,140.9,181.5
+Karnataka,CoM 0265,9.01,Alkaline Soil,7.94,51.1,840.4,31.2,58.3,Harvest,121.0,170.8
+Karnataka,CoM 0265,6.19,Saline Soil,7.7,73.3,939.3,29.9,71.2,Grand Growth,136.3,137.5
+Karnataka,CoM 0265,8.89,Black Soil,6.72,57.5,1095.6,23.4,68.7,Germination,110.5,55.0
+Karnataka,CoM 0265,3.4,Alkaline Soil,7.5,55.6,1706.8,25.5,74.4,Planting,99.4,55.0
+Karnataka,CoM 0265,5.8,Black Soil,6.67,51.6,1492.4,25.5,62.3,Harvest,116.1,135.6
+Karnataka,CoM 0265,9.78,Saline Soil,8.5,53.0,1496.3,31.3,59.4,Germination,116.6,55.0
+Karnataka,CoM 0265,6.89,Black Soil,7.49,52.3,1039.6,23.9,69.7,Planting,140.9,55.0
+Karnataka,CoM 0265,3.55,Black Soil,6.59,70.1,1432.3,30.2,71.1,Harvest,101.0,130.9
+Karnataka,CoM 0265,9.43,Alkaline Soil,7.85,47.9,1020.2,31.2,79.3,Grand Growth,115.6,141.3
+Karnataka,CoM 0265,6.77,Alkaline Soil,8.38,52.7,1141.1,23.5,82.7,Planting,144.8,55.0
+Karnataka,CoM 0265,3.72,Black Soil,7.4,64.0,1041.9,23.2,81.9,Grand Growth,112.3,108.8
+Karnataka,CoM 0265,6.26,Saline Soil,7.66,72.0,1579.9,30.3,57.5,Tillering,88.6,61.6
+Karnataka,CoM 0265,2.63,Black Soil,7.19,64.6,805.1,24.1,71.5,Tillering,137.5,68.7
+Karnataka,CoM 0265,2.88,Alkaline Soil,8.01,64.1,1520.9,26.0,71.3,Maturity,129.0,156.8
+Karnataka,CoM 0265,8.71,Saline Soil,8.15,65.1,1706.1,27.6,65.5,Tillering,104.0,62.5
+Karnataka,CoM 0265,8.89,Alkaline Soil,7.97,53.4,1568.6,22.6,84.8,Grand Growth,140.0,119.6
+Karnataka,CoM 0265,2.31,Black Soil,6.58,54.2,1352.8,29.4,84.4,Maturity,106.7,131.3
+Karnataka,CoM 0265,6.88,Black Soil,6.57,51.3,1194.7,33.0,82.9,Germination,112.9,55.0
+Karnataka,CoM 0265,3.32,Saline Soil,8.21,61.6,1122.6,33.0,59.1,Germination,117.2,55.0
+Karnataka,CoM 0265,0.98,Saline Soil,7.57,56.9,805.2,30.2,60.8,Maturity,149.6,147.5
+Karnataka,CoM 0265,8.47,Saline Soil,7.66,74.5,1238.5,30.7,64.8,Germination,147.8,55.0
+Karnataka,CoM 0265,9.67,Saline Soil,8.33,53.1,1103.3,29.0,64.8,Germination,119.8,55.0
+Karnataka,CoM 0265,3.57,Saline Soil,8.48,60.5,1340.6,30.3,76.8,Grand Growth,143.3,111.7
+Karnataka,CoM 0265,4.39,Saline Soil,8.34,65.9,878.5,22.3,83.9,Grand Growth,100.0,107.8
+Karnataka,CoM 0265,6.74,Saline Soil,8.14,60.5,893.9,24.4,83.0,Germination,118.3,55.0
+Karnataka,CoM 0265,0.89,Saline Soil,7.62,46.4,1156.0,31.9,55.4,Tillering,147.5,71.4
+Karnataka,CoM 0265,0.96,Saline Soil,7.96,64.5,1563.4,32.5,65.4,Grand Growth,154.0,140.7
+Karnataka,CoM 0265,6.35,Alkaline Soil,8.04,65.5,815.3,34.1,70.0,Grand Growth,153.6,140.0
+Karnataka,CoM 0265,8.3,Alkaline Soil,7.63,69.3,1600.9,30.8,72.2,Grand Growth,131.5,128.4
+Karnataka,CoM 0265,6.99,Alkaline Soil,7.52,47.8,995.8,22.9,58.0,Germination,92.9,55.0
+Karnataka,CoM 0265,6.47,Saline Soil,7.62,65.9,823.3,32.6,63.5,Germination,149.0,55.0
+Karnataka,CoM 0265,4.42,Black Soil,7.31,74.7,1082.0,24.3,77.5,Maturity,113.9,117.9
+Karnataka,CoM 0265,5.58,Black Soil,6.74,56.3,1038.6,30.8,77.2,Harvest,122.5,136.2
+Karnataka,CoM 0265,9.59,Alkaline Soil,8.35,55.6,900.0,22.7,83.8,Maturity,135.0,131.4
+Karnataka,CoM 0265,9.49,Alkaline Soil,8.05,51.4,883.3,23.2,73.1,Germination,142.3,55.0
+Karnataka,CoM 0265,7.21,Saline Soil,8.24,61.4,1774.2,34.9,56.7,Maturity,155.3,108.8
+Karnataka,CoM 0265,7.21,Black Soil,6.57,69.7,901.1,23.1,76.0,Germination,93.7,55.0
+Karnataka,CoM 0265,4.07,Black Soil,7.49,67.6,1170.6,32.6,83.4,Tillering,93.8,61.7
+Karnataka,CoM 0265,4.95,Alkaline Soil,7.99,45.3,1224.2,33.8,58.3,Harvest,91.9,127.2
+Karnataka,CoM 0265,3.21,Alkaline Soil,8.46,56.2,1449.2,31.7,72.5,Maturity,148.4,130.6
+Karnataka,CoM 0265,9.93,Saline Soil,8.39,60.8,812.2,34.6,56.3,Harvest,93.1,144.9
+Karnataka,CoM 0265,6.05,Black Soil,6.95,63.8,1323.1,30.2,75.9,Grand Growth,150.6,105.5
+Karnataka,CoM 0265,2.29,Saline Soil,8.12,53.3,1750.4,33.6,68.7,Grand Growth,120.2,107.1
+Karnataka,CoM 0265,8.23,Black Soil,7.04,54.3,1774.4,34.8,75.9,Germination,135.6,55.0
+Karnataka,CoM 0265,9.36,Alkaline Soil,8.11,57.5,1622.5,34.3,76.8,Harvest,148.2,111.2
+Karnataka,CoM 0265,9.71,Saline Soil,8.09,56.4,1610.6,34.8,59.5,Planting,146.5,55.0
+Karnataka,CoM 0265,10.0,Black Soil,7.36,69.4,1214.8,25.6,56.7,Germination,157.3,55.0
+Karnataka,CoM 0265,9.56,Black Soil,6.95,48.9,1744.8,33.0,62.4,Maturity,130.1,146.6
+Karnataka,CoM 0265,5.44,Saline Soil,8.02,68.2,1158.2,23.5,75.1,Planting,147.2,55.0
+Karnataka,CoM 0265,6.39,Saline Soil,7.53,67.7,1676.7,27.2,59.0,Maturity,136.9,125.2
+Karnataka,CoM 0265,3.81,Saline Soil,7.94,72.1,1150.6,29.7,66.8,Harvest,123.7,132.9
+Karnataka,CoM 0265,5.18,Saline Soil,7.65,72.8,1422.1,33.2,83.5,Grand Growth,105.9,111.9
+Karnataka,CoM 0265,1.72,Saline Soil,7.74,47.3,1292.6,26.3,74.0,Germination,96.9,55.0
+Karnataka,CoM 0265,0.89,Black Soil,6.67,50.8,1696.8,28.2,75.0,Harvest,99.7,133.1
+Karnataka,CoM 0265,5.28,Saline Soil,7.71,55.9,888.7,23.6,68.8,Maturity,136.0,128.6
+Karnataka,CoM 0265,3.13,Alkaline Soil,8.42,46.8,1427.9,23.1,81.2,Planting,144.0,55.0
+Karnataka,CoM 0265,7.34,Alkaline Soil,8.26,60.9,1336.6,34.0,62.1,Maturity,92.3,109.1
+Karnataka,CoM 0265,3.86,Alkaline Soil,7.53,71.0,1487.2,33.0,77.5,Tillering,115.6,60.2
+Karnataka,CoM 0265,3.76,Saline Soil,8.04,52.0,1364.0,32.9,57.7,Maturity,120.9,128.6
+Karnataka,CoM 0265,5.86,Black Soil,7.06,62.6,1279.6,29.6,77.1,Planting,114.3,55.0
+Karnataka,CoM 0265,0.57,Saline Soil,7.83,73.0,1407.6,25.2,69.9,Grand Growth,103.7,110.8
+Karnataka,CoM 0265,5.48,Saline Soil,8.4,47.4,986.6,25.7,60.2,Grand Growth,116.5,172.1
+Karnataka,CoM 0265,7.37,Saline Soil,8.48,59.7,1376.0,33.9,55.2,Harvest,145.0,132.9
+Karnataka,CoM 0265,5.32,Saline Soil,7.82,57.8,1080.0,32.0,60.6,Tillering,104.8,56.6
+Karnataka,CoM 0265,0.99,Saline Soil,7.98,61.0,1088.6,29.6,59.6,Germination,111.4,55.0
+Karnataka,CoM 0265,6.16,Saline Soil,8.18,67.8,1122.4,32.5,62.6,Germination,120.8,55.0
+Karnataka,CoM 0265,9.41,Alkaline Soil,7.62,66.9,1729.5,32.8,84.0,Harvest,100.6,126.3
+Karnataka,CoM 0265,8.24,Black Soil,6.66,49.9,939.8,32.3,61.0,Harvest,134.2,192.5
+Karnataka,CoM 0265,4.9,Black Soil,6.94,56.3,1677.2,27.1,79.5,Grand Growth,108.9,124.7
+Karnataka,CoM 0265,5.66,Black Soil,6.57,51.9,1155.4,27.1,71.0,Planting,118.0,55.0
+Karnataka,CoM 0265,7.99,Saline Soil,8.03,71.8,939.3,32.3,73.6,Tillering,98.5,67.2
+Karnataka,CoM 0265,3.75,Alkaline Soil,8.26,71.3,1543.9,22.4,72.1,Maturity,145.1,107.7
+Karnataka,CoM 0265,7.36,Black Soil,6.65,51.9,927.5,27.2,78.9,Grand Growth,138.0,141.5
+Karnataka,CoM 0265,4.31,Saline Soil,8.41,62.5,1051.8,26.5,60.4,Tillering,120.1,67.8
+Karnataka,CoM 0265,9.36,Saline Soil,7.52,71.2,1386.2,28.6,73.3,Grand Growth,127.3,121.7
+Karnataka,CoM 0265,9.38,Alkaline Soil,7.92,67.1,952.5,29.5,73.2,Maturity,152.3,150.4
+Karnataka,CoM 0265,5.43,Black Soil,7.42,71.1,1784.8,32.9,58.7,Harvest,129.1,131.0
+Karnataka,CoM 0265,5.61,Black Soil,6.83,56.9,1135.2,32.4,55.1,Planting,151.9,55.0
+Karnataka,CoM 0265,2.18,Alkaline Soil,7.95,49.2,1537.5,27.9,61.7,Germination,122.6,55.0
+Karnataka,CoM 0265,9.77,Black Soil,6.71,60.5,1580.5,25.6,61.6,Planting,119.9,55.0
+Karnataka,CoM 0265,2.49,Alkaline Soil,7.57,67.5,1796.9,28.5,72.9,Harvest,150.4,128.4
+Karnataka,CoM 0265,4.81,Black Soil,6.57,68.3,836.5,28.1,71.9,Maturity,124.4,158.6
+Karnataka,CoM 0265,4.05,Saline Soil,8.36,73.4,1359.6,24.0,60.5,Germination,106.8,55.0
+Karnataka,CoM 0265,2.61,Black Soil,7.16,45.8,825.4,24.0,76.5,Grand Growth,104.1,161.8
+Karnataka,CoM 0265,8.15,Saline Soil,8.06,66.6,1139.3,29.4,81.6,Maturity,156.7,128.1
+Karnataka,CoM 0265,1.33,Alkaline Soil,7.91,54.7,1762.6,34.3,59.2,Harvest,132.0,125.5
+Karnataka,CoM 0265,6.44,Alkaline Soil,8.2,72.3,922.8,33.4,74.3,Maturity,111.3,150.4
+Karnataka,CoM 0265,8.68,Alkaline Soil,8.27,55.9,834.2,32.8,65.4,Tillering,103.3,83.3
+Karnataka,CoM 0265,0.71,Black Soil,7.3,57.8,1668.5,28.3,81.8,Grand Growth,106.7,120.0
+Karnataka,CoM 0265,2.13,Black Soil,7.48,60.8,1057.9,23.8,80.0,Maturity,106.9,109.0
+Karnataka,CoM 0265,7.34,Black Soil,6.91,59.9,1615.1,28.5,57.0,Germination,95.4,55.0
+Karnataka,CoM 0265,5.95,Black Soil,7.13,59.8,1066.5,31.5,62.5,Tillering,146.2,60.6
+Karnataka,CoM 0265,7.82,Saline Soil,7.68,47.7,1222.0,26.6,83.8,Harvest,92.7,162.5
+Karnataka,CoM 0265,1.78,Black Soil,6.9,73.6,1521.5,29.9,83.5,Tillering,121.6,60.0
+Karnataka,CoM 0265,7.82,Alkaline Soil,8.1,55.0,1395.1,22.7,69.9,Grand Growth,95.4,93.0
+Karnataka,CoM 0265,8.09,Black Soil,6.75,69.6,1295.5,30.9,68.0,Planting,136.3,55.0
+Karnataka,CoM 0265,5.45,Alkaline Soil,8.29,65.7,1114.6,32.5,83.9,Germination,94.0,55.0
+Karnataka,CoM 0265,5.15,Alkaline Soil,8.35,52.5,1606.6,30.6,75.8,Tillering,103.4,70.0
+Karnataka,CoM 0265,9.2,Saline Soil,7.68,62.0,839.4,31.2,82.8,Maturity,90.4,166.6
+Karnataka,CoM 0265,8.52,Alkaline Soil,7.97,70.9,1724.4,34.6,83.3,Planting,110.2,55.0
+Karnataka,CoM 0265,3.73,Saline Soil,7.58,65.9,1396.3,25.0,58.6,Planting,138.4,55.0
+Karnataka,CoM 0265,4.47,Black Soil,6.93,71.3,1461.7,31.6,70.6,Planting,120.1,55.0
+Karnataka,CoM 0265,1.0,Alkaline Soil,7.57,45.3,985.5,27.0,83.0,Tillering,94.2,74.1
+Karnataka,CoM 0265,5.46,Black Soil,6.59,55.1,1380.8,25.5,66.9,Grand Growth,138.9,107.7
+Karnataka,CoM 0265,9.15,Saline Soil,8.09,53.3,1097.0,33.1,76.5,Maturity,91.1,117.3
+Karnataka,CoM 0265,9.47,Alkaline Soil,7.92,71.4,1750.0,32.2,57.7,Planting,120.5,55.0
+Karnataka,CoM 0265,5.37,Alkaline Soil,8.15,63.2,1791.2,25.0,83.3,Planting,104.0,55.0
+Karnataka,CoM 0265,8.9,Black Soil,6.56,74.1,986.4,32.1,65.5,Germination,152.5,55.0
+Karnataka,CoM 0265,2.63,Alkaline Soil,7.65,69.5,1196.2,31.9,75.9,Maturity,103.6,122.6
+Karnataka,CoM 0265,0.92,Saline Soil,7.77,59.3,1660.1,27.9,66.7,Planting,147.2,55.0
+Karnataka,CoM 0265,0.96,Black Soil,6.51,65.9,1535.2,25.7,62.6,Planting,125.0,55.0
+Karnataka,CoM 0265,5.93,Black Soil,7.02,72.2,1791.5,22.8,81.5,Maturity,134.0,106.8
+Karnataka,CoM 0265,2.02,Black Soil,6.75,49.7,1533.9,28.8,81.0,Maturity,111.2,163.3
+Karnataka,CoM 0265,4.92,Saline Soil,8.38,73.8,905.8,31.1,60.7,Maturity,149.1,129.2
+Karnataka,CoM 0265,0.56,Black Soil,7.33,60.2,1543.5,24.1,79.5,Tillering,107.9,65.8
+Karnataka,CoM 0265,1.52,Black Soil,7.04,68.4,1431.8,25.4,74.0,Planting,140.9,55.0
+Karnataka,CoM 0265,7.82,Alkaline Soil,8.29,50.2,1192.2,24.3,77.6,Germination,153.8,55.0
+Karnataka,CoM 0265,9.91,Saline Soil,7.57,70.6,1508.6,28.2,56.7,Grand Growth,135.0,124.4
+Karnataka,CoM 0265,8.28,Alkaline Soil,8.32,56.2,1394.4,27.0,57.0,Tillering,105.5,57.4
+Karnataka,CoM 0265,8.35,Saline Soil,8.35,60.8,1268.5,34.3,58.1,Germination,108.7,55.0
+Karnataka,CoM 0265,9.14,Saline Soil,7.53,66.9,931.3,33.3,83.9,Harvest,147.6,171.5
+Karnataka,CoM 0265,2.4,Black Soil,7.22,67.4,1242.3,26.1,64.6,Tillering,148.3,61.4
+Karnataka,CoM 0265,1.96,Alkaline Soil,7.7,47.7,1271.5,29.1,59.8,Germination,119.5,55.0
+Karnataka,CoM 0265,5.07,Black Soil,7.12,68.9,931.2,22.4,82.6,Tillering,96.2,55.7
+Karnataka,CoM 0265,8.08,Black Soil,7.08,53.1,1000.5,28.4,56.9,Grand Growth,109.6,119.6
+Karnataka,CoM 0265,7.69,Saline Soil,8.22,64.7,1480.5,27.1,84.2,Maturity,154.2,151.8
+Karnataka,CoM 0265,5.08,Saline Soil,8.07,45.6,1549.2,23.9,58.1,Tillering,102.6,71.2
+Karnataka,CoM 0265,4.27,Black Soil,6.53,47.4,1317.7,23.1,65.5,Germination,97.2,55.0
+Karnataka,CoM 0265,7.21,Saline Soil,7.6,64.1,1600.6,24.6,60.0,Harvest,90.2,150.3
+Karnataka,CoM 0265,5.1,Saline Soil,8.28,63.4,1735.2,34.3,73.8,Planting,133.9,55.0
+Karnataka,CoM 0265,7.39,Saline Soil,7.66,58.2,1583.8,28.3,56.2,Harvest,129.2,159.7
+Karnataka,CoM 0265,4.62,Black Soil,7.24,71.2,1415.7,26.3,69.1,Planting,91.0,55.0
+Karnataka,CoM 0265,4.33,Saline Soil,7.99,47.4,1453.3,26.3,71.3,Harvest,103.3,168.4
+Karnataka,CoM 0265,3.79,Alkaline Soil,8.24,57.8,1262.6,33.3,76.8,Planting,113.8,55.0
+Karnataka,CoM 0265,6.18,Black Soil,6.9,63.2,1314.0,29.6,55.9,Germination,143.1,55.0
+Karnataka,CoM 0265,2.74,Alkaline Soil,7.97,70.1,1083.9,26.7,66.5,Tillering,141.9,60.0
+Karnataka,CoM 0265,4.65,Alkaline Soil,7.91,47.1,1432.5,26.8,70.4,Harvest,94.8,165.7
+Karnataka,CoM 0265,2.95,Alkaline Soil,7.89,74.1,1159.2,29.7,59.9,Harvest,133.6,115.8
+Karnataka,CoM 0265,4.76,Black Soil,6.94,54.9,1037.0,25.1,81.5,Grand Growth,134.5,110.1
+Karnataka,CoM 0265,3.89,Alkaline Soil,7.88,63.2,1748.6,25.3,65.8,Maturity,125.1,138.3
+Karnataka,Co 86032,1.04,Coastal Soil,6.61,53.1,1385.4,33.3,61.2,Grand Growth,104.9,105.6
+Karnataka,Co 86032,0.89,Black Soil,6.82,60.2,922.1,27.9,83.0,Maturity,84.1,141.2
+Karnataka,Co 86032,5.46,Alluvial Soil,7.08,52.6,817.4,26.2,84.2,Tillering,94.7,64.4
+Karnataka,Co 86032,7.44,Black Soil,6.66,50.7,943.5,34.2,77.0,Harvest,84.5,111.5
+Karnataka,Co 86032,6.37,Alluvial Soil,7.18,59.9,1492.6,32.9,83.3,Harvest,123.4,125.7
+Karnataka,Co 86032,4.24,Alluvial Soil,6.72,64.8,1730.9,31.0,75.3,Grand Growth,111.5,90.4
+Karnataka,Co 86032,7.93,Red Soil,6.41,71.1,1799.4,22.6,84.3,Grand Growth,106.9,83.4
+Karnataka,Co 86032,8.08,Red Soil,6.81,67.9,1204.1,26.3,75.0,Grand Growth,99.7,96.6
+Karnataka,Co 86032,4.11,Red Soil,6.61,61.9,1449.1,26.3,73.9,Harvest,105.9,123.8
+Karnataka,Co 86032,4.9,Alluvial Soil,7.17,63.6,1027.3,23.0,73.1,Planting,96.7,47.5
+Karnataka,Co 86032,2.84,Red Soil,6.15,60.8,1714.2,32.6,58.3,Germination,102.0,47.5
+Karnataka,Co 86032,6.65,Red Soil,6.2,45.2,1518.1,34.4,55.5,Harvest,124.9,117.7
+Karnataka,Co 86032,2.94,Alluvial Soil,6.6,59.6,860.3,34.1,65.5,Tillering,91.5,53.4
+Karnataka,Co 86032,8.32,Alluvial Soil,6.9,74.3,1380.9,23.2,76.5,Grand Growth,104.5,74.0
+Karnataka,Co 86032,9.22,Red Soil,6.79,50.6,1599.8,24.4,63.9,Grand Growth,99.1,97.6
+Karnataka,Co 86032,5.39,Black Soil,6.5,64.1,1173.5,28.8,58.4,Harvest,108.3,114.6
+Karnataka,Co 86032,7.91,Coastal Soil,6.85,52.1,1211.0,32.9,82.0,Germination,91.0,47.5
+Karnataka,Co 86032,2.1,Alluvial Soil,6.95,62.6,1467.5,23.2,73.7,Grand Growth,116.2,98.6
+Karnataka,Co 86032,2.94,Black Soil,6.71,64.1,978.4,26.1,61.9,Maturity,110.4,114.1
+Karnataka,Co 86032,7.38,Red Soil,6.44,58.4,1074.5,29.8,75.3,Planting,76.9,47.5
+Karnataka,Co 86032,6.63,Alluvial Soil,7.27,52.9,1403.2,26.4,82.2,Harvest,108.5,116.3
+Karnataka,Co 86032,1.16,Alluvial Soil,7.33,65.1,1143.6,30.0,68.3,Planting,110.9,47.5
+Karnataka,Co 86032,6.79,Alluvial Soil,7.17,74.8,1333.0,26.2,65.0,Germination,106.4,47.5
+Karnataka,Co 86032,2.41,Coastal Soil,6.68,65.7,860.1,29.3,83.7,Harvest,105.2,128.2
+Karnataka,Co 86032,2.73,Alluvial Soil,7.3,72.8,1556.2,26.5,74.9,Planting,97.8,47.5
+Karnataka,Co 86032,1.35,Coastal Soil,7.02,63.7,1727.0,29.0,80.3,Maturity,117.2,101.5
+Karnataka,Co 86032,4.12,Red Soil,6.23,55.3,959.3,22.8,58.5,Grand Growth,94.9,91.6
+Karnataka,Co 86032,7.97,Alluvial Soil,7.37,49.9,1625.3,25.6,83.3,Planting,107.3,47.5
+Karnataka,Co 86032,5.56,Red Soil,6.63,65.2,1301.2,27.2,71.2,Grand Growth,115.3,88.9
+Karnataka,Co 86032,9.77,Red Soil,6.69,55.4,880.9,27.2,60.2,Grand Growth,110.9,125.0
+Karnataka,Co 86032,2.16,Black Soil,7.11,67.9,1662.0,34.0,69.6,Planting,103.4,47.5
+Karnataka,Co 86032,5.72,Black Soil,6.64,73.9,1167.5,22.9,55.8,Planting,128.6,47.5
+Karnataka,Co 86032,6.39,Alluvial Soil,7.14,51.5,1306.1,27.7,58.2,Maturity,111.4,99.8
+Karnataka,Co 86032,7.1,Black Soil,7.49,46.7,1580.8,28.0,56.7,Tillering,129.6,64.3
+Karnataka,Co 86032,5.34,Black Soil,7.19,46.9,921.4,25.9,58.0,Tillering,130.3,75.7
+Karnataka,Co 86032,4.35,Coastal Soil,7.22,68.8,973.8,30.5,80.4,Grand Growth,111.6,109.0
+Karnataka,Co 86032,1.77,Coastal Soil,7.46,52.5,1281.6,24.3,66.6,Tillering,98.8,50.6
+Karnataka,Co 86032,6.48,Red Soil,6.32,70.0,1481.0,24.5,73.6,Maturity,86.8,103.1
+Karnataka,Co 86032,5.14,Black Soil,7.34,47.9,909.7,29.1,68.6,Grand Growth,84.2,131.8
+Karnataka,Co 86032,8.97,Red Soil,6.46,68.6,1276.0,26.9,66.8,Grand Growth,128.1,99.9
+Karnataka,Co 86032,9.07,Black Soil,7.34,46.2,1488.1,27.7,62.6,Planting,101.2,47.5
+Karnataka,Co 86032,1.93,Coastal Soil,6.57,60.6,1695.1,30.3,73.4,Germination,116.2,47.5
+Karnataka,Co 86032,0.62,Coastal Soil,6.57,47.1,841.7,23.1,76.5,Maturity,128.1,143.2
+Karnataka,Co 86032,2.15,Alluvial Soil,7.16,50.6,1096.5,26.5,78.2,Germination,81.4,47.5
+Karnataka,Co 86032,9.77,Red Soil,6.78,51.8,882.6,28.7,82.0,Germination,112.4,47.5
+Karnataka,Co 86032,3.56,Red Soil,6.48,71.9,1060.7,22.9,83.8,Grand Growth,82.8,80.4
+Karnataka,Co 86032,0.92,Red Soil,6.62,49.7,1286.0,34.0,70.6,Germination,82.0,47.5
+Karnataka,Co 86032,9.32,Black Soil,6.66,53.2,1176.0,29.2,66.7,Planting,112.8,47.5
+Karnataka,Co 86032,5.67,Coastal Soil,7.38,52.8,1792.4,30.7,64.5,Planting,110.7,47.5
+Karnataka,Co 86032,7.66,Coastal Soil,6.55,54.6,1548.2,29.3,60.4,Harvest,90.7,128.3
+Karnataka,Co 86032,1.93,Red Soil,6.97,59.7,907.9,30.9,57.8,Maturity,94.7,127.3
+Karnataka,Co 86032,5.98,Black Soil,6.65,47.8,1543.4,30.0,58.2,Maturity,123.8,140.3
+Karnataka,Co 86032,4.31,Red Soil,6.99,48.0,809.3,25.2,76.8,Germination,119.6,47.5
+Karnataka,Co 86032,5.77,Black Soil,6.86,68.5,1533.1,30.0,60.6,Germination,76.3,47.5
+Karnataka,Co 86032,1.91,Coastal Soil,6.87,54.8,1545.7,24.6,83.7,Harvest,92.7,133.4
+Karnataka,Co 86032,4.22,Red Soil,6.89,62.8,1168.3,27.8,76.7,Maturity,98.5,107.1
+Karnataka,Co 86032,5.07,Red Soil,6.09,62.6,1419.6,26.6,78.8,Maturity,111.0,103.8
+Karnataka,Co 86032,0.72,Alluvial Soil,7.1,63.1,1502.9,22.7,69.6,Germination,93.6,47.5
+Karnataka,Co 86032,5.44,Red Soil,6.21,69.8,1495.4,31.7,84.5,Tillering,96.4,51.6
+Karnataka,Co 86032,7.47,Alluvial Soil,7.3,68.0,1035.9,26.8,56.9,Planting,92.3,47.5
+Karnataka,Co 86032,7.53,Coastal Soil,7.49,67.4,1296.2,24.3,75.6,Harvest,127.8,100.9
+Karnataka,Co 86032,7.13,Black Soil,7.09,62.6,1779.6,24.1,76.0,Grand Growth,126.7,96.8
+Karnataka,Co 86032,4.63,Red Soil,6.46,59.4,1652.7,24.9,66.3,Tillering,127.1,54.7
+Karnataka,Co 86032,1.04,Coastal Soil,7.28,45.2,849.8,33.8,82.3,Germination,88.3,47.5
+Karnataka,Co 86032,0.84,Alluvial Soil,6.78,46.3,1722.6,28.1,55.4,Planting,91.0,47.5
+Karnataka,Co 86032,1.99,Coastal Soil,7.34,53.0,1774.8,26.8,67.9,Harvest,122.5,104.0
+Karnataka,Co 86032,2.75,Red Soil,6.77,47.6,1362.0,26.5,64.5,Germination,115.9,47.5
+Karnataka,Co 86032,1.88,Red Soil,6.49,74.4,1627.9,32.2,73.7,Maturity,115.5,95.8
+Karnataka,Co 86032,7.34,Alluvial Soil,6.68,45.7,1108.7,34.3,84.0,Planting,98.8,47.5
+Karnataka,Co 86032,8.02,Alluvial Soil,6.9,61.3,1345.1,34.7,61.8,Harvest,105.9,97.3
+Karnataka,Co 86032,1.43,Red Soil,6.66,51.5,1646.9,27.6,59.2,Harvest,123.0,116.5
+Karnataka,Co 86032,7.97,Coastal Soil,6.96,46.6,862.3,28.7,79.2,Harvest,87.0,154.6
+Karnataka,Co 86032,8.86,Red Soil,6.2,71.3,1130.2,31.8,70.6,Grand Growth,123.4,86.9
+Karnataka,Co 86032,9.14,Coastal Soil,6.57,58.9,1785.0,32.0,55.8,Planting,105.4,47.5
+Karnataka,Co 86032,2.44,Alluvial Soil,7.28,73.9,1456.8,32.7,66.4,Harvest,104.5,107.5
+Karnataka,Co 86032,5.56,Black Soil,6.9,72.5,1377.6,30.2,78.9,Grand Growth,84.6,98.4
+Karnataka,Co 86032,1.84,Red Soil,6.28,74.5,1116.8,33.1,82.2,Grand Growth,87.0,79.7
+Karnataka,Co 86032,8.88,Coastal Soil,7.12,47.5,1454.3,24.0,68.2,Maturity,119.8,126.7
+Karnataka,Co 86032,9.81,Alluvial Soil,6.82,74.9,1285.4,23.6,76.8,Planting,111.8,47.5
+Karnataka,Co 86032,9.75,Black Soil,6.71,56.4,893.0,22.4,79.7,Maturity,94.4,103.3
+Karnataka,Co 86032,3.48,Red Soil,6.9,64.6,910.7,31.9,84.6,Harvest,89.9,144.9
+Karnataka,Co 86032,4.49,Coastal Soil,6.59,66.6,1325.4,25.2,58.4,Grand Growth,125.3,101.6
+Karnataka,Co 86032,8.52,Red Soil,6.74,69.2,1413.8,27.7,72.3,Germination,89.8,47.5
+Karnataka,Co 86032,6.73,Coastal Soil,7.18,50.0,906.3,26.1,55.1,Maturity,130.0,118.6
+Karnataka,Co 86032,4.38,Coastal Soil,6.57,67.9,1666.4,24.8,65.8,Tillering,117.4,56.1
+Karnataka,Co 86032,0.5,Alluvial Soil,7.15,71.2,1607.4,22.8,82.0,Planting,85.2,47.5
+Karnataka,Co 86032,5.05,Red Soil,6.41,69.1,1026.7,27.0,58.9,Harvest,77.0,115.1
+Karnataka,Co 86032,7.14,Red Soil,6.97,69.8,1766.2,23.7,76.2,Harvest,121.8,114.4
+Karnataka,Co 86032,2.58,Alluvial Soil,7.14,58.5,1359.2,30.2,71.0,Harvest,82.6,106.1
+Karnataka,Co 86032,2.65,Red Soil,6.82,47.2,846.1,29.4,63.5,Planting,115.8,47.5
+Karnataka,Co 86032,6.45,Coastal Soil,6.84,74.7,1677.2,33.4,64.9,Tillering,105.0,48.8
+Karnataka,Co 86032,8.4,Coastal Soil,7.02,46.9,1382.8,34.9,80.7,Harvest,108.6,102.2
+Karnataka,Co 86032,5.42,Black Soil,7.38,62.2,1709.6,30.7,79.9,Maturity,99.5,106.1
+Karnataka,Co 86032,6.5,Red Soil,6.44,63.2,1573.9,29.8,81.8,Grand Growth,108.2,113.9
+Karnataka,Co 86032,9.53,Alluvial Soil,6.99,64.6,1312.4,23.4,66.5,Grand Growth,108.7,89.9
+Karnataka,Co 86032,0.93,Coastal Soil,6.86,59.2,1434.1,22.9,62.6,Planting,83.6,47.5
+Karnataka,Co 86032,2.47,Black Soil,7.11,53.4,1131.3,28.3,60.9,Planting,104.2,47.5
+Karnataka,Co 86032,5.93,Black Soil,6.84,69.1,1019.1,22.5,58.2,Harvest,103.9,93.6
+Karnataka,Co 86032,5.32,Black Soil,6.61,55.4,1197.0,23.1,73.5,Harvest,123.6,93.4
+Karnataka,Co 86032,4.4,Red Soil,6.39,57.7,1792.8,23.7,63.2,Tillering,125.5,48.9
+Karnataka,Co 86032,6.55,Black Soil,7.32,45.0,1109.4,32.7,83.7,Grand Growth,78.8,104.2
+Karnataka,Co 86032,1.38,Alluvial Soil,7.3,64.9,1671.6,25.3,75.0,Planting,108.5,47.5
+Karnataka,Co 86032,6.64,Black Soil,6.91,64.4,1204.2,26.2,77.5,Planting,124.4,47.5
+Karnataka,Co 86032,7.54,Red Soil,6.17,64.1,938.9,23.5,59.6,Harvest,104.9,128.9
+Karnataka,Co 86032,4.29,Coastal Soil,6.95,47.5,1620.0,31.0,71.0,Harvest,125.6,147.3
+Karnataka,Co 86032,1.24,Alluvial Soil,7.35,57.1,1616.7,22.9,66.6,Planting,105.6,47.5
+Karnataka,Co 86032,1.44,Coastal Soil,7.08,67.8,1026.3,27.0,68.5,Harvest,124.5,105.5
+Karnataka,Co 86032,6.63,Black Soil,7.01,50.0,827.4,27.1,70.8,Tillering,78.4,80.4
+Karnataka,Co 86032,4.39,Alluvial Soil,6.84,47.2,825.4,30.4,74.1,Grand Growth,93.0,146.1
+Karnataka,Co 86032,1.84,Coastal Soil,6.95,65.6,1164.6,24.8,84.6,Maturity,102.5,92.5
+Karnataka,Co 86032,2.02,Alluvial Soil,6.53,56.6,1764.0,27.0,56.2,Tillering,77.3,54.2
+Karnataka,Co 86032,4.72,Red Soil,6.37,59.2,930.0,32.9,66.1,Maturity,130.2,129.3
+Karnataka,Co 86032,9.81,Black Soil,7.47,68.2,1406.9,24.0,55.9,Maturity,102.0,105.9
+Karnataka,Co 86032,2.18,Red Soil,6.83,66.3,1046.9,32.9,65.7,Maturity,103.7,113.8
+Karnataka,Co 86032,1.93,Coastal Soil,7.08,75.0,1630.7,29.1,60.0,Maturity,120.5,94.8
+Karnataka,Co 86032,7.44,Black Soil,7.29,58.8,1534.6,25.9,64.8,Maturity,84.1,128.6
+Karnataka,Co 86032,4.86,Coastal Soil,7.1,55.6,1706.9,23.7,72.8,Maturity,78.1,105.7
+Karnataka,Co 86032,4.9,Black Soil,7.44,49.5,1594.2,25.6,81.3,Grand Growth,129.5,131.6
+Karnataka,Co 86032,6.25,Alluvial Soil,7.06,58.2,1102.4,28.4,70.7,Harvest,126.1,109.3
+Karnataka,Co 86032,8.16,Alluvial Soil,7.1,62.7,1694.5,27.9,68.3,Planting,102.0,47.5
+Karnataka,Co 86032,4.76,Black Soil,6.56,71.5,1239.1,33.0,81.8,Grand Growth,103.8,92.0
+Karnataka,Co 86032,6.62,Coastal Soil,7.03,64.0,1729.3,22.4,81.2,Germination,120.7,47.5
+Karnataka,Co 86032,1.35,Coastal Soil,6.7,74.8,1328.6,32.3,84.7,Tillering,76.1,47.5
+Karnataka,Co 86032,8.19,Black Soil,7.44,69.7,1432.9,22.9,55.2,Grand Growth,124.2,91.6
+Karnataka,Co 86032,1.55,Red Soil,6.07,55.5,877.6,27.3,67.2,Planting,120.0,47.5
+Karnataka,Co 86032,8.05,Black Soil,6.58,60.0,1755.1,28.8,64.0,Germination,114.5,47.5
+Karnataka,Co 86032,9.33,Red Soil,6.28,69.1,1202.9,25.8,62.0,Germination,98.1,47.5
+Karnataka,Co 86032,3.9,Alluvial Soil,7.48,63.1,1276.4,24.9,74.2,Maturity,111.3,97.3
+Karnataka,Co 86032,6.98,Alluvial Soil,7.12,47.2,1303.1,27.8,72.6,Planting,89.2,47.5
+Karnataka,Co 86032,3.08,Black Soil,6.64,68.3,1604.0,29.2,70.6,Grand Growth,103.1,96.3
+Karnataka,Co 86032,5.36,Coastal Soil,6.82,45.0,1429.6,22.7,77.5,Germination,78.6,47.5
+Karnataka,Co 86032,3.5,Black Soil,6.75,67.2,862.7,32.9,55.1,Harvest,81.6,135.4
+Karnataka,Co 86032,9.14,Black Soil,7.39,58.0,1642.7,26.1,78.7,Tillering,96.6,57.8
+Karnataka,Co 86032,0.54,Black Soil,7.13,66.1,1487.0,28.4,66.6,Maturity,85.1,122.5
+Karnataka,Co 86032,1.5,Black Soil,7.2,53.9,1766.0,31.9,83.5,Maturity,118.6,112.0
+Karnataka,Co 86032,2.48,Black Soil,6.93,58.7,1160.1,34.4,70.0,Germination,96.1,47.5
+Karnataka,Co 86032,6.74,Alluvial Soil,7.35,51.4,1567.6,27.4,79.7,Grand Growth,101.7,117.5
+Karnataka,Co 86032,7.52,Coastal Soil,6.64,64.5,1477.8,29.9,63.9,Planting,93.2,47.5
+Karnataka,Co 86032,1.05,Coastal Soil,6.79,56.0,1513.2,24.6,81.7,Maturity,82.1,116.1
+Karnataka,Co 86032,1.68,Alluvial Soil,6.84,45.6,1635.5,22.2,66.4,Grand Growth,98.5,93.8
+Karnataka,Co 86032,4.28,Black Soil,7.38,46.2,1706.1,25.5,76.7,Harvest,117.5,133.6
+Karnataka,Co 86032,3.99,Coastal Soil,6.58,56.5,931.5,33.1,72.3,Planting,85.9,47.5
+Karnataka,Co 86032,3.35,Black Soil,6.87,45.0,1573.1,28.7,65.4,Maturity,111.2,154.1
+Karnataka,Co 86032,1.95,Black Soil,6.79,51.2,1347.0,32.8,73.2,Tillering,125.0,54.1
+Karnataka,Co 86032,9.91,Red Soil,6.67,62.5,1403.3,28.2,56.8,Maturity,89.0,113.5
+Karnataka,Co 86032,6.39,Red Soil,6.2,66.8,1444.6,29.3,78.3,Grand Growth,124.8,110.1
+Karnataka,Co 86032,6.61,Black Soil,7.41,49.9,1076.2,34.8,70.8,Tillering,120.1,55.2
+Karnataka,Co 86032,9.34,Coastal Soil,7.19,65.7,1525.0,29.0,56.8,Harvest,103.1,119.1
+Karnataka,Co 86032,1.22,Black Soil,7.0,65.4,1757.9,28.9,62.3,Harvest,91.0,121.8
+Karnataka,Co 86032,2.49,Red Soil,6.17,58.4,1346.6,27.6,56.3,Germination,78.7,47.5
+Karnataka,Co 94012,5.23,Red Soil,6.11,64.1,1327.2,27.1,74.8,Tillering,104.2,60.3
+Karnataka,Co 94012,0.62,Red Soil,6.18,51.4,1019.1,28.0,82.6,Harvest,80.8,134.6
+Karnataka,Co 94012,4.23,Loamy Soil,7.45,74.0,1155.0,31.1,66.9,Maturity,130.8,108.4
+Karnataka,Co 94012,8.62,Loamy Soil,7.46,67.9,1032.0,28.0,78.4,Grand Growth,115.9,113.8
+Karnataka,Co 94012,2.19,Red Soil,6.05,69.2,1177.0,29.2,79.1,Grand Growth,110.6,104.9
+Karnataka,Co 94012,1.96,Red Soil,6.0,72.0,1045.8,27.2,81.8,Harvest,138.9,130.4
+Karnataka,Co 94012,9.53,Red Soil,6.75,72.6,1561.0,26.8,66.8,Planting,114.3,50.0
+Karnataka,Co 94012,2.32,Red Soil,6.66,52.2,1051.0,29.3,65.8,Germination,134.6,50.0
+Karnataka,Co 94012,3.18,Loamy Soil,6.68,71.0,1020.9,22.5,56.1,Germination,136.6,50.0
+Karnataka,Co 94012,9.09,Loamy Soil,6.64,57.9,1227.5,26.2,80.2,Tillering,130.3,51.4
+Karnataka,Co 94012,3.65,Loamy Soil,7.09,50.6,1276.3,28.5,61.1,Harvest,130.9,112.6
+Karnataka,Co 94012,8.44,Loamy Soil,6.91,69.3,869.0,34.2,70.2,Planting,99.8,50.0
+Karnataka,Co 94012,4.22,Loamy Soil,6.79,72.9,1315.7,28.0,56.4,Germination,112.5,50.0
+Karnataka,Co 94012,0.6,Red Soil,6.2,51.1,861.3,26.7,76.7,Maturity,106.0,139.4
+Karnataka,Co 94012,7.71,Loamy Soil,7.14,57.5,991.1,26.0,77.0,Harvest,116.3,138.2
+Karnataka,Co 94012,4.35,Red Soil,6.34,75.0,1052.8,25.5,58.8,Maturity,93.1,111.7
+Karnataka,Co 94012,3.06,Red Soil,6.75,45.6,949.6,26.9,67.4,Harvest,110.8,144.1
+Karnataka,Co 94012,1.47,Black Soil,7.21,67.8,1065.3,29.8,63.9,Germination,110.6,50.0
+Karnataka,Co 94012,9.25,Red Soil,6.71,58.9,1732.9,32.8,75.9,Grand Growth,121.3,110.3
+Karnataka,Co 94012,9.8,Red Soil,6.35,55.1,1074.1,32.5,60.9,Harvest,131.0,127.7
+Karnataka,Co 94012,4.18,Loamy Soil,6.98,60.2,1235.3,29.1,64.4,Grand Growth,133.9,89.8
+Karnataka,Co 94012,7.2,Loamy Soil,6.94,52.0,811.4,31.1,84.1,Tillering,128.6,63.4
+Karnataka,Co 94012,7.29,Loamy Soil,6.62,73.8,1229.6,26.0,69.5,Planting,136.7,50.0
+Karnataka,Co 94012,5.26,Black Soil,6.82,69.5,1608.8,30.8,73.8,Tillering,84.2,55.1
+Karnataka,Co 94012,5.71,Black Soil,7.17,46.6,1632.8,33.8,55.4,Tillering,97.1,58.9
+Karnataka,Co 94012,3.88,Red Soil,6.61,52.4,1735.0,27.6,81.3,Tillering,85.0,54.0
+Karnataka,Co 94012,7.47,Red Soil,6.98,68.5,872.1,24.7,66.4,Harvest,86.9,140.1
+Karnataka,Co 94012,1.14,Red Soil,6.43,74.4,901.4,25.6,63.3,Harvest,110.9,114.2
+Karnataka,Co 94012,3.79,Black Soil,7.2,57.7,913.3,27.2,77.1,Harvest,103.7,126.8
+Karnataka,Co 94012,6.23,Black Soil,7.16,74.1,1283.0,25.5,63.6,Germination,84.6,50.0
+Karnataka,Co 94012,6.6,Loamy Soil,6.59,61.6,1230.4,31.0,68.7,Harvest,121.9,113.7
+Karnataka,Co 94012,0.52,Black Soil,7.03,52.5,1250.7,30.7,72.5,Tillering,90.4,50.0
+Karnataka,Co 94012,6.44,Black Soil,6.51,68.2,1412.3,24.8,83.2,Planting,102.2,50.0
+Karnataka,Co 94012,7.39,Red Soil,6.94,51.6,1185.6,34.2,71.3,Planting,116.7,50.0
+Karnataka,Co 94012,9.19,Black Soil,6.59,67.5,901.9,22.1,68.0,Harvest,105.8,102.8
+Karnataka,Co 94012,2.8,Loamy Soil,7.11,64.1,1523.4,22.1,72.7,Maturity,122.5,95.4
+Karnataka,Co 94012,3.07,Red Soil,6.25,51.4,1677.5,31.6,55.4,Planting,94.7,50.0
+Karnataka,Co 94012,8.47,Black Soil,6.58,73.5,1532.7,29.9,75.2,Maturity,127.9,127.8
+Karnataka,Co 94012,5.45,Loamy Soil,7.24,67.1,1344.3,24.6,73.5,Tillering,84.1,52.9
+Karnataka,Co 94012,6.83,Red Soil,6.37,71.9,1384.4,29.0,63.1,Planting,126.8,50.0
+Karnataka,Co 94012,9.39,Black Soil,6.94,64.5,1048.4,31.2,67.8,Maturity,83.8,125.9
+Karnataka,Co 94012,0.77,Loamy Soil,6.91,59.1,1398.8,24.6,72.7,Harvest,92.5,118.7
+Karnataka,Co 94012,7.97,Black Soil,6.61,60.5,811.5,27.3,82.7,Tillering,136.1,65.9
+Karnataka,Co 94012,4.71,Red Soil,6.01,72.7,1626.5,27.8,79.2,Tillering,112.9,51.3
+Karnataka,Co 94012,7.97,Loamy Soil,6.72,69.3,876.6,33.3,79.8,Maturity,117.6,121.0
+Karnataka,Co 94012,3.81,Loamy Soil,6.58,69.9,1031.8,26.1,82.1,Germination,111.0,50.0
+Karnataka,Co 94012,4.41,Loamy Soil,6.8,58.8,1261.8,27.4,55.4,Planting,123.0,50.0
+Karnataka,Co 94012,5.64,Red Soil,6.79,53.9,1540.6,33.2,71.0,Maturity,100.5,124.6
+Karnataka,Co 94012,6.27,Loamy Soil,6.72,60.6,1041.5,26.6,58.2,Germination,94.6,50.0
+Karnataka,Co 94012,4.45,Loamy Soil,7.12,61.7,1034.2,24.9,83.8,Harvest,105.5,125.1
+Karnataka,Co 94012,0.71,Loamy Soil,7.05,62.3,1553.6,24.6,64.8,Germination,136.2,50.0
+Karnataka,Co 94012,9.01,Red Soil,6.21,56.8,1137.2,23.9,75.8,Maturity,92.2,104.4
+Karnataka,Co 94012,6.47,Red Soil,6.47,61.8,818.1,32.3,57.1,Maturity,121.0,125.6
+Karnataka,Co 94012,5.11,Black Soil,7.32,70.3,1523.4,29.0,80.1,Planting,99.9,50.0
+Karnataka,Co 94012,4.18,Red Soil,6.47,47.3,983.4,33.1,81.5,Harvest,127.8,161.0
+Karnataka,Co 94012,9.83,Black Soil,7.35,61.4,1279.3,24.4,77.3,Germination,106.8,50.0
+Karnataka,Co 94012,7.43,Loamy Soil,6.95,47.1,1031.5,34.3,56.3,Harvest,116.2,133.8
+Karnataka,Co 94012,8.4,Loamy Soil,7.43,56.4,1169.5,22.6,65.5,Grand Growth,130.1,81.1
+Karnataka,Co 94012,7.93,Black Soil,7.27,62.5,1572.8,29.1,57.0,Grand Growth,124.7,124.9
+Karnataka,Co 94012,3.8,Red Soil,6.39,64.9,814.6,24.7,76.4,Germination,103.2,50.0
+Karnataka,Co 94012,5.0,Red Soil,6.63,49.7,1454.1,33.6,72.4,Tillering,122.6,63.5
+Karnataka,Co 94012,2.29,Red Soil,6.91,60.2,1041.5,24.8,67.7,Tillering,84.6,57.6
+Karnataka,Co 94012,3.01,Loamy Soil,6.77,65.8,1621.8,30.6,78.9,Grand Growth,135.9,110.8
+Karnataka,Co 94012,3.01,Black Soil,6.72,62.9,1069.5,24.5,75.8,Planting,119.4,50.0
+Karnataka,Co 94012,2.56,Loamy Soil,7.25,49.5,1783.3,32.2,78.2,Grand Growth,107.6,118.9
+Karnataka,Co 94012,4.58,Red Soil,6.86,68.5,1688.5,32.7,73.9,Maturity,92.0,119.3
+Karnataka,Co 94012,1.14,Loamy Soil,6.75,62.3,1796.2,32.7,80.3,Maturity,85.6,128.0
+Karnataka,Co 94012,0.88,Red Soil,7.0,52.2,1548.2,32.5,80.7,Tillering,104.5,57.1
+Karnataka,Co 94012,2.7,Loamy Soil,6.81,64.6,1160.4,32.2,72.0,Grand Growth,80.9,105.0
+Karnataka,Co 94012,6.43,Red Soil,6.62,61.9,1562.3,22.5,80.1,Germination,131.4,50.0
+Karnataka,Co 94012,5.91,Red Soil,6.14,62.4,1438.3,31.5,75.3,Planting,131.7,50.0
+Karnataka,Co 94012,8.68,Loamy Soil,6.94,59.8,1418.5,30.2,69.1,Germination,107.4,50.0
+Karnataka,Co 94012,9.29,Loamy Soil,7.36,48.3,1749.2,32.8,65.9,Harvest,117.6,133.3
+Karnataka,Co 94012,4.43,Loamy Soil,7.25,69.3,1774.2,22.9,71.6,Tillering,92.1,50.0
+Karnataka,Co 94012,2.13,Loamy Soil,7.19,45.7,1252.9,34.3,56.8,Germination,107.0,50.0
+Karnataka,Co 94012,8.42,Black Soil,7.38,62.5,1710.2,30.3,83.6,Grand Growth,118.2,97.1
+Karnataka,Co 94012,8.87,Loamy Soil,6.58,63.2,852.0,22.4,67.7,Tillering,132.5,52.6
+Karnataka,Co 94012,9.97,Loamy Soil,6.79,69.1,1686.1,24.6,77.1,Maturity,81.8,124.7
+Karnataka,Co 94012,8.26,Loamy Soil,6.57,74.3,1647.4,22.8,65.1,Planting,130.7,50.0
+Karnataka,Co 94012,3.05,Black Soil,6.73,59.1,1185.6,22.9,61.3,Tillering,86.0,50.0
+Karnataka,Co 94012,2.47,Loamy Soil,6.51,49.7,1785.3,24.2,58.4,Maturity,117.5,124.4
+Karnataka,Co 94012,8.19,Black Soil,6.56,51.3,1056.5,26.6,75.2,Grand Growth,88.7,102.0
+Karnataka,Co 94012,7.92,Black Soil,6.66,59.4,1629.3,31.2,73.5,Harvest,98.1,122.0
+Karnataka,Co 94012,3.18,Black Soil,6.9,66.5,1675.4,27.7,84.5,Grand Growth,101.6,100.1
+Karnataka,Co 94012,8.48,Black Soil,6.81,61.1,1467.2,32.1,80.9,Planting,138.9,50.0
+Karnataka,Co 94012,8.46,Black Soil,6.99,59.5,995.2,28.4,77.2,Grand Growth,101.5,116.5
+Karnataka,Co 94012,8.27,Loamy Soil,7.4,71.7,1498.5,27.4,70.4,Germination,110.4,50.0
+Karnataka,Co 94012,3.15,Black Soil,7.43,67.2,1669.6,27.2,84.1,Grand Growth,87.8,114.4
+Karnataka,Co 94012,5.98,Black Soil,7.4,63.1,1654.3,28.4,67.2,Maturity,113.2,116.7
+Karnataka,Co 94012,5.95,Black Soil,6.84,66.9,1052.8,34.2,81.8,Harvest,100.1,119.8
+Karnataka,Co 94012,8.77,Loamy Soil,6.76,45.0,1018.2,33.4,62.5,Planting,127.2,50.0
+Karnataka,Co 94012,9.25,Red Soil,6.09,59.6,952.0,28.0,65.5,Maturity,82.4,118.9
+Karnataka,Co 94012,6.34,Black Soil,7.27,66.1,1585.8,29.7,55.2,Tillering,125.2,62.9
+Karnataka,Co 94012,7.75,Loamy Soil,6.98,65.2,1735.2,26.9,76.2,Harvest,82.7,127.7
+Karnataka,Co 94012,5.74,Loamy Soil,6.55,46.0,1710.6,28.6,70.0,Tillering,106.1,69.5
+Karnataka,Co 94012,9.19,Loamy Soil,6.97,68.2,1553.7,24.8,65.1,Planting,91.3,50.0
+Karnataka,Co 94012,2.5,Red Soil,6.57,64.5,1410.8,24.6,56.7,Grand Growth,113.1,113.6
+Karnataka,Co 94012,2.73,Black Soil,7.02,68.3,866.2,22.2,79.8,Harvest,100.5,100.6
+Karnataka,Co 94012,3.52,Black Soil,7.11,65.4,1467.9,34.1,63.0,Tillering,130.5,57.3
+Karnataka,Co 94012,7.21,Black Soil,6.51,66.5,1077.5,25.7,83.9,Tillering,117.1,60.6
+Karnataka,Co 94012,5.64,Loamy Soil,6.59,74.8,942.3,26.1,80.5,Germination,138.6,50.0
+Karnataka,Co 94012,9.7,Black Soil,7.1,49.5,861.8,23.2,59.9,Germination,106.6,50.0
+Karnataka,Co 94012,3.3,Black Soil,6.77,50.3,860.1,33.8,74.4,Germination,86.8,50.0
+Karnataka,Co 94012,3.89,Loamy Soil,7.22,70.7,1262.4,33.2,62.5,Planting,125.1,50.0
+Karnataka,Co 94012,1.64,Black Soil,6.93,69.9,990.6,24.4,65.3,Planting,123.7,50.0
+Karnataka,Co 94012,1.61,Red Soil,6.43,49.9,1292.8,25.9,72.9,Harvest,112.5,156.4
+Karnataka,Co 94012,7.15,Loamy Soil,7.37,60.7,815.2,29.6,58.2,Grand Growth,104.4,119.8
+Karnataka,Co 94012,3.93,Red Soil,6.1,47.3,882.7,25.3,78.4,Grand Growth,85.5,136.8
+Karnataka,Co 94012,2.62,Red Soil,6.62,70.9,1695.7,32.2,76.0,Maturity,131.9,123.4
+Karnataka,Co 94012,3.8,Red Soil,6.97,57.9,1618.7,34.8,62.8,Maturity,83.0,90.2
+Karnataka,Co 94012,3.91,Red Soil,6.25,62.3,1257.9,24.9,73.4,Grand Growth,129.0,106.7
+Karnataka,Co 94012,1.3,Loamy Soil,6.83,51.3,1150.8,26.7,79.2,Harvest,107.8,117.5
+Karnataka,Co 94012,4.86,Loamy Soil,7.32,56.5,1021.2,27.0,79.3,Harvest,98.0,137.1
+Karnataka,Co 94012,4.37,Red Soil,6.03,59.3,1733.7,30.9,70.9,Harvest,89.6,128.0
+Karnataka,Co 94012,7.85,Red Soil,6.24,60.4,1728.1,33.0,61.7,Germination,82.6,50.0
+Karnataka,Co 94012,4.66,Loamy Soil,6.55,54.6,1031.5,30.9,83.2,Tillering,133.5,61.7
+Karnataka,Co 94012,5.79,Red Soil,6.22,53.6,1331.7,29.0,63.3,Tillering,81.7,59.9
+Karnataka,Co 94012,9.7,Red Soil,6.1,54.5,1020.1,28.7,76.3,Grand Growth,95.6,103.3
+Karnataka,Co 94012,7.65,Loamy Soil,7.13,57.1,1734.3,33.9,74.1,Germination,111.6,50.0
+Karnataka,Co 94012,8.52,Loamy Soil,7.33,61.2,1531.5,32.7,59.4,Maturity,105.7,126.0
+Karnataka,Co 94012,3.59,Black Soil,6.81,62.2,1644.2,28.3,70.4,Harvest,82.3,120.6
+Karnataka,Co 94012,6.88,Loamy Soil,7.23,55.4,1778.4,34.6,66.9,Tillering,127.9,50.9
+Karnataka,Co 94012,6.77,Black Soil,6.53,63.1,1583.3,25.5,84.7,Grand Growth,120.9,109.3
+Karnataka,Co 94012,4.46,Red Soil,6.31,61.4,981.2,30.1,61.7,Planting,89.5,50.0
+Karnataka,Co 94012,6.79,Black Soil,6.6,45.5,1698.0,23.1,66.8,Planting,115.8,50.0
+Karnataka,Co 94012,8.75,Loamy Soil,6.64,51.9,823.7,32.9,84.2,Tillering,135.1,61.4
+Karnataka,Co 94012,0.61,Loamy Soil,6.53,62.5,839.4,29.5,66.8,Harvest,126.8,132.4
+Karnataka,Co 94012,7.64,Red Soil,6.54,62.0,1366.2,22.1,56.9,Germination,87.9,50.0
+Karnataka,Co 94012,9.34,Red Soil,6.23,69.5,1632.4,32.5,61.7,Grand Growth,85.7,106.6
+Karnataka,Co 94012,5.18,Loamy Soil,7.25,46.5,1670.7,23.1,61.3,Maturity,106.3,117.4
+Karnataka,Co 94012,1.96,Loamy Soil,7.31,67.8,1329.9,24.1,72.2,Grand Growth,88.9,93.7
+Karnataka,Co 94012,7.12,Black Soil,6.53,56.8,1208.5,30.8,56.7,Grand Growth,91.5,100.8
+Karnataka,Co 94012,8.81,Black Soil,6.61,64.4,1137.3,26.1,58.7,Maturity,127.0,104.7
+Karnataka,Co 94012,3.07,Black Soil,6.86,65.1,1197.0,24.0,77.1,Grand Growth,84.8,100.4
+Karnataka,Co 94012,8.73,Loamy Soil,7.16,62.3,1788.4,34.7,78.8,Germination,97.2,50.0
+Karnataka,Co 94012,2.41,Loamy Soil,7.06,70.5,1211.2,27.6,64.9,Germination,135.6,50.0
+Karnataka,Co 94012,8.95,Loamy Soil,7.32,46.2,1356.2,32.1,55.5,Planting,139.0,50.0
+Karnataka,Co 94012,9.8,Red Soil,6.1,48.8,1565.4,25.3,81.0,Grand Growth,120.1,149.0
+Karnataka,Co 94012,4.58,Loamy Soil,7.18,62.3,1476.5,29.7,73.1,Grand Growth,96.4,118.6
+Karnataka,Co 94012,1.07,Black Soil,7.25,51.6,1492.4,25.0,73.8,Maturity,87.8,129.4
+Karnataka,Co 94012,3.65,Black Soil,6.98,72.9,845.0,31.5,65.2,Grand Growth,107.7,99.4
+Karnataka,Co 94012,5.18,Black Soil,7.17,66.7,1642.0,28.3,78.3,Planting,117.7,50.0
+Karnataka,Co 94012,5.69,Red Soil,6.02,55.9,1606.0,29.7,60.0,Germination,130.0,50.0
+Karnataka,Co 94012,7.13,Black Soil,6.79,60.8,1206.6,23.9,76.4,Germination,133.6,50.0
+Karnataka,Co 94012,2.57,Red Soil,6.0,53.2,1479.6,34.3,63.9,Planting,119.4,50.0
+Karnataka,Co 94012,3.76,Loamy Soil,7.17,61.7,816.2,31.5,64.7,Harvest,88.0,127.9
+Karnataka,Co 94012,7.91,Black Soil,6.9,66.9,1718.4,30.4,58.1,Planting,87.0,50.0
+Karnataka,Co 94012,8.32,Red Soil,6.82,71.8,1354.4,23.9,57.8,Tillering,133.5,50.7
+Karnataka,Co 94012,3.49,Loamy Soil,6.74,47.8,1180.0,29.9,66.7,Planting,85.8,50.0
+Karnataka,Co 94012,3.61,Loamy Soil,7.08,69.4,1331.9,33.4,84.9,Harvest,98.2,116.4
+Karnataka,Co 419,1.64,Black Soil,7.24,65.0,1392.3,31.0,65.9,Maturity,94.4,94.5
+Karnataka,Co 419,3.2,Loamy Soil,6.69,45.8,1300.0,31.5,73.6,Grand Growth,87.5,100.5
+Karnataka,Co 419,6.06,Loamy Soil,6.61,59.4,996.2,23.6,83.9,Harvest,92.7,87.7
+Karnataka,Co 419,9.36,Loamy Soil,6.55,53.9,1775.5,28.2,57.0,Tillering,91.7,43.5
+Karnataka,Co 419,1.79,Black Soil,7.48,61.3,1398.6,30.5,59.6,Harvest,111.4,96.0
+Karnataka,Co 419,7.46,Red Soil,6.94,60.9,1500.4,32.0,65.1,Maturity,113.0,114.7
+Karnataka,Co 419,3.42,Black Soil,7.43,65.3,1103.0,34.6,73.8,Maturity,83.6,80.6
+Karnataka,Co 419,1.23,Loamy Soil,7.32,59.0,1118.0,29.5,65.4,Maturity,72.8,85.6
+Karnataka,Co 419,9.87,Red Soil,6.87,58.6,906.3,23.5,83.2,Grand Growth,64.0,85.9
+Karnataka,Co 419,9.57,Black Soil,7.44,64.5,1448.2,22.8,79.4,Maturity,72.0,86.8
+Karnataka,Co 419,7.48,Black Soil,6.89,49.9,1201.5,26.4,58.8,Maturity,75.1,98.2
+Karnataka,Co 419,5.63,Loamy Soil,6.85,69.1,1395.2,33.3,72.3,Planting,68.2,40.0
+Karnataka,Co 419,6.16,Red Soil,6.15,58.0,1196.3,25.9,59.3,Harvest,68.3,103.0
+Karnataka,Co 419,3.92,Loamy Soil,7.29,72.5,1302.5,24.6,64.5,Germination,80.3,40.0
+Karnataka,Co 419,8.12,Red Soil,6.39,63.1,1123.1,34.8,64.8,Maturity,88.9,75.2
+Karnataka,Co 419,3.75,Red Soil,6.79,63.5,810.5,33.6,59.5,Harvest,110.3,97.2
+Karnataka,Co 419,1.71,Red Soil,6.02,48.5,1366.9,26.6,73.3,Maturity,74.0,115.3
+Karnataka,Co 419,3.01,Red Soil,6.44,51.0,1705.5,32.9,60.9,Harvest,90.7,93.9
+Karnataka,Co 419,5.64,Loamy Soil,6.91,73.7,1431.5,32.2,73.0,Germination,96.1,40.0
+Karnataka,Co 419,8.45,Red Soil,6.79,53.5,821.0,32.7,79.7,Planting,92.8,40.0
+Karnataka,Co 419,4.28,Loamy Soil,6.89,46.5,963.4,24.4,61.1,Maturity,91.1,113.2
+Karnataka,Co 419,8.84,Loamy Soil,7.07,62.0,1305.7,22.8,57.1,Germination,93.6,40.0
+Karnataka,Co 419,0.93,Loamy Soil,7.04,64.4,898.0,22.6,60.6,Planting,114.1,40.0
+Karnataka,Co 419,2.08,Red Soil,6.76,65.4,1736.9,34.8,78.9,Planting,67.1,40.0
+Karnataka,Co 419,2.11,Loamy Soil,6.79,65.2,847.0,34.1,57.7,Maturity,66.9,92.7
+Karnataka,Co 419,9.65,Red Soil,6.97,61.5,822.2,34.9,56.2,Planting,70.1,40.0
+Karnataka,Co 419,3.65,Red Soil,6.59,48.4,851.0,30.0,61.2,Maturity,105.4,125.3
+Karnataka,Co 419,2.63,Loamy Soil,7.37,69.9,1582.4,34.9,62.2,Planting,85.2,40.0
+Karnataka,Co 419,4.04,Loamy Soil,6.77,66.9,816.7,24.5,79.3,Harvest,91.7,101.5
+Karnataka,Co 419,6.38,Red Soil,6.46,65.3,1757.2,33.6,74.6,Harvest,94.1,87.4
+Karnataka,Co 419,9.12,Loamy Soil,7.45,71.4,1196.0,23.7,59.8,Grand Growth,116.6,67.5
+Karnataka,Co 419,2.03,Loamy Soil,7.09,62.3,1283.8,27.4,65.7,Tillering,89.0,45.0
+Karnataka,Co 419,7.14,Black Soil,6.97,46.3,869.2,32.8,62.6,Maturity,81.5,129.6
+Karnataka,Co 419,9.16,Loamy Soil,6.94,54.5,995.8,28.7,58.9,Planting,67.2,40.0
+Karnataka,Co 419,3.53,Red Soil,6.24,47.7,1119.0,27.4,82.2,Germination,69.5,40.0
+Karnataka,Co 419,2.91,Loamy Soil,6.86,48.8,860.9,22.4,76.4,Maturity,98.0,100.1
+Karnataka,Co 419,7.62,Black Soil,7.31,57.9,1377.1,33.6,72.9,Planting,112.4,40.0
+Karnataka,Co 419,6.09,Red Soil,6.31,61.7,1068.8,24.6,62.4,Tillering,86.6,45.4
+Karnataka,Co 419,3.92,Loamy Soil,7.08,45.4,1523.1,32.0,76.4,Tillering,96.1,56.6
+Karnataka,Co 419,4.86,Red Soil,6.15,71.6,1598.7,34.1,55.6,Planting,93.9,40.0
+Karnataka,Co 419,0.97,Red Soil,6.29,71.4,1731.7,35.0,76.6,Germination,76.2,40.0
+Karnataka,Co 419,2.77,Loamy Soil,7.0,65.2,1020.7,23.8,80.8,Maturity,104.2,95.5
+Karnataka,Co 419,3.38,Black Soil,7.15,73.0,1210.7,24.7,84.3,Germination,105.4,40.0
+Karnataka,Co 419,5.96,Loamy Soil,7.17,66.9,1765.6,27.1,58.9,Planting,75.0,40.0
+Karnataka,Co 419,3.06,Loamy Soil,6.73,57.2,1227.5,30.4,77.4,Germination,74.5,40.0
+Karnataka,Co 419,4.08,Loamy Soil,6.68,73.7,1551.3,33.7,80.4,Planting,82.0,40.0
+Karnataka,Co 419,8.66,Loamy Soil,7.38,54.1,1048.5,26.1,79.3,Harvest,109.4,107.9
+Karnataka,Co 419,6.63,Black Soil,6.83,60.0,1490.3,34.3,75.5,Planting,91.1,40.0
+Karnataka,Co 419,2.74,Loamy Soil,6.58,65.5,977.1,22.1,68.4,Germination,114.0,40.0
+Karnataka,Co 419,6.44,Loamy Soil,6.58,64.4,1603.2,34.8,72.9,Harvest,97.8,82.5
+Karnataka,Co 419,5.71,Red Soil,6.17,70.1,1275.5,33.0,66.5,Tillering,74.0,46.0
+Karnataka,Co 419,1.5,Loamy Soil,7.33,66.3,1404.3,28.0,79.9,Planting,108.5,40.0
+Karnataka,Co 419,8.92,Red Soil,6.11,57.2,1163.0,33.4,76.8,Maturity,66.5,95.8
+Karnataka,Co 419,4.23,Loamy Soil,6.8,68.3,1070.6,25.2,83.3,Germination,71.4,40.0
+Karnataka,Co 419,4.69,Red Soil,6.34,60.6,1775.8,26.8,65.7,Planting,110.6,40.0
+Karnataka,Co 419,6.16,Red Soil,6.07,64.9,938.4,34.8,62.5,Maturity,86.0,83.3
+Karnataka,Co 419,2.94,Black Soil,6.92,58.7,995.7,32.7,74.5,Maturity,103.9,100.2
+Karnataka,Co 419,1.02,Black Soil,7.42,55.4,1396.1,34.9,68.1,Germination,74.8,40.0
+Karnataka,Co 419,1.64,Black Soil,7.24,50.0,800.2,33.9,80.3,Planting,67.6,40.0
+Karnataka,Co 419,6.4,Loamy Soil,6.85,56.2,1230.5,23.5,70.4,Planting,102.1,40.0
+Karnataka,Co 419,1.27,Black Soil,6.77,63.7,908.0,25.0,77.5,Grand Growth,88.0,97.8
+Karnataka,Co 419,5.58,Loamy Soil,7.17,46.0,1615.1,33.4,78.2,Tillering,66.0,55.6
+Karnataka,Co 419,8.7,Black Soil,7.39,57.0,1362.4,25.6,78.5,Germination,78.2,40.0
+Karnataka,Co 419,1.15,Loamy Soil,6.52,72.1,1125.9,34.4,58.7,Planting,116.6,40.0
+Karnataka,Co 419,4.67,Loamy Soil,6.72,55.9,984.9,27.6,56.8,Planting,115.8,40.0
+Karnataka,Co 419,3.49,Red Soil,6.71,74.8,1337.0,32.9,65.2,Tillering,99.7,44.2
+Karnataka,Co 419,8.3,Loamy Soil,7.41,50.7,1434.9,23.6,57.1,Harvest,92.9,88.7
+Karnataka,Co 419,5.36,Red Soil,6.85,45.4,1047.0,33.2,60.1,Tillering,104.8,56.9
+Karnataka,Co 419,4.08,Red Soil,6.28,53.7,1619.6,33.5,61.0,Tillering,84.8,44.9
+Karnataka,Co 419,6.63,Black Soil,7.3,67.2,967.6,26.0,70.1,Tillering,72.3,48.5
+Karnataka,Co 419,9.56,Loamy Soil,6.77,73.7,1177.4,27.4,56.2,Harvest,82.7,80.6
+Karnataka,Co 419,9.82,Loamy Soil,7.26,48.3,1192.2,34.3,59.2,Maturity,84.2,97.6
+Karnataka,Co 419,8.93,Loamy Soil,7.44,72.5,1427.7,24.5,59.4,Germination,97.1,40.0
+Karnataka,Co 419,7.04,Red Soil,6.62,69.7,1361.9,30.7,82.8,Planting,93.3,40.0
+Karnataka,Co 419,5.5,Black Soil,7.43,62.6,1767.7,30.6,71.9,Planting,104.2,40.0
+Karnataka,Co 419,7.0,Loamy Soil,7.38,55.3,1600.9,24.3,58.3,Harvest,65.3,104.2
+Karnataka,Co 419,1.9,Loamy Soil,6.89,47.4,855.7,29.9,62.2,Planting,79.8,40.0
+Karnataka,Co 419,2.04,Red Soil,6.31,72.8,806.0,28.3,58.7,Maturity,115.2,97.3
+Karnataka,Co 419,2.08,Red Soil,6.53,50.9,1346.7,33.5,71.6,Tillering,112.6,42.2
+Karnataka,Co 419,8.87,Black Soil,7.24,62.9,1559.8,26.4,83.6,Planting,66.6,40.0
+Karnataka,Co 419,6.43,Red Soil,6.69,52.9,1672.6,23.1,69.6,Grand Growth,108.0,72.2
+Karnataka,Co 419,8.06,Black Soil,6.81,66.8,1353.6,25.9,67.9,Planting,108.1,40.0
+Karnataka,Co 419,4.74,Red Soil,6.04,67.3,1401.4,26.4,71.3,Grand Growth,65.1,81.5
+Karnataka,Co 419,1.57,Red Soil,6.66,51.6,1264.2,30.0,69.4,Germination,95.6,40.0
+Karnataka,Co 419,8.15,Red Soil,6.4,63.4,1180.5,23.4,70.9,Planting,79.9,40.0
+Karnataka,Co 419,1.01,Red Soil,6.51,57.9,1418.3,30.8,75.0,Planting,65.2,40.0
+Karnataka,Co 419,5.18,Loamy Soil,7.36,73.2,1187.7,23.8,77.1,Maturity,101.1,83.4
+Karnataka,Co 419,3.61,Loamy Soil,7.4,48.6,1141.6,30.4,57.1,Harvest,107.2,117.9
+Karnataka,Co 419,3.88,Loamy Soil,7.35,47.5,1355.5,29.6,61.2,Tillering,100.1,51.8
+Karnataka,Co 419,5.42,Black Soil,6.64,53.6,1539.9,32.3,58.6,Tillering,103.6,54.0
+Karnataka,Co 419,5.51,Black Soil,7.22,72.9,1466.9,27.7,83.6,Harvest,77.7,93.1
+Karnataka,Co 419,2.08,Red Soil,6.56,63.0,921.3,25.9,71.0,Germination,84.1,40.0
+Karnataka,Co 419,6.83,Black Soil,7.09,50.8,1527.6,34.0,77.9,Grand Growth,97.0,87.3
+Karnataka,Co 419,2.26,Black Soil,6.7,69.2,1328.7,26.3,70.6,Planting,68.5,40.0
+Karnataka,Co 419,4.18,Black Soil,6.57,71.8,1550.0,32.5,59.1,Harvest,79.3,113.7
+Karnataka,Co 419,6.42,Black Soil,6.54,46.5,1662.5,26.1,80.6,Harvest,67.3,116.5
+Karnataka,Co 419,1.51,Black Soil,6.93,47.2,1414.2,25.1,69.5,Maturity,108.4,111.7
+Karnataka,Co 419,0.85,Black Soil,7.08,48.6,1304.9,32.0,56.9,Tillering,66.8,56.9
+Karnataka,Co 419,0.88,Loamy Soil,6.76,57.7,845.2,27.7,80.3,Maturity,87.8,109.1
+Karnataka,Co 419,7.78,Black Soil,6.87,48.0,1132.4,26.1,58.2,Harvest,115.2,126.6
+Karnataka,Co 419,5.08,Red Soil,6.63,58.7,1400.8,31.1,63.6,Grand Growth,104.2,85.4
+Karnataka,Co 419,2.87,Black Soil,7.11,61.4,856.2,28.3,82.4,Planting,82.2,40.0
+Karnataka,Co 419,6.23,Black Soil,7.46,56.3,1314.7,23.3,55.5,Tillering,68.2,41.6
+Karnataka,Co 419,8.86,Black Soil,7.27,57.2,1375.7,23.6,72.5,Germination,98.4,40.0
+Karnataka,Co 419,6.93,Red Soil,6.91,67.8,931.3,26.0,61.1,Maturity,80.0,96.7
+Karnataka,Co 419,4.95,Black Soil,6.54,54.8,1274.2,24.9,73.5,Maturity,71.8,102.1
+Karnataka,Co 419,3.52,Loamy Soil,7.34,69.3,1752.1,26.4,84.6,Maturity,64.5,94.4
+Karnataka,Co 419,9.39,Red Soil,6.83,49.0,1338.4,33.9,66.6,Planting,103.8,40.0
+Karnataka,Co 419,9.27,Black Soil,6.72,63.8,899.2,27.6,73.9,Germination,116.9,40.0
+Karnataka,Co 419,6.61,Loamy Soil,6.8,74.5,863.8,27.0,63.5,Harvest,102.0,111.8
+Karnataka,Co 419,2.58,Black Soil,6.68,73.4,1601.8,27.6,81.1,Grand Growth,81.3,87.4
+Karnataka,Co 419,3.35,Red Soil,6.23,46.8,1408.2,27.8,77.3,Grand Growth,89.1,97.7
+Karnataka,Co 419,6.18,Red Soil,6.88,49.6,1200.0,22.7,72.5,Germination,99.2,40.0
+Karnataka,Co 419,0.86,Loamy Soil,7.19,64.8,1210.7,28.6,55.2,Planting,83.5,40.0
+Karnataka,Co 419,8.71,Loamy Soil,7.08,68.9,1301.9,33.8,76.5,Tillering,88.2,41.0
+Karnataka,Co 419,1.15,Black Soil,7.36,59.4,1766.7,31.1,57.5,Grand Growth,93.1,84.8
+Karnataka,Co 419,4.32,Loamy Soil,7.32,54.3,1020.7,24.1,56.9,Grand Growth,90.6,88.4
+Karnataka,Co 419,2.41,Black Soil,7.22,74.2,1415.1,24.3,70.4,Tillering,64.5,40.0
+Karnataka,Co 419,4.78,Black Soil,6.83,46.6,1620.5,22.1,68.7,Tillering,77.5,42.9
+Karnataka,Co 419,0.71,Red Soil,6.18,46.2,896.7,31.4,63.5,Tillering,105.0,53.5
+Karnataka,Co 419,6.29,Red Soil,6.56,48.4,1735.8,27.9,63.7,Grand Growth,94.1,108.8
+Karnataka,Co 419,9.48,Black Soil,7.29,59.6,1050.9,28.6,82.3,Grand Growth,67.0,94.5
+Karnataka,Co 419,3.15,Black Soil,7.08,53.5,1078.7,34.5,59.3,Grand Growth,85.5,80.5
+Karnataka,Co 419,2.96,Black Soil,6.94,60.3,1378.5,23.1,59.6,Tillering,80.8,40.0
+Karnataka,Co 419,6.44,Loamy Soil,6.85,68.8,1512.9,27.1,62.8,Maturity,113.7,109.2
+Karnataka,Co 419,7.04,Loamy Soil,6.52,61.0,1410.2,34.3,78.6,Harvest,103.7,87.0
+Karnataka,Co 419,1.73,Red Soil,6.1,46.7,1755.8,25.1,81.5,Germination,67.1,40.0
+Karnataka,Co 419,1.77,Red Soil,6.09,65.0,1071.7,23.3,63.9,Maturity,109.1,91.0
+Karnataka,Co 419,5.98,Red Soil,6.48,68.8,1147.0,27.6,78.5,Planting,82.1,40.0
+Karnataka,Co 419,5.36,Red Soil,6.01,64.4,1024.4,28.6,62.8,Planting,87.6,40.0
+Karnataka,Co 419,6.77,Black Soil,6.95,72.8,1454.3,33.3,62.3,Tillering,84.6,41.0
+Karnataka,Co 419,5.38,Loamy Soil,7.1,61.5,1381.2,31.3,58.7,Tillering,100.6,50.0
+Karnataka,Co 419,0.97,Black Soil,7.24,46.5,1326.1,30.9,63.2,Planting,84.5,40.0
+Karnataka,Co 419,4.41,Loamy Soil,6.81,74.2,1291.0,26.2,60.8,Planting,87.6,40.0
+Karnataka,Co 419,6.93,Red Soil,6.61,47.7,1041.6,30.9,76.5,Germination,67.4,40.0
+Karnataka,Co 419,2.57,Loamy Soil,7.34,58.8,1011.0,32.9,55.9,Germination,71.1,40.0
+Karnataka,Co 419,3.25,Red Soil,6.54,48.8,999.1,26.5,73.6,Tillering,76.7,52.9
+Karnataka,Co 419,4.47,Black Soil,7.37,71.1,807.4,28.6,59.2,Maturity,87.6,102.6
+Karnataka,Co 419,3.92,Loamy Soil,7.36,70.3,1066.8,28.6,78.3,Harvest,100.4,97.0
+Karnataka,Co 419,7.78,Red Soil,6.33,65.8,1501.6,22.1,67.3,Tillering,80.1,42.6
+Karnataka,Co 419,5.91,Black Soil,6.55,48.1,1783.9,33.8,80.6,Tillering,92.2,48.9
+Karnataka,Co 419,8.95,Black Soil,6.83,62.4,1368.3,25.6,69.2,Planting,94.2,40.0
+Karnataka,Co 419,5.29,Loamy Soil,6.81,50.5,851.2,25.0,69.8,Germination,81.1,40.0
+Karnataka,Co 419,3.37,Loamy Soil,6.8,63.6,1098.0,27.9,59.9,Planting,111.7,40.0
+Karnataka,Co 419,0.83,Red Soil,6.46,60.9,1634.3,29.5,74.4,Grand Growth,97.9,81.2
+Karnataka,Co 419,2.05,Loamy Soil,7.19,68.9,1092.7,29.1,59.0,Harvest,69.5,93.0
+Karnataka,Co 419,8.37,Black Soil,7.15,71.0,1328.2,28.1,58.2,Grand Growth,97.2,77.1
+Karnataka,Co 419,9.46,Red Soil,6.26,56.6,849.3,25.3,59.1,Germination,96.3,40.0
+Karnataka,Co 419,4.91,Loamy Soil,6.67,58.1,1372.2,34.1,80.7,Germination,105.8,40.0
+Karnataka,Co 419,0.71,Red Soil,6.41,55.4,1798.2,23.0,61.7,Tillering,68.9,40.7
+Karnataka,Co 62175,6.09,Red Soil,6.77,67.6,1314.2,29.0,62.7,Tillering,83.5,45.5
+Karnataka,Co 62175,9.5,Black Soil,6.96,68.5,1392.7,32.7,80.7,Harvest,86.9,112.2
+Karnataka,Co 62175,7.62,Red Soil,6.66,69.5,1138.2,33.9,84.4,Maturity,109.8,89.2
+Karnataka,Co 62175,7.3,Black Soil,6.51,49.2,1143.1,30.7,58.1,Germination,124.5,45.0
+Karnataka,Co 62175,9.41,Red Soil,6.57,49.1,1669.4,31.6,70.0,Tillering,91.0,60.1
+Karnataka,Co 62175,6.25,Red Soil,6.72,60.4,1054.3,30.2,55.7,Harvest,106.1,112.5
+Karnataka,Co 62175,4.31,Red Soil,6.87,50.7,1483.8,31.8,76.8,Planting,123.2,45.0
+Karnataka,Co 62175,3.2,Black Soil,7.5,61.2,1325.4,23.4,61.1,Maturity,125.7,102.9
+Karnataka,Co 62175,7.05,Red Soil,6.69,71.8,1060.4,32.9,76.5,Maturity,87.3,106.1
+Karnataka,Co 62175,3.62,Red Soil,6.51,55.3,1559.2,30.1,57.3,Germination,104.5,45.0
+Karnataka,Co 62175,9.53,Black Soil,7.17,59.9,870.8,30.6,79.3,Maturity,88.2,105.1
+Karnataka,Co 62175,2.57,Red Soil,6.79,68.2,833.0,34.4,61.3,Tillering,105.5,45.0
+Karnataka,Co 62175,7.66,Red Soil,6.22,51.2,814.6,34.0,84.3,Maturity,85.7,116.3
+Karnataka,Co 62175,9.85,Black Soil,6.95,57.2,1393.7,31.8,64.3,Planting,87.8,45.0
+Karnataka,Co 62175,1.48,Black Soil,6.77,71.9,1364.6,25.3,82.5,Germination,107.5,45.0
+Karnataka,Co 62175,3.39,Black Soil,6.8,50.6,1252.9,34.3,75.3,Grand Growth,77.0,73.2
+Karnataka,Co 62175,2.37,Black Soil,6.63,64.3,1222.9,32.3,59.2,Planting,77.3,45.0
+Karnataka,Co 62175,6.99,Black Soil,7.04,65.3,1621.5,26.6,74.7,Grand Growth,106.0,92.8
+Karnataka,Co 62175,2.05,Black Soil,7.33,74.7,1255.6,33.6,72.1,Harvest,109.4,94.1
+Karnataka,Co 62175,7.92,Red Soil,6.8,48.2,1785.6,30.9,62.3,Tillering,121.2,57.5
+Karnataka,Co 62175,9.44,Red Soil,6.76,73.1,1230.1,27.7,64.3,Grand Growth,81.4,90.2
+Karnataka,Co 62175,7.35,Red Soil,6.91,64.0,1052.8,22.9,63.0,Planting,85.9,45.0
+Karnataka,Co 62175,6.7,Red Soil,6.82,52.1,1175.3,30.1,59.4,Maturity,93.9,101.6
+Karnataka,Co 62175,1.23,Red Soil,6.01,69.2,1379.6,33.9,60.3,Harvest,94.3,107.7
+Karnataka,Co 62175,1.09,Red Soil,6.99,55.3,884.0,32.0,73.9,Grand Growth,111.7,103.9
+Karnataka,Co 62175,4.48,Black Soil,6.59,57.0,1581.7,24.6,62.8,Germination,99.8,45.0
+Karnataka,Co 62175,6.02,Red Soil,6.06,48.6,1620.8,25.7,57.1,Grand Growth,122.2,115.4
+Karnataka,Co 62175,6.55,Red Soil,6.17,55.8,1245.9,31.2,77.0,Harvest,75.8,103.2
+Karnataka,Co 62175,8.96,Red Soil,6.34,56.7,834.4,30.3,80.8,Tillering,115.9,58.4
+Karnataka,Co 62175,3.13,Red Soil,6.03,64.3,1710.2,24.0,73.8,Tillering,96.3,45.8
+Karnataka,Co 62175,6.81,Black Soil,6.69,66.5,1422.0,33.5,83.8,Maturity,90.5,95.2
+Karnataka,Co 62175,7.63,Red Soil,6.53,51.0,1745.5,30.2,68.1,Tillering,112.3,46.7
+Karnataka,Co 62175,4.68,Red Soil,6.18,55.6,1069.2,34.8,66.5,Maturity,75.7,88.2
+Karnataka,Co 62175,1.03,Black Soil,6.55,66.0,1538.9,22.4,71.2,Maturity,121.2,100.3
+Karnataka,Co 62175,0.51,Black Soil,7.37,72.1,1241.5,23.7,63.7,Planting,104.1,45.0
+Karnataka,Co 62175,5.12,Black Soil,7.33,58.9,881.7,24.8,62.5,Grand Growth,122.5,105.2
+Karnataka,Co 62175,3.37,Red Soil,6.46,50.4,1256.5,23.9,82.9,Tillering,74.7,45.0
+Karnataka,Co 62175,8.62,Red Soil,6.38,45.8,1733.6,34.1,58.8,Planting,91.4,45.0
+Karnataka,Co 62175,5.06,Red Soil,6.96,53.7,1229.8,26.0,83.9,Tillering,124.5,45.0
+Karnataka,Co 62175,5.57,Black Soil,6.91,51.6,900.5,28.6,55.7,Maturity,125.8,121.6
+Karnataka,Co 62175,1.48,Red Soil,6.93,56.0,1435.3,22.5,61.2,Maturity,109.9,89.2
+Karnataka,Co 62175,0.8,Black Soil,7.15,67.3,1658.1,27.3,84.4,Germination,78.6,45.0
+Karnataka,Co 62175,5.44,Red Soil,6.84,49.2,1423.7,23.7,58.5,Germination,74.0,45.0
+Karnataka,Co 62175,5.65,Red Soil,6.81,51.5,1489.2,26.4,61.5,Planting,124.3,45.0
+Karnataka,Co 62175,4.3,Red Soil,6.96,53.2,982.9,29.4,66.3,Maturity,125.1,111.0
+Karnataka,Co 62175,3.75,Red Soil,6.05,63.0,1057.8,31.1,55.4,Tillering,123.5,54.3
+Karnataka,Co 62175,3.57,Red Soil,6.77,51.3,1618.1,30.7,58.8,Grand Growth,116.2,98.1
+Karnataka,Co 62175,6.06,Red Soil,6.64,67.9,1013.0,29.9,57.5,Maturity,86.4,98.4
+Karnataka,Co 62175,5.45,Red Soil,6.74,71.0,1422.3,34.1,61.2,Harvest,108.1,107.3
+Karnataka,Co 62175,1.25,Black Soil,7.42,67.9,1096.9,22.0,83.9,Grand Growth,96.2,68.5
+Karnataka,Co 62175,3.54,Red Soil,6.1,53.2,1760.8,33.7,75.9,Germination,113.2,45.0
+Karnataka,Co 62175,4.81,Red Soil,6.45,48.5,1217.9,22.6,63.7,Germination,118.1,45.0
+Karnataka,Co 62175,6.05,Red Soil,6.36,60.9,991.7,28.2,65.8,Planting,115.0,45.0
+Karnataka,Co 62175,7.4,Red Soil,6.59,73.0,1138.6,22.7,71.6,Germination,121.6,45.0
+Karnataka,Co 62175,2.1,Black Soil,7.45,54.2,1134.0,23.4,62.2,Maturity,96.9,87.5
+Karnataka,Co 62175,3.14,Black Soil,7.17,54.9,1090.4,23.1,64.0,Tillering,82.0,45.0
+Karnataka,Co 62175,3.22,Black Soil,6.74,59.7,1531.0,23.0,74.9,Tillering,111.0,52.0
+Karnataka,Co 62175,8.3,Black Soil,7.18,50.5,1383.4,28.0,79.5,Maturity,95.2,101.6
+Karnataka,Co 62175,6.04,Black Soil,6.62,48.7,1067.5,28.7,62.0,Maturity,111.7,120.8
+Karnataka,Co 62175,7.42,Black Soil,6.95,46.1,927.2,33.9,69.8,Grand Growth,100.5,100.8
+Karnataka,Co 62175,1.59,Red Soil,6.6,66.8,1183.4,32.9,81.0,Grand Growth,103.8,91.8
+Karnataka,Co 62175,7.14,Red Soil,6.62,64.2,1680.2,24.5,64.4,Maturity,78.0,111.4
+Karnataka,Co 62175,1.4,Red Soil,6.12,67.7,1271.3,34.8,77.2,Tillering,73.5,45.0
+Karnataka,Co 62175,6.96,Red Soil,6.72,60.2,974.9,30.7,60.2,Planting,83.0,45.0
+Karnataka,Co 62175,2.92,Black Soil,6.75,56.2,1636.1,24.0,64.0,Tillering,98.4,47.1
+Karnataka,Co 62175,8.45,Red Soil,6.63,46.6,855.9,23.8,56.6,Tillering,99.6,60.1
+Karnataka,Co 62175,1.61,Black Soil,7.09,51.3,970.8,24.6,64.6,Tillering,124.4,46.1
+Karnataka,Co 62175,6.61,Black Soil,6.65,65.9,1588.0,25.9,59.1,Planting,114.3,45.0
+Karnataka,Co 62175,7.18,Black Soil,6.71,47.2,955.9,25.2,80.3,Tillering,93.7,67.2
+Karnataka,Co 62175,0.99,Black Soil,6.84,57.1,890.4,34.3,62.8,Harvest,98.8,97.3
+Karnataka,Co 62175,0.65,Red Soil,6.52,62.0,1731.7,23.4,63.0,Grand Growth,114.2,82.4
+Karnataka,Co 62175,7.92,Red Soil,6.12,74.6,1166.7,23.4,73.8,Grand Growth,93.1,73.7
+Karnataka,Co 62175,6.68,Red Soil,6.84,64.3,1354.1,24.3,66.4,Grand Growth,118.8,98.0
+Karnataka,Co 62175,2.08,Red Soil,6.76,63.2,894.8,29.1,77.2,Maturity,115.1,120.1
+Karnataka,Co 62175,5.72,Red Soil,6.02,57.0,1263.8,24.3,65.1,Grand Growth,105.5,89.4
+Karnataka,Co 62175,9.08,Red Soil,6.19,58.9,1682.8,28.1,70.6,Harvest,74.7,121.3
+Karnataka,Co 62175,8.44,Black Soil,7.16,58.6,1699.5,34.2,75.1,Tillering,123.9,46.9
+Karnataka,Co 62175,1.09,Black Soil,7.3,60.3,1406.8,33.0,71.2,Harvest,92.7,113.6
+Karnataka,Co 62175,9.54,Red Soil,6.14,56.7,1232.1,34.6,68.6,Maturity,89.3,90.6
+Karnataka,Co 62175,4.71,Red Soil,6.31,68.5,1150.2,23.1,76.7,Planting,98.2,45.0
+Karnataka,Co 62175,3.94,Black Soil,7.03,69.3,1243.1,26.9,66.0,Harvest,100.3,109.6
+Karnataka,Co 62175,7.01,Red Soil,6.31,47.5,1142.2,24.5,71.9,Maturity,110.2,112.3
+Karnataka,Co 62175,8.78,Red Soil,6.32,65.5,1226.3,27.8,75.1,Grand Growth,84.8,97.8
+Karnataka,Co 62175,7.74,Black Soil,6.63,57.4,1067.3,27.5,57.8,Harvest,120.6,114.8
+Karnataka,Co 62175,4.43,Red Soil,6.83,71.0,1472.0,30.3,79.2,Tillering,109.7,50.1
+Karnataka,Co 62175,5.64,Red Soil,6.92,74.1,1318.2,22.5,72.1,Tillering,96.7,45.0
+Karnataka,Co 62175,3.89,Red Soil,6.46,62.5,1265.7,25.1,69.1,Grand Growth,80.9,91.3
+Karnataka,Co 62175,0.87,Black Soil,7.41,51.3,1464.0,26.4,83.1,Grand Growth,112.0,107.5
+Karnataka,Co 62175,7.46,Red Soil,6.65,71.8,906.2,24.3,75.7,Germination,99.5,45.0
+Karnataka,Co 62175,9.91,Red Soil,6.75,65.8,1365.0,23.1,67.4,Maturity,87.0,94.0
+Karnataka,Co 62175,6.77,Black Soil,7.08,73.8,1240.4,29.1,78.9,Grand Growth,100.2,75.2
+Karnataka,Co 62175,1.69,Red Soil,6.21,50.7,1099.2,31.7,61.2,Harvest,88.8,117.7
+Karnataka,Co 62175,2.99,Red Soil,6.47,46.7,1561.9,28.6,84.7,Planting,95.5,45.0
+Karnataka,Co 62175,8.88,Black Soil,7.22,73.2,1566.8,25.5,72.7,Germination,99.8,45.0
+Karnataka,Co 62175,0.7,Black Soil,7.03,53.1,1352.7,23.5,58.8,Tillering,111.0,45.0
+Karnataka,Co 62175,0.97,Black Soil,6.79,63.1,1799.5,30.1,67.9,Maturity,77.1,95.1
+Karnataka,Co 62175,3.02,Black Soil,6.54,55.4,991.2,30.0,67.2,Harvest,109.0,125.9
+Karnataka,Co 62175,7.78,Red Soil,6.07,73.0,1611.5,22.7,71.1,Germination,107.5,45.0
+Karnataka,Co 62175,5.52,Black Soil,7.02,48.5,1768.9,31.3,82.7,Harvest,78.9,134.1
+Karnataka,Co 62175,4.14,Red Soil,6.49,73.5,1422.6,22.1,60.8,Germination,94.9,45.0
+Karnataka,Co 62175,4.03,Red Soil,6.97,48.9,1098.9,27.3,61.5,Grand Growth,73.4,104.3
+Karnataka,Co 62175,8.17,Red Soil,6.01,47.5,1001.2,23.0,69.2,Planting,113.7,45.0
+Karnataka,Co 62175,8.62,Black Soil,6.53,47.7,1723.2,24.7,81.2,Tillering,106.1,61.1
+Karnataka,Co 62175,9.12,Red Soil,6.96,65.3,1537.2,30.2,69.2,Planting,111.4,45.0
+Karnataka,Co 62175,1.22,Black Soil,7.43,45.3,1641.6,29.2,82.0,Harvest,85.5,135.9
+Karnataka,Co 62175,3.05,Red Soil,6.8,74.0,1259.9,29.9,60.7,Maturity,98.7,85.7
+Karnataka,Co 62175,3.3,Red Soil,6.32,59.5,1040.7,31.7,77.5,Planting,86.0,45.0
+Karnataka,Co 62175,2.25,Red Soil,6.24,54.7,852.9,31.8,83.7,Tillering,103.2,51.7
+Karnataka,Co 62175,0.56,Black Soil,6.92,61.9,1497.0,29.3,66.6,Grand Growth,76.2,110.3
+Karnataka,Co 62175,8.88,Black Soil,6.87,62.1,1506.8,34.0,63.1,Maturity,122.9,109.0
+Karnataka,Co 62175,8.01,Black Soil,6.55,50.7,1469.2,27.3,69.1,Grand Growth,96.5,97.1
+Karnataka,Co 62175,9.07,Red Soil,6.03,68.1,1282.9,27.1,82.3,Tillering,96.1,49.2
+Karnataka,Co 62175,9.4,Black Soil,6.63,61.1,1607.1,28.8,58.5,Grand Growth,88.7,104.8
+Karnataka,Co 62175,4.03,Red Soil,6.73,51.0,1047.8,22.5,58.1,Germination,99.1,45.0
+Karnataka,Co 62175,1.18,Red Soil,6.97,53.6,1451.9,32.1,78.0,Harvest,90.7,123.7
+Karnataka,Co 62175,9.12,Black Soil,7.14,55.1,938.4,30.7,70.7,Tillering,103.7,48.9
+Karnataka,Co 62175,4.4,Black Soil,7.39,53.0,1556.4,32.3,69.8,Grand Growth,120.5,113.7
+Karnataka,Co 62175,6.06,Black Soil,6.91,57.9,1230.9,24.6,68.1,Planting,100.1,45.0
+Karnataka,Co 62175,8.06,Black Soil,7.31,56.6,1529.4,29.3,65.8,Harvest,88.5,112.0
+Karnataka,Co 62175,0.9,Black Soil,7.15,71.2,1194.6,32.3,63.4,Grand Growth,116.9,87.4
+Karnataka,Co 62175,0.67,Black Soil,7.38,67.6,1674.5,22.6,62.8,Maturity,99.9,90.7
+Karnataka,Co 62175,4.44,Red Soil,6.8,69.1,1097.4,30.9,61.2,Harvest,87.3,104.7
+Karnataka,Co 62175,0.74,Black Soil,6.88,54.1,1519.6,26.7,73.3,Germination,72.2,45.0
+Karnataka,Co 62175,3.72,Black Soil,6.74,51.8,1651.3,32.4,63.0,Harvest,98.9,112.4
+Karnataka,Co 62175,4.95,Black Soil,7.21,52.3,930.5,22.2,59.6,Germination,103.9,45.0
+Karnataka,Co 62175,9.63,Black Soil,6.84,47.7,1227.7,29.7,57.7,Tillering,115.6,55.2
+Karnataka,Co 62175,0.54,Red Soil,6.56,73.3,1733.5,26.5,59.8,Germination,84.9,45.0
+Karnataka,Co 62175,6.95,Black Soil,6.98,74.8,913.2,29.4,80.9,Planting,76.0,45.0
+Karnataka,Co 62175,4.77,Red Soil,6.09,45.0,1087.4,29.3,64.1,Planting,117.2,45.0
+Karnataka,Co 62175,5.67,Black Soil,6.56,74.2,863.2,29.8,73.1,Planting,102.2,45.0
+Karnataka,Co 62175,6.23,Red Soil,6.81,46.5,1064.3,25.7,70.3,Maturity,115.6,114.7
+Karnataka,Co 62175,6.19,Red Soil,6.43,61.6,1112.7,29.6,59.1,Maturity,86.8,101.0
+Karnataka,Co 62175,4.29,Black Soil,7.33,54.1,1605.1,33.1,71.5,Planting,89.1,45.0
+Karnataka,Co 62175,1.55,Black Soil,7.03,46.7,1761.6,26.1,57.9,Planting,83.8,45.0
+Karnataka,Co 62175,7.85,Black Soil,6.83,54.5,1599.7,31.6,67.8,Tillering,74.8,51.4
+Karnataka,Co 62175,7.24,Black Soil,7.43,70.8,1277.1,23.7,62.1,Grand Growth,98.0,82.8
+Karnataka,Co 62175,6.92,Black Soil,6.7,51.4,1765.8,24.8,79.3,Tillering,93.9,53.6
+Karnataka,Co 62175,6.38,Red Soil,6.16,56.0,1311.5,33.9,82.1,Maturity,80.6,103.4
+Karnataka,Co 62175,4.45,Black Soil,7.41,50.8,967.0,23.6,57.6,Maturity,96.2,102.5
+Karnataka,Co 62175,3.61,Black Soil,7.28,45.6,1026.8,34.1,82.3,Harvest,105.9,111.4
+Karnataka,Co 62175,2.41,Black Soil,7.31,52.0,1170.3,24.9,81.2,Tillering,110.6,45.4
+Karnataka,Co 62175,3.62,Black Soil,7.23,55.1,952.3,25.4,67.8,Germination,87.4,45.0
+Karnataka,Co 62175,5.59,Black Soil,6.51,47.3,1285.6,31.2,55.9,Harvest,118.1,114.5
+Karnataka,Co 62175,5.03,Black Soil,7.16,60.3,906.3,32.9,69.5,Harvest,117.1,126.6
+Karnataka,Co 62175,6.97,Black Soil,7.03,59.4,911.6,23.5,79.0,Planting,118.4,45.0
+Karnataka,Co 62175,9.08,Red Soil,6.8,56.3,1565.3,26.6,63.2,Tillering,75.8,51.1
+Karnataka,Co 62175,1.44,Red Soil,6.67,60.9,1448.5,26.9,77.7,Grand Growth,115.9,107.4
+Karnataka,Co 62175,3.18,Red Soil,6.66,56.5,1650.5,33.4,71.5,Tillering,111.0,52.7
+Karnataka,Co 62175,5.91,Red Soil,6.45,46.5,1311.6,24.1,56.6,Germination,92.7,45.0
+Karnataka,Co 62175,8.88,Black Soil,6.57,53.7,1393.0,29.0,55.1,Maturity,79.9,113.5

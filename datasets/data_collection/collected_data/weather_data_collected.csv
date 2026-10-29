@@ -1,0 +1,45 @@
+location,latitude,longitude,timestamp,temperature,feels_like,temp_min,temp_max,pressure,humidity,wind_speed,clouds,weather_description,rain_1h,state,district
+"Muzaffarnagar, Uttar Pradesh",29.4727,77.7085,2026-10-01 10:44:18,29.05,31.12,29.05,29.05,1014,60,2.73,0,clear sky,0.0,Uttar Pradesh,Muzaffarnagar
+"Meerut, Uttar Pradesh",28.9845,77.7064,2026-10-01 10:40:26,30.56,32.09,30.56,30.56,1014,51,2.63,0,clear sky,0.0,Uttar Pradesh,Meerut
+"Bijnor, Uttar Pradesh",29.3732,78.1369,2026-10-01 10:40:27,28.89,31.15,28.89,28.89,1014,62,2.93,0,clear sky,0.0,Uttar Pradesh,Bijnor
+"Saharanpur, Uttar Pradesh",29.968,77.546,2026-10-01 10:40:28,28.66,31.05,28.66,28.66,1014,64,2.71,0,clear sky,0.0,Uttar Pradesh,Saharanpur
+"Bareilly, Uttar Pradesh",28.367,79.4304,2026-10-01 10:44:24,28.29,30.53,28.29,28.29,1014,65,2.99,0,clear sky,0.0,Uttar Pradesh,Bareilly
+"Lakhimpur Kheri, Uttar Pradesh",27.9465,80.7787,2026-10-01 10:40:31,27.9,30.22,27.9,27.9,1013,68,0.86,0,clear sky,0.0,Uttar Pradesh,Lakhimpur Kheri
+"Deoria, Uttar Pradesh",26.5024,83.7791,2026-10-01 10:40:33,29.68,32.8,29.68,29.68,1013,63,2.17,0,clear sky,0.0,Uttar Pradesh,Deoria
+"Kolhapur, Maharashtra",16.705,74.2433,2026-10-01 10:44:29,29.11,31.54,29.11,29.11,1016,62,3.73,89,overcast clouds,0.0,Maharashtra,Kolhapur
+"Sangli, Maharashtra",16.8524,74.5653,2026-10-01 10:40:35,29.33,30.96,29.33,29.33,1016,56,4.63,91,overcast clouds,0.0,Maharashtra,Sangli
+"Satara, Maharashtra",17.6805,74.0183,2026-10-01 10:40:37,27.52,28.5,27.52,27.52,1017,57,0.96,86,overcast clouds,0.0,Maharashtra,Satara
+"Ahmednagar, Maharashtra",19.0948,74.748,2026-10-01 10:37:38,29.73,29.18,29.73,29.73,1016,38,3.66,17,few clouds,0.0,Maharashtra,Ahmednagar
+"Pune, Maharashtra",18.5204,73.8567,2026-10-01 10:39:38,29.39,28.34,29.39,29.39,1016,32,3.36,63,broken clouds,0.0,Maharashtra,Pune
+"Solapur, Maharashtra",17.6599,75.9064,2026-10-01 10:44:36,30.95,31.63,30.95,30.95,1015,45,3.28,9,clear sky,0.0,Maharashtra,Solapur
+"Belagavi, Karnataka",15.8497,74.4977,2026-10-01 10:44:38,29.78,34.28,29.78,29.78,1019,69,2.97,55,light rain,0.39,Karnataka,Belagavi
+"Mandya, Karnataka",12.5244,76.8958,2026-10-01 10:40:43,28.62,32.42,28.62,28.62,1016,73,2.31,39,scattered clouds,0.0,Karnataka,Mandya
+"Mysuru, Karnataka",12.2958,76.6394,2026-10-01 10:38:48,27.83,32.12,27.83,27.83,1018,83,2.53,76,broken clouds,0.0,Karnataka,Mysuru
+"Bagalkot, Karnataka",16.1691,75.6948,2026-10-01 10:40:46,30.47,31.42,30.47,30.47,1015,48,4.41,62,broken clouds,0.0,Karnataka,Bagalkot
+"Shivamogga, Karnataka",13.9299,75.5681,2026-10-01 10:44:43,27.22,29.33,27.22,27.22,1015,71,2.18,97,overcast clouds,0.0,Karnataka,Shivamogga
+"Coimbatore, Tamil Nadu",11.0168,76.9558,2026-10-01 10:40:49,29.68,32.42,29.68,29.68,1016,61,1.81,98,overcast clouds,0.0,Tamil Nadu,Coimbatore
+"Erode, Tamil Nadu",11.341,77.7172,2026-10-01 10:42:53,31.83,38.55,31.83,31.83,1016,66,2.21,90,overcast clouds,0.0,Tamil Nadu,Erode
+"Salem, Tamil Nadu",11.6643,78.146,2026-10-01 10:40:52,31.51,37.41,31.51,31.51,1015,65,0.65,99,overcast clouds,0.0,Tamil Nadu,Salem
+"Thanjavur, Tamil Nadu",10.787,79.1378,2026-10-01 10:42:56,33.4,40.4,33.4,33.4,1012,75,0.39,86,overcast clouds,0.0,Tamil Nadu,Thanjavur
+"Tiruchirappalli, Tamil Nadu",10.7905,78.7047,2026-10-01 10:42:58,32.0,39.0,32.0,32.0,1013,81,1.21,100,overcast clouds,0.0,Tamil Nadu,Tiruchirappalli
+"Cuddalore, Tamil Nadu",11.748,79.7714,2026-10-01 10:40:56,31.95,38.53,31.95,31.95,1013,65,3.49,89,overcast clouds,0.0,Tamil Nadu,Cuddalore
+"East Godavari, Andhra Pradesh",17.284,81.9849,2026-10-01 10:40:57,31.32,36.64,31.32,31.32,1013,64,0.95,90,overcast clouds,0.0,Andhra Pradesh,East Godavari
+"West Godavari, Andhra Pradesh",16.7148,81.1027,2026-10-01 10:42:55,31.91,38.76,31.91,31.91,1014,66,1.72,100,overcast clouds,0.0,Andhra Pradesh,West Godavari
+"Krishna, Andhra Pradesh",16.5193,80.6305,2026-10-01 10:41:00,32.2,39.2,32.2,32.2,1014,68,1.26,100,overcast clouds,0.0,Andhra Pradesh,Krishna
+"Visakhapatnam, Andhra Pradesh",17.6868,83.2185,2026-10-01 10:43:05,31.44,35.27,31.44,31.44,1014,58,2.07,64,broken clouds,0.0,Andhra Pradesh,Visakhapatnam
+"Surat, Gujarat",21.1702,72.8311,2026-10-01 10:41:03,32.12,37.05,32.12,32.12,1015,59,2.9,0,clear sky,0.0,Gujarat,Surat
+"Navsari, Gujarat",20.95,72.9333,2026-10-01 10:41:04,31.72,36.14,31.72,31.72,1015,59,2.19,0,clear sky,0.0,Gujarat,Navsari
+"Bharuch, Gujarat",21.7051,72.9959,2026-10-01 10:41:06,31.82,34.04,31.82,31.82,1015,50,3.39,0,clear sky,0.0,Gujarat,Bharuch
+"Valsad, Gujarat",20.5992,72.9342,2026-10-01 10:41:07,31.06,34.72,31.06,31.06,1015,59,2.07,0,clear sky,0.0,Gujarat,Valsad
+"Yamuna Nagar, Haryana",30.129,77.2674,2026-10-01 10:41:08,28.79,30.54,28.79,28.79,1014,59,2.55,0,clear sky,0.0,Haryana,Yamuna Nagar
+"Karnal, Haryana",29.6857,76.9905,2026-10-01 10:41:10,30.0,30.74,30.0,30.0,1013,48,2.42,0,clear sky,0.0,Haryana,Karnal
+"Kurukshetra, Haryana",29.9729,76.8783,2026-10-01 10:41:11,30.08,31.01,30.08,30.08,1013,49,2.46,0,clear sky,0.0,Haryana,Kurukshetra
+"Jalandhar, Punjab",31.326,75.5762,2026-10-01 10:41:13,30.81,30.81,30.81,30.81,1013,41,0.59,0,clear sky,0.0,Punjab,Jalandhar
+"Gurdaspur, Punjab",32.0411,75.4056,2026-10-01 10:41:14,29.15,30.25,29.15,29.15,1013,53,1.11,0,clear sky,0.0,Punjab,Gurdaspur
+"Amritsar, Punjab",31.634,74.8723,2026-10-01 10:41:16,29.57,31.35,29.57,29.57,1014,56,0.69,0,clear sky,0.0,Punjab,Amritsar
+"Champaran, Bihar",27.0534,84.6325,2026-10-01 10:41:17,29.82,34.6,29.82,29.82,1013,70,1.17,100,overcast clouds,0.0,Bihar,Champaran
+"Siwan, Bihar",26.219,84.356,2026-10-01 10:41:18,30.35,34.18,30.35,30.35,1013,63,2.6,11,few clouds,0.0,Bihar,Siwan
+"Gopalganj, Bihar",26.4697,84.4387,2026-10-01 10:41:20,30.61,33.81,30.61,30.61,1013,59,2.03,7,clear sky,0.0,Bihar,Gopalganj
+"Nizamabad, Telangana",18.6725,78.0941,2026-10-01 10:41:21,30.55,33.91,30.55,30.55,1015,60,2.37,0,clear sky,0.0,Telangana,Nizamabad
+"Medak, Telangana",18.0499,78.2648,2026-10-01 10:41:23,31.89,35.41,31.89,31.89,1016,55,2.99,20,few clouds,0.0,Telangana,Medak
+"Karimnagar, Telangana",18.4386,79.1288,2026-10-01 10:41:24,31.14,35.67,31.14,31.14,1015,62,2.76,87,overcast clouds,0.0,Telangana,Karimnagar
